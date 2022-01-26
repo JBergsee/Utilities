@@ -1,11 +1,25 @@
 import XCTest
 @testable import Utilities
+import OSLog
 
 final class UtilitiesTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(Utilities().text, "Hello, World!")
+
+
+
+    func testLogging() {
+        
+        var logs = [OSLogEntryLog]()
+        
+        measure {
+            //Getting logs is pretty slow, preferably this should be on a background thread
+            logs = try! getLogEntries()
+        }
+        XCTAssert(logs.count > 0, "No logs!")
+        print("**************************** Log: ****************************")
+        logs.forEach { entry in
+            print("\(entry.subsystem): \(entry.composedMessage)")
+        }
+        print("**************************** End log: ************************")
+
     }
 }
