@@ -24,10 +24,17 @@ public class Utilities {
         return String(format: "%02d:%02d", hours, minutes%60)
     }
     
+    //Returns the value as a string with the given number of decimals
     static public func stringValueIfSet(_ value:Double, withDecimals:Int) -> String {
         guard value >= 0 else {return ""}
         
         return String(format: "%.\(withDecimals)f", value)
     }
 
+}
+
+public extension Int {
+    func toTimeString() -> String {
+        return Utilities.minutesToTimeString(Int64(self))
+    }
 }

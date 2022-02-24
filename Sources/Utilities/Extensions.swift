@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public extension Double
 {
@@ -32,4 +33,20 @@ public extension String {
         guard let toRange = to.isEmpty ? endIndex..<endIndex : range(of: to, range: fromRange.upperBound..<endIndex) else { return nil }
         return String(self[fromRange.upperBound..<toRange.lowerBound])
     }
+}
+
+public extension UITextView {
+    func addTextFieldBorder() {
+        let borderColor : UIColor = UIColor.systemGray
+        self.layer.borderWidth = 0.5
+        self.layer.borderColor = borderColor.cgColor
+        self.layer.cornerRadius = 5.0
+    }
+    func addSquareBorder() {
+        let borderColor : UIColor = UIColor.label
+        self.layer.borderWidth = 1.0
+        self.layer.borderColor = borderColor.cgColor
+        self.layer.cornerRadius = 0.0
+    }
+
 }
