@@ -79,6 +79,19 @@ struct SendableLog: Codable {
     let date, subsystem, category, composedMessage: String
 }
 
+public func logData() -> Data? {
+    let logs = try! getLogEntries()
+    let sendLogs: [SendableLog] = logs.map({ SendableLog(level: $0.level.rawValue,
+                                                                 date: "\($0.date)",
+                                                                 subsystem: $0.subsystem,
+                                                                 category: $0.category,
+                                                                 composedMessage: $0.composedMessage) })
+    
+    // Convert object to JSON
+    let jsonData = try? JSONEncoder().encode(sendLogs)
+    return jsonData
+}
+
 func sendLogs() {
     let logs = try! getLogEntries()
     let sendLogs: [SendableLog] = logs.map({ SendableLog(level: $0.level.rawValue,
@@ -90,12 +103,14 @@ func sendLogs() {
     // Convert object to JSON
     let jsonData = try? JSONEncoder().encode(sendLogs)
     
+    
+    
     // Send to my API
     let url = URL(string: "http://x.x.x.x:8000")! // IP address and port of Python server
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.httpBody = jsonData
-    
+
     let session = URLSession.shared
     let task = session.dataTask(with: request) { (data, response, error) in
         if let httpResponse = response as? HTTPURLResponse {
