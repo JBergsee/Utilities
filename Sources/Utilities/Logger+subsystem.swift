@@ -14,7 +14,7 @@ import OSLog
 
 
 public extension Logger {
-    private static let subsystem = Bundle.main.bundleIdentifier!
+    static let subsystem = Bundle.main.bundleIdentifier!
     
     /// Logs view events
     static let view = Logger(subsystem: subsystem, category: "View")
@@ -39,7 +39,6 @@ public extension Logger {
     
     ///Logs parsing
     static let parsing = Logger(subsystem: subsystem, category: "Parsing")
-    
     
     //Convenience function for creating errors
     static func Error(_ message: String, code: Int = 0, domain: String = "FlightBriefingErrorDomain", function: String = #function, file: String = #file, line: Int = #line) -> NSError {

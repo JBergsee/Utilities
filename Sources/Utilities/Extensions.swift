@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import OSLog
 
 public extension Double
 {
@@ -17,8 +18,9 @@ public extension Double
 @objc
 public extension FileManager {
     static var documentsDirectory: URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        Logger.functionality.log("Document directory: \(path)")
+        return path
     }
     static var applicationSupportDirectory: URL {
         let paths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
@@ -50,3 +52,31 @@ public extension UITextView {
     }
 
 }
+
+public extension Notification.Name {
+    
+    //Notification names
+    static let NOTIFICATIONSOMETHINGHAPPENED = Notification.Name("Something Happened")
+    
+    func post(object: Any? = nil, userInfo: [AnyHashable : Any]? = nil) {
+        NotificationCenter.default.post(name: self, object: object, userInfo: userInfo)
+    }
+    
+    @discardableResult
+    func onPost(object: Any? = nil, queue: OperationQueue? = nil, using: @escaping (Notification) -> Void) -> NSObjectProtocol {
+        return NotificationCenter.default.addObserver(forName: self, object: object, queue: queue, using: using)
+    }
+    
+    /*
+     Now when you want to post a norification with no details, which is the most common usage, you just do:
+     Notification.Name.NOTIFICATIONSOMETHINGHAPPENED.post()
+     
+     And to "catch" it you just do:
+     Notification.Name.NOTIFICATIONSOMETHINGHAPPENED.onPost { [weak self] note in
+     guard let `self` = self else { return }
+     // Do your stuff here
+     }
+     
+     */
+}
+
