@@ -10,12 +10,11 @@
 //
 
 import UIKit
-import OSLog
 
 @objc
 open class ChainedField: UITextField {
 
-    @IBOutlet var nextField:UIResponder?
+    @IBOutlet public var nextField:UIResponder?
         
     /*
     In IB, change your UITextFields to use the ChainedField class.
@@ -48,7 +47,7 @@ open class ChainedField: UITextField {
     @objc public func textFieldShouldReturn(_ textField:UITextField) -> Bool
     {
         
-        Logger.functionality.error("No, program should not come here. Wrong delegate for chained text field: \(self)")
+        assertionFailure("No, program should not come here. Wrong delegate for chained text field: \(self)")
 
         guard textField.resignFirstResponder() else { return false }
         

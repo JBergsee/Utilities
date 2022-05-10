@@ -20,7 +20,7 @@ import UIKit
 
 public class TimeField: ChainedField, UITextFieldDelegate {
     
-    @IBOutlet var timeDelegate:TimeFieldDelegate?
+    @IBOutlet public var timeDelegate:TimeFieldDelegate?
     
     
     override init(frame:CGRect)
@@ -94,7 +94,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         //(using a cached date formatter in Utilities extension
         
         let time = now.formatToString(using: .HHmm)
-        print("Current time (UTC): \(time)")
+        Log.debug(message: "Current time (UTC): \(time)", in: .functionality)
         
         
         //Handle as if it was written manually.
@@ -255,12 +255,8 @@ public class TimeField: ChainedField, UITextFieldDelegate {
             //nothing there
             break;
             
-        case 1:
-            //only minutes
-            break;
-            
-        case 2:
-            //hours and minutes
+        case 1,2:
+            //only minutes, or hours and minutes
             return Int(times[0])
             
         default:
@@ -275,7 +271,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         
         //Take into account a deleted figure!! return nil
         //Assume that the value is removed, or half removed when less than h:mm
-        guard (str.count < 4) else { return nil }
+        guard (str.count >= 4) else { return nil }
         
         return hrs*60+mins
     }

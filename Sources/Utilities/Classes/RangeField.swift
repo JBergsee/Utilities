@@ -38,7 +38,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     private static let stringMaxLength = "Max length is %d characters"
     
     //Delegate to set in Interface Builder
-    @IBOutlet var rangeDelegate:RangeFieldDelegate?
+    @IBOutlet public var rangeDelegate:RangeFieldDelegate?
     
     // Before initializing we make a floating point textfield with all floating point values (min to max)
     public var rangeType:RangeFieldType = .floatingPoint
@@ -320,7 +320,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     //MARK: - Return values from the string
     
     /* returns empty string if no text set */
-    public var value:Any {
+    public var value:Any? {
         switch rangeType {
         case .floatingPoint:
             return Float(text ?? "a") ?? .nan
@@ -381,10 +381,14 @@ public class RangeField: ChainedField, UITextFieldDelegate {
         
         switch rangeType {
         case .floatingPoint:
-            number = NSNumber(nonretainedObject: self.value as? Float)
+            if let floatValue = self.value as? Float {
+                number = NSNumber(value: floatValue)
+            }
             break
         case .integer:
-            number = NSNumber(nonretainedObject: self.value as? Float)
+            if let intValue = self.value as? Int {
+                number = NSNumber(value: intValue)
+            }
         case .character, .time:
             //Can't return as NSNumber
             break;

@@ -58,6 +58,7 @@ final class UtilitiesTests: XCTestCase {
         }
         print("**************************** End log: ************************")
 
+        print(logString())
     }
     
     func testStringSlicing() {

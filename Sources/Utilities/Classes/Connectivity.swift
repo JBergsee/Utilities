@@ -19,7 +19,7 @@
 
 import Foundation
 import Network
-import OSLog
+
 
 //For Swift
 public extension Notification.Name {
@@ -87,17 +87,17 @@ public class ConnectivityMonitor : NSObject {
     }
     
     func handleUpdate(path:NWPath) {
-        Logger.network.info("Connectivity status: \(path.status, privacy: .public)")
-        Logger.network.info("Available interfaces: \(path.availableInterfaces, privacy: .public)")
+        Log.debug(message: "Connectivity status: \(path.status)", in: .network)
+        Log.debug(message: "Available interfaces: \(path.availableInterfaces)", in: .network)
         
         
         var newStatus : ConnectivityStatus
         
         if path.status == .satisfied {
-            Logger.network.log("Connectivity: We have internet!\n")
+            Log.trace(message: "Connectivity: We have internet!\n", in: .network)
             newStatus = .connected
         } else {
-            Logger.network.log("Connectivity: No internet available.\n")
+            Log.trace(message: "Connectivity: No internet available.\n", in: .network)
             newStatus = .notConnected
         }
         //Update status if it has changed
@@ -113,8 +113,8 @@ public class ConnectivityMonitor : NSObject {
     }
     
     @objc public func isOnline() -> Bool {
-        Logger.network.debug("Current path status is \(self.monitor.currentPath.status, privacy: .public)...")
-        Logger.network.debug("...while connectivity status is \(self.currentStatus, privacy: .public)")
+        Log.debug(message: "Current path status is \(self.monitor.currentPath.status)...", in: .network)
+        Log.debug(message: "...while connectivity status is \(self.currentStatus)", in: .network)
 
         return currentStatus == .connected
     }

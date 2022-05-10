@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import OSLog
 
 public extension Double
 {
@@ -19,7 +18,6 @@ public extension Double
 public extension FileManager {
     static var documentsDirectory: URL {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        Logger.functionality.log("Document directory: \(path)")
         return path
     }
     static var applicationSupportDirectory: URL {
@@ -84,7 +82,7 @@ public extension Notification.Name {
 //Simple use of subscripts in strings.
 //Described here: https://stackoverflow.com/questions/24092884/get-nth-character-of-a-string-in-swift-programming-language
 
-extension String {
+public extension String {
 
     var length: Int {
         return count
@@ -112,7 +110,7 @@ extension String {
 }
 
 //From here https://medium.com/geekculture/new-date-formatter-api-f2e6da01d407
-extension DateFormatter {
+public extension DateFormatter {
    static let MMddyy: DateFormatter = {
       let formatter = DateFormatter()
       formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current

@@ -73,7 +73,7 @@ public class Utilities {
 
 }
 
-public extension Int {
+public extension IntegerLiteralType {
     func toTimeString() -> String {
         return Utilities.minutesToTimeString(Int64(self))
     }
