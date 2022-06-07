@@ -93,7 +93,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         //Format the output
         //(using a cached date formatter in Utilities extension
         
-        let time = now.formatToString(using: .HHmm)
+        let time = now.toString(using: .HHmm)
         Log.debug(message: "Current time (UTC): \(time)", in: .functionality)
         
         

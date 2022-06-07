@@ -131,11 +131,25 @@ public extension DateFormatter {
        formatter.dateFormat = "ddHHmm"
        return formatter
     }()
+    
+    static let yyyy_MM_dd: DateFormatter = {
+       let formatter = DateFormatter()
+       formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current
+       formatter.dateFormat = "yyyy'-'MM'-'dd" //ex: 2013-07-28
+       return formatter
+    }()
+    
+    static let dateAndTime: DateFormatter = {
+       let formatter = DateFormatter()
+       formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current
+       formatter.dateFormat = "yyyy'-'MM'-'dd' 'hh:mm" //ex: 2012-07-28 04:39
+       return formatter
+    }()
 }
 
 
-extension Date {
-   func formatToString(using formatter: DateFormatter) -> String {
+public extension Date {
+   func toString(using formatter: DateFormatter) -> String {
       return formatter.string(from: self)
    }
 }

@@ -4,25 +4,31 @@ import OSLog
 
 //let sut = Utilities()
 
+public extension LogCategory {
+    ///Log messages during testing
+    static let testing = LogCategory(rawValue: "Unit Testing")!
+}
+
+
 final class UtilitiesTests: XCTestCase {
 
 
     func testMinuteStrings() {
         
-        var minutes:Int64 = -1 //not set
-        XCTAssert(Utilities.minutesToTimeString(minutes) == "", "Got time from unset value")
+        let minutes:Int64 = -1 //not set
+        XCTAssert(Utilities.timeStringWith(minutes: minutes) == "", "Got time from unset value")
 
-        minutes = 10
-        XCTAssert(Utilities.minutesToTimeString(minutes) == "00:10", "Wrong time")
+        let minutes2:UInt = 10
+        XCTAssert(Utilities.timeStringWith(minutes: minutes2) == "00:10", "Wrong time")
      
-        minutes = 120
-        XCTAssert(Utilities.minutesToTimeString(minutes) == "02:00", "Wrong time")
+        let minutes3:Int = 120
+        XCTAssert(Utilities.timeStringWith(minutes: minutes3) == "02:00", "Wrong time")
      
-        minutes = 60*24+61
-        XCTAssert(Utilities.minutesToTimeString(minutes) == "01:01", "Wrong time")
+        let minutes4:Int32 = 60*24+61
+        XCTAssert(Utilities.timeStringWith(minutes: minutes4) == "01:01", "Wrong time")
         
-        minutes = 60*(24+23)+59
-        XCTAssert(Utilities.minutesToTimeString(minutes) == "23:59", "Wrong time")
+        let minutes5:UInt = 60*(24+23)+59
+        XCTAssert(Utilities.timeStringWith(minutes: minutes5) == "23:59", "Wrong time")
 
     }
     
@@ -43,7 +49,18 @@ final class UtilitiesTests: XCTestCase {
 
     }
 
+    func testFirebase() {
+        
+        //Notify calls both Crashlytics and Analytics
+        Log.notify(message: "Initializing firebase", in: .testing)
+        measure {
+            Log.initFirebase()
+        }
+        Log.notify(message: "Firebase initialized", in: .testing)
+ 
+    }
     func testLogging() {
+        
         
         var logs = [OSLogEntryLog]()
         

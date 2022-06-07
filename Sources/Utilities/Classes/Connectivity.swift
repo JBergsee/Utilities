@@ -63,7 +63,7 @@ extension NWPath.Status: CustomStringConvertible {
 public class ConnectivityMonitor : NSObject {
     
     //Singleton
-    @objc public static let sharedMonitor = ConnectivityMonitor()
+    @objc(sharedMonitor) public static let shared = ConnectivityMonitor()
 
     //Public property
     @objc public var currentStatus : ConnectivityStatus = .unknown
@@ -124,43 +124,3 @@ public class ConnectivityMonitor : NSObject {
     }
     
 }
-
-
-/** Obective C version */
-
-//- (void)setupNetworkMonitor
-//{
-//    //Create Queue
-//    dispatch_queue_attr_t attrs = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_UTILITY, DISPATCH_QUEUE_PRIORITY_DEFAULT);
-//    self.monitorQueue = dispatch_queue_create("network-monitor", attrs);
-//
-//    //Create monitor
-//    self.connectivityMonitor = nw_path_monitor_create();
-//    nw_path_monitor_set_queue(self.connectivityMonitor, self.monitorQueue);
-//
-//    //The update handler
-//    nw_path_monitor_set_update_handler(self.connectivityMonitor, ^(nw_path_t _Nonnull path) {
-//        nw_path_status_t status = nw_path_get_status(path);
-//        //
-//        switch (status) {
-//
-//            case nw_path_status_satisfied: {
-//                // Network is usable
-//                NSLog(@"The internet is working!");
-//                break;
-//            }
-//            case nw_path_status_invalid:
-//                // Network path is invalid
-//            case nw_path_status_satisfiable:
-//                // Network may be usable
-//            case nw_path_status_unsatisfied: {
-//                // Network is not usable
-//                NSLog(@"The internet is down.");
-//                break;
-//            }
-//        }
-//    });
-//
-//    nw_path_monitor_start(self.connectivityMonitor);
-//}
-

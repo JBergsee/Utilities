@@ -15,13 +15,13 @@ import Foundation
 @objcMembers
 public class Utilities {
 
-    public static func minutesToTimeString(_ minutes:Int64) -> String {
+    public static func timeStringWith<T : BinaryInteger>(minutes:T) -> String {
         guard minutes >= 0 else { return ""}
 
         var hours = minutes/60
         if (hours >= 24) {hours -= 24}
         
-        return String(format: "%02d:%02d", hours, minutes%60)
+        return String(format: "%02d:%02d", Int(hours), Int(minutes)%60)
     }
     
     //Returns the value as a string with the given number of decimals
@@ -73,8 +73,8 @@ public class Utilities {
 
 }
 
-public extension IntegerLiteralType {
+public extension BinaryInteger {
     func toTimeString() -> String {
-        return Utilities.minutesToTimeString(Int64(self))
+        return Utilities.timeStringWith(minutes: self)
     }
 }

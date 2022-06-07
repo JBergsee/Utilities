@@ -12,7 +12,7 @@ public extension Encodable {
     func asDictionary() -> [String: Any] {
         do {
             let data = try JSONEncoder().encode(self)
-            guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+            guard let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                 throw NSError()
             }
             return dictionary
@@ -26,12 +26,16 @@ public extension Encodable {
 //https://stackoverflow.com/questions/46327302/init-an-object-conforming-to-codable-with-a-dictionary-array/46327303#46327303
 public extension Decodable {
     init(fromJSONDict: Any) {
+        guard JSONSerialization.isValidJSONObject(fromJSONDict) else {
+            Log.fault(message: "Invalid JSON-object \(fromJSONDict)", in: .model)
+            fatalError()
+        }
         do {
-            let data = try JSONSerialization.data(withJSONObject: fromJSONDict, options: .prettyPrinted)
+            let data = try JSONSerialization.data(withJSONObject: fromJSONDict, options: [.prettyPrinted])
             let decoder = JSONDecoder()
             self = try decoder.decode(Self.self, from: data)
         } catch {
-            Log.error(error, message: "Unable to initialize \(Self.self) from dictionary", in: .functionality)
+            Log.error(error, message: "Unable to initialize \(Self.self) from dictionary: \n\(fromJSONDict)", in: .functionality)
             fatalError()
         }
     }

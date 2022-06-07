@@ -52,7 +52,7 @@ public extension UIViewController {
         // Find best view controller
         
         guard let rootVC = UIApplication.shared.delegate?.window??.rootViewController else {
-            Log.warning(message: "Could not get root ViewController.", in: .functionality)
+            Log.fault(message: "Could not get root ViewController.", in: .functionality)
             return UIViewController()
         }
         return findTopViewControllerFor(rootVC)
