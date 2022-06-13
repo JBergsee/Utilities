@@ -14,17 +14,27 @@ public extension Double
     func toDegrees() -> Double { return self * 180 / Double.pi }
 }
 
-@objc
+
+//MARK: - directories used
 public extension FileManager {
-    static var documentsDirectory: URL {
-        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        return path
+    @objc static var documentsDirectory: URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let dir = paths[0]
+        //Create it if doesn't exist, fail (graciously) if it does.
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
+        return dir
     }
-    static var applicationSupportDirectory: URL {
+    
+    @objc static var applicationSupportDirectory: URL {
         let paths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-        return paths[0]
+        let dir = paths[0]
+        //Create it if doesn't exist, fail (graciously) if it does.
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
+        return dir
     }
 }
+
+
 
 //Can be used to get paper Log Nr PPS_Flight summary string, or the NOTAM D) item (temporary times)
 public extension String {

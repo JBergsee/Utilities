@@ -62,7 +62,7 @@ public struct LogCategory:RawRepresentable {
         //Start Firebase framework
         FirebaseApp.configure()
         
-        let device = "\(UIDevice.current.name) (iOS \(UIDevice.current.systemVersion)"
+        let device = "\(UIDevice.current.name) (iOS \(UIDevice.current.systemVersion)) [\(company ?? "no company")]"
         
         //Set properties for analytics
         Analytics.setUserID(device)
