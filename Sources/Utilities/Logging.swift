@@ -208,7 +208,9 @@ extension Log {
                                                              composedMessage: $0.composedMessage) })
         
         // Convert object to JSON
-        let jsonData = try? JSONEncoder().encode(sendLogs)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let jsonData = try? encoder.encode(sendLogs)
         return jsonData
     }
     
@@ -235,8 +237,9 @@ extension Log {
                                                              composedMessage: $0.composedMessage) })
         
         // Convert object to JSON
-        let jsonData = try? JSONEncoder().encode(sendLogs)
-        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let jsonData = try? encoder.encode(sendLogs)        
         
         //@TODO: Upload to firebase
         // Send to my API

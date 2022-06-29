@@ -81,8 +81,8 @@ public extension Notification.Name {
      
      And to "catch" it you just do:
      Notification.Name.NOTIFICATIONSOMETHINGHAPPENED.onPost { [weak self] note in
-     guard let `self` = self else { return }
-     // Do your stuff here
+         guard let `self` = self else { return }
+         // Do your stuff here
      }
      
      */

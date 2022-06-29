@@ -92,4 +92,7 @@ final class UtilitiesTests: XCTestCase {
         
     }
     
+    func testEncodeDecodeDictionary() {
+        
+    }
 }

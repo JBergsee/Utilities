@@ -7,19 +7,40 @@
 
 import Foundation
 
+
+
 //https://stackoverflow.com/questions/45209743/how-can-i-use-swift-s-codable-to-encode-into-a-dictionary/46329055#46329055
 public extension Encodable {
+    
     func asDictionary() -> [String: Any] {
         do {
-            let data = try JSONEncoder().encode(self)
-            guard let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+            //Encode to data and then JSON-serialize to dictionary
+            guard let data = self.asJSONData(),
+                  !data.isEmpty,
+                  let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                 throw NSError()
             }
             return dictionary
         } catch {
-            Log.error(error, message: "Unable to create dictionary from Encodable", in: .functionality)
+            Log.error(error, message: "Unable to create dictionary from \(self)", in: .functionality)
         }
         return [String: Any]()
+    }
+    
+    func asJSONData() -> Data? {
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(self)
+            return data
+        } catch {
+            Log.error(error, message: "Unable to data-serialize \(self)", in: .model)
+        }
+        return nil
+    }
+    
+    func asJSONString() -> String? {
+        return String(data: self.asJSONData() ?? Data(), encoding: .ascii)
     }
 }
 
