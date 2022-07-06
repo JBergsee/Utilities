@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 open class MultiPageViewController : UIViewController {
-      
+    
     
     @IBOutlet var scrollView:UIScrollView!
     @IBOutlet var segmentedControl:UISegmentedControl!
@@ -73,7 +73,7 @@ open class MultiPageViewController : UIViewController {
         super.viewDidDisappear(animated)
     }
     
-
+    
     //MARK: - Handling rotation and resizing
     
     /*
@@ -101,7 +101,7 @@ open class MultiPageViewController : UIViewController {
         self.goTo(currentPage) //Will also load pages on either side
         
     }
-
+    
     open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
         super.viewWillTransition(to: size, with: coordinator)
@@ -132,13 +132,13 @@ open class MultiPageViewController : UIViewController {
         
         //Get the viewController
         let controller = viewControllerForPage(page)
-                    
-            //And add as child controller
+        
+        //And add as child controller
         self.addChild(controller)
-            
-            //Tell it will appear
-            //Explicit call since we're already in the superview's viewWillAppear
-            controller.viewWillAppear(true)
+        
+        //Tell it will appear
+        //Explicit call since we're already in the superview's viewWillAppear
+        controller.viewWillAppear(true)
         
         // add the controller's view to the scroll view
         if (controller.view.superview == nil)
@@ -221,7 +221,7 @@ open class MultiPageViewController : UIViewController {
         
     }
     
-
+    
     
     //MARK: - Delegate, or to be overridden by subclasses.
     

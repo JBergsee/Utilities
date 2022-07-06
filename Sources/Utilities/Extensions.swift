@@ -163,3 +163,17 @@ public extension Date {
       return formatter.string(from: self)
    }
 }
+
+extension UIView {
+    
+    func rotateAnimated(_ toValue: CGFloat, duration: CFTimeInterval = 0.2) {
+        let animation = CABasicAnimation(keyPath: "transform.rotation")
+        
+        animation.toValue = toValue
+        animation.duration = duration == 0 ? 0.0001 : duration //a duration of zero will set the default value of 0.25, while our intent is to make it quick
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        
+        self.layer.add(animation, forKey: nil)
+    }
+}

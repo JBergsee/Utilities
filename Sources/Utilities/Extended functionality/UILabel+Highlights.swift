@@ -14,12 +14,23 @@ import UIKit
 @objc
 public extension UILabel {
     
+    func resetAttributes() {
+        let plainText = text
+        attributedText = nil
+        text = nil
+        text = plainText
+    }
+    
     func makeBold(text:String?) {
         self.highlightText(text, font: nil, color: nil, bold: true)
     }
     
     func highlight(text:String?) {
         self.highlightText(text, font: nil, color: .red, bold: true)
+    }
+    func boldRed(text:String?) {
+        highlight(text: text)
+        makeBold(text: text)
     }
     
     func stabiloBoss(text:String?) {
@@ -41,7 +52,10 @@ public extension UILabel {
     }
         
     func highlightText(_ text: String?, font: UIFont? = nil, color: UIColor? = nil, bold:Bool = true) {
-        guard let labelText = self.attributedText?.mutableCopy() as? NSMutableAttributedString, let target = text, !target.isEmpty else {
+        
+        guard let labelText = self.attributedText?.mutableCopy() as? NSMutableAttributedString,
+              let target = text,
+              !target.isEmpty else {
             return
         }
 

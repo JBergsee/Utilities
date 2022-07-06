@@ -14,43 +14,69 @@ public class PopoverPicker : NSObject {
     
     private var contentController = UITableViewController(style: .plain)
     private var textField:UITextField
-    private var model:Array<String>
+    private var model:[String]
     
     private typealias popoverCheckedContinuation = CheckedContinuation<String?, Never>
     
     private unowned var viewController: UIViewController
     private var continuation: popoverCheckedContinuation?
     
-    public required init(tableViewController:UITableViewController? = nil, presentingViewController:UIViewController, textField:UITextField, model:Array<String>) {
+    public init(tableViewController:UITableViewController, presentingViewController:UIViewController, textField:UITextField) {
+        self.viewController = presentingViewController
+        self.textField = textField
+        self.model = [] //Not used in this case
+        //Use the provided tableviewcontroller,
+        self.contentController = tableViewController
+        
+        super.init()
+        
+        //Hook up self as delegate for the table view,
+        // or the caller will await forever
+        contentController.tableView.delegate = self
+        
+    }
+    
+    public init(presentingViewController:UIViewController, textField:UITextField, model:[String]) {
         
         self.viewController = presentingViewController
         self.textField = textField
         self.model = model
         
         super.init()
-        
-        //Use the provided tableviewcontroller,
-        if let tvc = tableViewController {
-            self.contentController = tvc
-        } else {
-            //Or make our own
+    
+            //Make our own TableViewController
             /** Table view controllers can’t be guaranteed that its cell prototypes are loaded right after initialization time, until it appears on screen or is loaded from the storyboard.
              SO instead of programmatically creating it, it has to be loaded from storyboard. */
             let storyboard = UIStoryboard(name: "Views", bundle: .module)
             self.contentController = storyboard.instantiateViewController(withIdentifier: "PopoverTableView") as! UITableViewController
             contentController.tableView.dataSource = self
-        }
         
-        //Hook up self as delegate for the table view in both cases,
+        
+        //Hook up self as delegate for the table view,
         // or the caller will await forever
         contentController.tableView.delegate = self
     }
     
-    public func pickString() async -> String? {
+    public func pickString(presentationStyle: UIModalPresentationStyle = .popover) async -> String? {
         return await withCheckedContinuation({ (continuation: popoverCheckedContinuation) in
             self.continuation = continuation
-            showPopover()
+            switch presentationStyle {
+            case .fullScreen, .pageSheet, .formSheet, .currentContext, .overFullScreen, .overCurrentContext, .blurOverFullScreen, .custom:
+                showModal(presentationStyle)
+                break
+            case .popover, .none, .automatic:
+                showPopover()
+                break
+            @unknown default:
+                showPopover()
+            }
         })
+    }
+    
+    private func showModal(_ style: UIModalPresentationStyle) {
+        // Present the table view controller using the provided style.
+        contentController.modalPresentationStyle = style
+        viewController.present(contentController, animated: true, completion: nil)
     }
     
     private func showPopover() {
