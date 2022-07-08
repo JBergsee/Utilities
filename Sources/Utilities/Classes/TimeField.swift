@@ -290,7 +290,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
     
     public override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        guard resignFirstResponder() else { return false }
+        guard textField.resignFirstResponder() else { return false }
         
         if let tf = (textField as? ChainedField) {
             tf.jumpToNext()

@@ -355,7 +355,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     public override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         //This in turn calls textFieldShouldEndEditing.
-        guard resignFirstResponder() else { return false }
+        guard textField.resignFirstResponder() else { return false }
         
         if let tf = (textField as? ChainedField) {
             tf.jumpToNext()

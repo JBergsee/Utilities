@@ -164,7 +164,7 @@ public extension Date {
    }
 }
 
-extension UIView {
+public extension UIView {
     
     func rotateAnimated(_ toValue: CGFloat, duration: CFTimeInterval = 0.2) {
         let animation = CABasicAnimation(keyPath: "transform.rotation")
@@ -175,5 +175,13 @@ extension UIView {
         animation.fillMode = CAMediaTimingFillMode.forwards
         
         self.layer.add(animation, forKey: nil)
+    }
+}
+
+public extension Bundle {
+    // Name of the app - title under the icon.
+    var displayName: String? {
+            return object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
+                object(forInfoDictionaryKey: "CFBundleName") as? String
     }
 }
