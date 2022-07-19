@@ -15,12 +15,26 @@ import UIKit
      * this method is called when the textfield ends editing (either by pressing return or loosing focus).
      */
     
-    @objc(presentRangeAlertFor:message:changeAction:cancelAction:)
     func presentAlertFor(_ rangeField:RangeField, message:String, changeAction:UIAlertAction, cancelAction:UIAlertAction)
     
     @objc optional func rangeFieldDidBeginEditing(_ rangeField:RangeField)
     @objc optional func rangeField(_ rangeField:RangeField, didReturn value:NSNumber?)
 }
+
+public extension RangeFieldDelegate where Self: UIViewController {
+    
+    //Default implementation
+    func presentAlertFor(_ rangeField: RangeField, message: String, changeAction: UIAlertAction, cancelAction: UIAlertAction) {
+        //May be called several times...
+        guard self.presentedViewController == nil else { return }
+        
+        //Show Alert, only include changeaction
+        showAlert(title: "Value out of range",
+                  message: message,
+                  actions: [changeAction])
+    }
+}
+
 
 public enum RangeFieldType {
     case floatingPoint, integer, character, time

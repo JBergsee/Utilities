@@ -13,10 +13,23 @@ import UIKit
     func presentAlertFor(_ timeField:TimeField, message:String, changeAction:UIAlertAction, cancelAction:UIAlertAction)
     
     @objc optional func timeFieldDidBeginEditing(_ timeField:TimeField)
+    //Time in minutes or -1 if not set or unparseable
     @objc optional func timeField(_ timeField:TimeField, didReturnMinutes minutes:Int)
 }
 
-
+public extension TimeFieldDelegate where Self: UIViewController {
+    
+    //Default implementation
+    func presentAlertFor(_ timeField: TimeField, message: String, changeAction: UIAlertAction, cancelAction: UIAlertAction) {
+        //May be called several times...
+        guard self.presentedViewController == nil else { return }
+        
+        //Show Alert
+        showAlert(title: "Erroneous time",
+                  message: message,
+                  actions: [changeAction, cancelAction])
+    }
+}
 
 public class TimeField: ChainedField, UITextFieldDelegate {
     

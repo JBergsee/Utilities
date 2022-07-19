@@ -12,6 +12,7 @@ public protocol StoryboardInstantiable {
     associatedtype VC
     
     static func initFromStoryboard() -> VC
+    static func initFromStoryboard(identifier: String) -> VC
     
     static var storyboard:String {get}
     static var bundle:Bundle {get}
@@ -23,5 +24,10 @@ public extension StoryboardInstantiable {
     static func initFromStoryboard() -> VC {
         let storyboard = UIStoryboard(name: Self.storyboard, bundle: Self.bundle)
         return storyboard.instantiateViewController(withIdentifier: Self.identifier) as! VC
+    }
+    
+    static func initFromStoryboard(identifier: String) -> VC {
+        let storyboard = UIStoryboard(name: Self.storyboard, bundle: Self.bundle)
+        return storyboard.instantiateViewController(withIdentifier: identifier) as! VC
     }
 }

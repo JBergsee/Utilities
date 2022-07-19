@@ -25,10 +25,9 @@ public class Utilities {
     }
     
     //Returns the value as a string with the given number of decimals
-    static public func stringValueIfSet(_ value:Double, withDecimals:Int) -> String {
+    static public func stringValueIfSet<T : BinaryFloatingPoint>(_ value:T, withDecimals:Int) -> String {
         guard value >= 0 else {return ""}
-        
-        return String(format: "%.\(withDecimals)f", value)
+        return String(format: "%.\(withDecimals)f", Double(value))
     }
     
     @objc
@@ -76,5 +75,11 @@ public class Utilities {
 public extension BinaryInteger {
     func toTimeString() -> String {
         return Utilities.timeStringWith(minutes: self)
+    }
+}
+
+public extension BinaryFloatingPoint {
+    func toValueString(decimals: Int) -> String {
+        return Utilities.stringValueIfSet(self, withDecimals: decimals)
     }
 }

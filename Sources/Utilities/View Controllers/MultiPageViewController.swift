@@ -18,6 +18,12 @@ open class MultiPageViewController : UIViewController {
     // To be used when scrolls originate from the UIPageControl
     private var pageControlUsed:Bool = false
     
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        //Required for multiline text in segmented control
+        UILabel.appearance(whenContainedInInstancesOf: [UISegmentedControl.self]).numberOfLines = 0
+    }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -239,7 +245,7 @@ open class MultiPageViewController : UIViewController {
 }
 
 
-extension MultiPageViewController:UIScrollViewDelegate {
+extension MultiPageViewController: UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ sender:UIScrollView) {
         // We don't want a "feedback loop" between the UIPageControl and the scroll delegate in
