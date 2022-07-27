@@ -11,9 +11,13 @@
 
 import UIKit
 import OSLog
-import FirebaseCore
-import FirebaseCrashlytics
-import FirebaseAnalytics
+
+
+@objc public protocol FirebaseWrapping {
+    func crashlyticsLog(_ message:String)
+    func crashlyticsError(_ error:Error)
+    func analyticsLog(_ event:String, parameters: [String:Any]?)
+}
 
 
 
@@ -57,22 +61,7 @@ public struct LogCategory:RawRepresentable {
     
     private static var subsystem = Bundle.main.bundleIdentifier!
     
-    @objc public class func initFirebase(company:String? = nil) {
-        
-        //Start Firebase framework
-        FirebaseApp.configure()
-        
-        let device = "\(UIDevice.current.name) (iOS \(UIDevice.current.systemVersion)) [\(company ?? "no company")]"
-        
-        //Set properties for analytics
-        Analytics.setUserID(device)
-        if let company = company {
-            Analytics.setUserProperty(company, forName: "Company")
-        }
-        //Trace id for Crashlytics
-        Crashlytics.crashlytics().setCustomValue(device, forKey: "device_id")
-    }
-    
+    @objc public static var firebase: FirebaseWrapping?
     
     @objc public class func log(message: String, level: logLevel, category: String?) {
         let cat = LogCategory(rawValue: category ?? "Category not set") ?? .unknown
@@ -106,13 +95,13 @@ public struct LogCategory:RawRepresentable {
             //Internal logging (message)
             Logger(subsystem: subsystem, category: category.rawValue).error("Error: \(message, privacy: .public)")
             //Notify crashlytics (log message)
-            Crashlytics.crashlytics().log(message)
+            firebase?.crashlyticsLog(message)
             
         }
         //Internal logging (error)
         Logger(subsystem: subsystem, category: category.rawValue).error("Description: \(error.localizedDescription)")
         //Notify crashlytics (record as error)
-        Crashlytics.crashlytics().record(error: error)
+        firebase?.crashlyticsError(error)
     }
     
     //Log faults (Errors in code, but where no error object is provided)
@@ -120,7 +109,7 @@ public struct LogCategory:RawRepresentable {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).fault("Fault: \(message, privacy: .public)")
         //Create an error and Notify crashlytics
-        Crashlytics.crashlytics().record(error: Log.createError(message))
+        firebase?.crashlyticsError(Log.createError(message))
     }
     
     @available(*, deprecated, message: "Use Log.fault() instead ...")
@@ -128,16 +117,13 @@ public struct LogCategory:RawRepresentable {
         Log.fault(message: message, in: category)
     }
     
-    
-    
-    
     //Log code passes and events that needs attention, but are not necessarily serious
     public class func notify(message:String, in category:LogCategory) {
         Logger(subsystem: subsystem, category: category.rawValue).fault("Attention: \(message, privacy: .public)")
         //Notify crashlytics
-        Crashlytics.crashlytics().log("Attention: \(message)")
+        firebase?.crashlyticsLog("Attention: \(message)")
         //Notify Analytics as well
-        Analytics.logEvent("Attention", parameters: [
+        firebase?.analyticsLog("Attention", parameters: [
             "message": message,
             "category": category.rawValue,
         ])
@@ -149,7 +135,7 @@ public struct LogCategory:RawRepresentable {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).notice("\(message, privacy: .public)")
         //Notify crashlytics
-        Crashlytics.crashlytics().log(message)
+        firebase?.crashlyticsLog(message)
     }
     
     //Log debugging
