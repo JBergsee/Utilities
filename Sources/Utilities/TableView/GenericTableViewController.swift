@@ -43,15 +43,16 @@ extension GenericTableViewController: CollapseControllingDelegate {
     }
 }
 
-open class GenericTableViewController: UITableViewController, GenericTableViewControlling {
+open class GenericTableViewController: UITableViewController {
     
-    public typealias CellModel = String
-    public typealias ModelProvider = StringArrayModelProvider
     
-    //Protocol requirement but as stored variable cannot be declared in extension.
-    public var modelProvider: StringArrayModelProvider?
-    public var delegate: GenericTableViewDelegate?
+    //Basis for the whole controller
+    open var modelProvider: ModelProviding?
+    open var delegate: GenericTableViewDelegate?
             
+    //For FRC Delegate
+    var _changeIsUserDriven: Bool = false
+    
     //For searching
     //The searchcontroller
     private var searchController: UISearchController?
@@ -105,6 +106,11 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     }
     
     //MARK: Headers and footers
+    open override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return modelProvider?.headerTitle(section)
+    }
+    
+    
     open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.headerIdentifier ?? "header")
         //Collapsible?
@@ -209,7 +215,7 @@ public extension GenericTableViewController {
         //Set grayish so placeholder text is visible
         searchBar.searchTextField.backgroundColor = .secondarySystemBackground
         
-        searchBar.placeholder = delegate?.searchPlaceHolderString ?? "Search..."
+        searchBar.placeholder = delegate?.searchPlaceHolder ?? "Search..."
         
         //Remove any suggestions
         let item = searchBar.inputAssistantItem
@@ -280,7 +286,7 @@ extension GenericTableViewController: UISearchResultsUpdating {
         modelProvider!.filterModel(searchText: searchText)
         
         //update view
-        tableView.reloadData()
+        tableView.reloadData() //Not required for FRC...?
     }
 }
 

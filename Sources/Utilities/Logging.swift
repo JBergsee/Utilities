@@ -64,13 +64,18 @@ public struct LogCategory:RawRepresentable {
     @objc public static var firebase: FirebaseWrapping?
     
     @objc public class func log(message: String, level: logLevel, category: String?) {
+        Log.log(error: nil, message: message, level: level, category: category)
+    }
+
+        
+    @objc public class func log(error:NSError? = nil, message: String, level: logLevel, category: String?) {
         let cat = LogCategory(rawValue: category ?? "Category not set") ?? .unknown
         
         switch level {
         case .error:
             let localizedDescription: String = NSLocalizedString("Error in ObjC code", comment: "Refer to Objective C code")
-            let error = Log.createError(localizedDescription)
-            Log.error(error, message: message, in: cat)
+            let fakeError = Log.createError(localizedDescription)
+            Log.error(error ?? fakeError, message: message, in: cat)
             break
         case .fault:
             Log.fault(message: message, in: cat)

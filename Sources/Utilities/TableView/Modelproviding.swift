@@ -8,8 +8,36 @@
 import Foundation
 import CoreData
 
+
+//Provides the model for the UITableView
+public protocol ModelProviding {
+    
+    func uuid(for section:Int) -> String
+    
+    func numberOfSections() -> Int
+    func rowsIn(section: Int) -> Int
+    
+    //TODO: associated types and generics instead of Any
+    func modelFor(row: Int, section: Int) -> Any
+    func modelForHeader(section: Int) -> Any
+    func modelForFooter(section: Int) -> Any
+    
+    func headerTitle(_ section: Int) -> String?
+    
+    func canEdit(row: Int, section: Int) -> Bool
+    mutating func delete(row: Int, section: Int)
+    mutating func insertAt(row: Int, section: Int)
+    mutating func move(from:IndexPath, to:IndexPath)
+    
+    mutating func filterModel(searchText:String?)
+}
+
+
 //Provides the model when the Model is an Array
 public protocol ArrayModelProviding: ModelProviding {
+
+    associatedtype CellModel: Equatable
+    
     var modelArray:[[CellModel]] { get set }
     var filteredArray:[[CellModel]] { get set }
     func searchPredicate(for searchText:String) -> NSPredicate
@@ -26,7 +54,7 @@ public extension ArrayModelProviding {
         return filteredArray[section].count
     }
     
-    func modelFor(row: Int, section: Int) -> CellModel {
+    func modelFor(row: Int, section: Int) -> Any {
         return filteredArray[section][row]
     }
     
@@ -79,61 +107,3 @@ public extension ArrayModelProviding {
 }
 
 
-//Provides the model when coming from a Fetched Results Controller and underlying core data.
-//public protocol FRCModelProviding: ModelProviding, NSFetchedResultsControllerDelegate {
-//    var fetchedResultsController: NSFetchedResultsController { get set }<NSFetchRequestResult>
-//    var moc: NSManagedObjectContext { get set }
-//    
-//    //Fetch parameters
-//    func fetchRequestWith(predicate: NSPredicate) -> NSFetchRequest<NSFetchRequestResult>
-//    func fetchPredicate() -> NSPredicate
-//    func searchPredicateFor(searchText: String) -> NSPredicate
-//    //Must be same as first sort descriptor key path
-//    //(Try String if KeyPath does not work)
-//    func sectionNameKeyPath() -> KeyPath<Any, Any>
-//    func initializeFetchedResultsController()
-//    
-//    func performNewFetch()
-//    
-//}
-//
-//public extension FRCModelProviding {
-//    
-//    func initializeFetchedResultsController() {
-//        
-//        
-//        let request = fetchRequestWith(predicate:  fetchPredicate())
-//        
-//        fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-//                                                              managedObjectContext: moc,
-//                                                              sectionNameKeyPath: sectionNameKeyPath(), cacheName: nil)
-//        fetchedResultsController.delegate = self
-//        
-//        //Perform fetch
-//        performNewFetch()
-//    }
-//    
-//    func performNewFetch() {
-//        
-//        do {
-//            try fetchedResultsController.performFetch()
-//        } catch {
-//            Log.error(error, message: "Failed to initialize FetchedResultsController. Crashing to avoid further data corruption.", in: .functionality)
-//            //Intentionally crash
-//            abort()
-//        }
-//    }
-//    
-//    func numberOfSections() -> Int {
-//        return 1 //fetchedResultsController.sections?.count
-//    }
-//    
-//    func rowsIn(section: Int) -> Int {
-//        return fetchedResultsController.sections[section].count
-//    }
-//    
-//    func modelFor(row: Int, section: Int) -> CellModel {
-//        return fetchedResultsController.sections[section][row]
-//    }
-//    
-//}

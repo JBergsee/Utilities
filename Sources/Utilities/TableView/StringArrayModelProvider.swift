@@ -9,7 +9,6 @@ import Foundation
 
 open class StringArrayModelProvider: ArrayModelProviding {
     
-    
     public typealias CellModel = String
         
     public var modelArray: [[CellModel]]
@@ -41,6 +40,10 @@ open class StringArrayModelProvider: ArrayModelProviding {
         return ["Section \(section)", rowsIn(section: section)]
     }
     
+    open func headerTitle(_ section: Int) -> String? {
+        return "Section \(section)"
+    }
+    
     open func modelForFooter(section: Int) -> Any {
         return "Footer \(section)"
     }
@@ -50,27 +53,3 @@ open class StringArrayModelProvider: ArrayModelProviding {
     }
     
 }
-
-/*   TILL FRCMODELPROVIDER
- //If we have nothing we're not searching...
- if ([searchText isEqualToString:@""]) {
- 
- //Reset the fetch request
- self.fetchedResultsController.fetchRequest.predicate = [self fetchPredicate];
- 
- } else {
- 
- NSLog(@"Searching for '%@'", searchText);
- 
- //Make a predicate for the search
- NSPredicate * searchPredicate = [self searchPredicateForString:searchText];
- NSArray * predicates = [NSArray arrayWithObjects:searchPredicate, [self fetchPredicate], nil];
- NSCompoundPredicate * predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
- self.fetchedResultsController.fetchRequest.predicate = predicate;
- 
- }
- 
- //Perform the actual search (or reset if searchText is nil or empty string):
- [self performNewFetch];
- 
- */

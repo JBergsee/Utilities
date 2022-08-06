@@ -8,12 +8,24 @@
 import Foundation
 import UIKit
 
+
+public protocol PageProviding {
+    func viewControllerForPage(_ pageNumber: Int) -> UIViewController
+    func numberOfPages() -> Int
+    func titleForPage(_ nbr: Int) -> String
+}
+
+
+
 open class MultiPageViewController : UIViewController {
-    
     
     @IBOutlet var scrollView:UIScrollView!
     @IBOutlet var segmentedControl:UISegmentedControl!
     @IBOutlet var pageControl:UIPageControl?
+    
+    //PageProvider
+    public var pageProvider: PageProviding?
+    
     
     // To be used when scrolls originate from the UIPageControl
     private var pageControlUsed:Bool = false
@@ -25,11 +37,16 @@ open class MultiPageViewController : UIViewController {
         UILabel.appearance(whenContainedInInstancesOf: [UISegmentedControl.self]).numberOfLines = 0
     }
     
+    ///pageprovider must be set before calling super from subclasses
     open override func viewDidLoad() {
         super.viewDidLoad()
+        setupViewsAndControls()
+    }
+    
+    //pageProvider must be set before calling this.
+    private func setupViewsAndControls() {
         
-        //dataSource outlet must be set in Nib, for example the files owner or the view controller containing the scroll view
-        let numberOfPages = numberOfPages()
+        let numberOfPages = pageProvider?.numberOfPages() ?? 1
         
         // view controllers are created lazily
         
@@ -52,7 +69,7 @@ open class MultiPageViewController : UIViewController {
             self.segmentedControl?.removeAllSegments() //In case they're set in IB
             
             for segment in 0...numberOfPages-1 {
-                let segmentTitle = titleForPage(segment)
+                let segmentTitle = pageProvider?.titleForPage(segment)
                 self.segmentedControl?.insertSegment(withTitle: segmentTitle, at: segment, animated: false)
             }
             
@@ -92,7 +109,7 @@ open class MultiPageViewController : UIViewController {
         //Reset scroll view contentsize
         // A page is the width of the scroll view
         
-        let numberOfPages = numberOfPages()
+        let numberOfPages = pageProvider!.numberOfPages()
         
         self.scrollView.contentSize = CGSize(width: newSize.width * CGFloat(numberOfPages), height: newSize.height)
         
@@ -131,13 +148,13 @@ open class MultiPageViewController : UIViewController {
     
     func loadScrollViewWithPageNbr(_ page:Int) {
         
-        let numberOfPages = numberOfPages()
+        let numberOfPages = pageProvider!.numberOfPages()
         
         //check for valid page number
         guard page >= 0, page < numberOfPages else { return }
         
         //Get the viewController
-        let controller = viewControllerForPage(page)
+        guard let controller = pageProvider?.viewControllerForPage(page) else { return }
         
         //And add as child controller
         self.addChild(controller)
@@ -168,7 +185,7 @@ open class MultiPageViewController : UIViewController {
     
     func goTo(_ page: Int) {
         
-        let numberOfPages = numberOfPages()
+        let numberOfPages = pageProvider!.numberOfPages()
         
         //check for valid page number
         guard page >= 0, page < numberOfPages else { return }
@@ -225,22 +242,6 @@ open class MultiPageViewController : UIViewController {
         let page = self.pageControl?.currentPage ?? 0
         self.goTo(page-1)
         
-    }
-    
-    
-    
-    //MARK: - Delegate, or to be overridden by subclasses.
-    
-    open func viewControllerForPage(_ pageNumber: Int) -> UIViewController {
-        fatalError("\(self) must override viewControllerForPage")
-    }
-    
-    open func numberOfPages() -> Int {
-        fatalError("\(self) must override numberOfPages")
-    }
-    
-    open func titleForPage(_ nbr: Int) -> String {
-        fatalError("\(self) must override titleForPage")
     }
 }
 
