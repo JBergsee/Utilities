@@ -18,12 +18,21 @@ public class TimePicker: UIDatePicker {
     public var minutes: Int {
         get {
             let timeOffset = date.timeIntervalSince1970
-            let minutes = timeOffset/60
+            //if negative, add 24 hours
+            let minutes = timeOffset >= 0 ? timeOffset/60 : timeOffset/60 + 24*60
             return Int(minutes)
         }
         set {
-            date = Date(timeIntervalSince1970: Double(newValue * 60))
+            valueIsPicked = (newValue >= 0)
+            //Treat negative values as zero
+            let minutes = newValue > -1 ? newValue * 60 : 0
+            date = Date(timeIntervalSince1970: Double(minutes))
         }
+    }
+    private var valueIsPicked: Bool = false
+    
+    public var isSet: Bool {
+        valueIsPicked
     }
     
     public override func awakeFromNib()
@@ -51,6 +60,7 @@ public class TimePicker: UIDatePicker {
     }
     
     @objc func timeChanged() {
+        valueIsPicked = true
         //Call delegate with minutes
         timeDelegate?.timePicker(self, didReturnMinutes: minutes)
     }
