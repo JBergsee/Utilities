@@ -101,7 +101,9 @@ public extension ArrayModelProviding {
         // Filter the arrays using NSPredicate
         let predicate = searchPredicate(for: searchText)
         modelArray.forEach { array in
-            filteredArray.append(array.filter() { predicate.evaluate(with: $0) })
+            filteredArray.append(array.filter() {
+                predicate.evaluate(with: $0)
+            })
         }
     }
 }
