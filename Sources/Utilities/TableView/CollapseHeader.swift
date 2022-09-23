@@ -26,11 +26,6 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapCollapse(_:)))
         collapseButton?.addGestureRecognizer(tapRecognizer)
         collapseButton?.isUserInteractionEnabled = true //false by default for UIImageView!
-        
-        //Correct background color
-        var bgConfig = UIBackgroundConfiguration.listPlainHeaderFooter()
-        bgConfig.backgroundColor = .systemGroupedBackground
-        backgroundConfiguration = bgConfig
     }
     
     open func configureWith(model: Any) {

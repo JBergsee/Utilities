@@ -13,7 +13,7 @@ import UIKit
     func presentAlertFor(_ timeField:TimeField, message:String, changeAction:UIAlertAction, cancelAction:UIAlertAction)
     
     @objc optional func timeFieldDidBeginEditing(_ timeField:TimeField)
-    //Time in minutes or -1 if not set or unparseable
+    ///Time in minutes or -1 if not set or unparseable
     @objc optional func timeField(_ timeField:TimeField, didReturnMinutes minutes:Int)
 }
 
