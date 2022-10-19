@@ -25,6 +25,7 @@ open class ImagePicker: NSObject {
     private weak var delegate: ImagePickerDelegate?
     
     public init(presentationController: UIViewController, delegate: ImagePickerDelegate?) {
+        
         self.pickerController = UIImagePickerController()
         
         super.init()
@@ -52,14 +53,17 @@ open class ImagePicker: NSObject {
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
+        //Cameraaction
         if let action = self.action(for: .camera, title: "Take photo") {
             alertController.addAction(action)
         }
+        
         //Photolibrary and camera roll looks the same, so use just library
         if let action = self.action(for: .photoLibrary, title: "Photo library") {
             alertController.addAction(action)
         }
         
+        //Cancelaction
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         if UIDevice.current.userInterfaceIdiom == .pad {
