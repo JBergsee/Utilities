@@ -9,9 +9,6 @@ import UIKit
 import AVFoundation //For authorization request
 
 
-
-import UIKit
-
 public protocol ImagePickerDelegate: AnyObject {
     func didSelect(image: UIImage?)
     func didFail(error:PermissionError)
@@ -34,7 +31,7 @@ open class ImagePicker: NSObject {
         self.delegate = delegate
         
         self.pickerController.delegate = self
-        self.pickerController.allowsEditing = true
+        self.pickerController.allowsEditing = false //true will crop to a square by default
         self.pickerController.mediaTypes = ["public.image"]
     }
     
@@ -100,10 +97,16 @@ extension ImagePicker: UIImagePickerControllerDelegate {
     
     public func imagePickerController(_ picker: UIImagePickerController,
                                       didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        guard let image = info[.editedImage] as? UIImage else {
-            return self.pickerController(picker, didSelect: nil)
+        if let image = info[.editedImage] as? UIImage {
+            //Edited image, only available if allowsEditing = true
+            self.pickerController(picker, didSelect: image)
+        } else if let image = info[.originalImage] as? UIImage {
+            //use original image
+            self.pickerController(picker, didSelect: image)
+        } else {
+            //No image
+            self.pickerController(picker, didSelect: nil)
         }
-        self.pickerController(picker, didSelect: image)
     }
 }
 
