@@ -74,8 +74,8 @@ public struct LogCategory:RawRepresentable {
         switch level {
         case .error:
             let localizedDescription: String = NSLocalizedString("Error in ObjC code", comment: "Refer to Objective C code")
-            let fakeError = Log.createError(localizedDescription)
-            Log.error(error ?? fakeError, message: message, in: cat)
+            let objCError = Log.createError(localizedDescription)
+            Log.error(error ?? objCError, message: message, in: cat)
             break
         case .fault:
             Log.fault(message: message, in: cat)
@@ -114,13 +114,9 @@ public struct LogCategory:RawRepresentable {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).fault("Fault: \(message, privacy: .public)")
         //Create an error and Notify crashlytics
-        firebase?.crashlyticsError(Log.createError(message))
+        firebase?.crashlyticsError(Log.createError(message, domain: category.rawValue))
     }
     
-    @available(*, deprecated, message: "Use Log.fault() instead ...")
-    public class func warning(message:String, in category:LogCategory) {
-        Log.fault(message: message, in: category)
-    }
     
     //Log code passes and events that needs attention, but are not necessarily serious
     public class func notify(message:String, in category:LogCategory) {
