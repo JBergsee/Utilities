@@ -26,7 +26,7 @@ public protocol FRCModelProviding: ModelProviding {
     func headerTitleFor(sectionName: String?) -> String?
     
     ///Make sure to call in ViewController setup code
-    mutating func initializeFetchedResultsController()
+    func initializeFetchedResultsController()
     
     ///Standard implementation provided
     func performNewFetch()
@@ -102,7 +102,7 @@ public extension FRCModelProviding {
 //Setting up fetches
 public extension FRCModelProviding {
     
-    mutating func initializeFetchedResultsController() {
+    func initializeFetchedResultsController() {
         
         let request = fetchRequestWith(predicate:  fetchPredicate())
         

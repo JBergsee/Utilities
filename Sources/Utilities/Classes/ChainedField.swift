@@ -14,7 +14,7 @@ import UIKit
 @objc
 open class ChainedField: UITextField {
 
-    @IBOutlet public var nextField:UIResponder?
+    @IBOutlet public weak var nextField: UIResponder?
         
     /*
     In IB, change your UITextFields to use the ChainedField class.
@@ -30,10 +30,10 @@ open class ChainedField: UITextField {
 
         //automatically assign the returnKeyType of the ChainedField to a UIReturnKeyNext if there is a nextField assigned
         //one less thing to manually configure in IB.
-        if (self.nextField != nil) {
-            self.returnKeyType = .next
-        } else if (self.returnKeyType == .default) {
-            self.returnKeyType = .done
+        if (nextField != nil) {
+            returnKeyType = .next
+        } else if (returnKeyType == .default) {
+            returnKeyType = .done
         } //Otherwise set in IB
     }
 
@@ -44,8 +44,7 @@ open class ChainedField: UITextField {
     }
 
     /* To implement in the textFields delegate: */
-    @objc public func textFieldShouldReturn(_ textField:UITextField) -> Bool
-    {
+    @objc public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         assertionFailure("No, program should not come here. Wrong delegate for chained text field: \(self)")
 

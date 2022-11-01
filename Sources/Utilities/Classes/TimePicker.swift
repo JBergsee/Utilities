@@ -8,13 +8,13 @@
 import UIKit
 
 @objc public protocol TimePickerDelegate {
-    func timePicker(_ picker:TimePicker, didReturnMinutes minutes:Int)
+    func timePicker(_ picker: TimePicker, didReturnMinutes minutes: Int)
 }
 
 public class TimePicker: UIDatePicker {
-
-    @IBOutlet public var timeDelegate:TimePickerDelegate?
-        
+    
+    @IBOutlet public weak var timeDelegate: TimePickerDelegate?
+    
     public var minutes: Int {
         get {
             let timeOffset = date.timeIntervalSince1970
@@ -35,14 +35,13 @@ public class TimePicker: UIDatePicker {
         valueIsPicked
     }
     
-    public override func awakeFromNib()
-    {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         setupSelf()
-            }
+    }
     
-    /* Make sure to register for control events when created from nib or programatically,
-     *
+    /**
+     * Make sure to register for control events when created from nib or programatically,
      */
     private func setupSelf() {
         //Appearance

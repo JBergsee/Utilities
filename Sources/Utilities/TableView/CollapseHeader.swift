@@ -13,7 +13,7 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
     @IBOutlet public var collapseLabel: UILabel?
     @IBOutlet public var titleLabel: UILabel?
     
-    public var delegate: CollapseControllingDelegate?
+    public weak var delegate: CollapseControllingDelegate?
     public var section: Int = 0
     
     

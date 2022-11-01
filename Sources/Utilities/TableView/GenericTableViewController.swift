@@ -45,10 +45,9 @@ extension GenericTableViewController: CollapseControllingDelegate {
 
 open class GenericTableViewController: UITableViewController {
     
-    
     //Basis for the whole controller
-    open var modelProvider: ModelProviding?
-    open var delegate: GenericTableViewDelegate?
+    public weak var modelProvider: ModelProviding?
+    public weak var delegate: GenericTableViewDelegate?
             
     //For FRC Delegate
     var _changeIsUserDriven: Bool = false
@@ -114,7 +113,7 @@ open class GenericTableViewController: UITableViewController {
     open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.headerIdentifier ?? "header")
         //Collapsible?
-        if var collapseHeader = cell?.contentView.subviews.first as? CollapseControlling {
+        if let collapseHeader = cell?.contentView.subviews.first as? CollapseControlling {
             collapseHeader.delegate = self //Or modelprovider if changed later on?
             collapseHeader.section = section
             collapseHeader.setCollapsed(isCollapsed(section), animated: false) //Do not animate at creation
@@ -283,7 +282,7 @@ extension GenericTableViewController: UISearchResultsUpdating {
         searchText = searchText?.trimmingCharacters(in: .whitespaces)
         
         //actual search performed by model provider
-        modelProvider!.filterModel(searchText: searchText)
+        modelProvider?.filterModel(searchText: searchText)
         
         //update view
         tableView.reloadData() //Not required for FRC...?

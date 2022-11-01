@@ -10,7 +10,7 @@ import CoreData
 
 
 //Provides the model for the UITableView
-public protocol ModelProviding {
+public protocol ModelProviding: AnyObject {
     
     func uuid(for section:Int) -> String
     
@@ -25,11 +25,11 @@ public protocol ModelProviding {
     func headerTitle(_ section: Int) -> String?
     
     func canEdit(row: Int, section: Int) -> Bool
-    mutating func delete(row: Int, section: Int)
-    mutating func insertAt(row: Int, section: Int)
-    mutating func move(from:IndexPath, to:IndexPath)
+    func delete(row: Int, section: Int)
+    func insertAt(row: Int, section: Int)
+    func move(from:IndexPath, to:IndexPath)
     
-    mutating func filterModel(searchText:String?)
+    func filterModel(searchText:String?)
 }
 
 
@@ -58,7 +58,7 @@ public extension ArrayModelProviding {
         return filteredArray[section][row]
     }
     
-    mutating func delete(row: Int, section: Int) {
+    func delete(row: Int, section: Int) {
         let removedObject = filteredArray[section].remove(at: row)
         //Try to find in the original array
         if let index = modelArray[section].firstIndex(of: removedObject) {
@@ -67,7 +67,7 @@ public extension ArrayModelProviding {
         }
     }
     
-    mutating func insertAt(row: Int, section: Int) {
+    func insertAt(row: Int, section: Int) {
         //Create a new "entity" and insert
         let newObject = newObject()
         filteredArray[section].insert(newObject, at: row)
@@ -83,11 +83,11 @@ public extension ArrayModelProviding {
         }
     }
     
-    mutating func move(from: IndexPath, to: IndexPath) {
+    func move(from: IndexPath, to: IndexPath) {
         //TBD
     }
     
-    mutating func filterModel(searchText: String?) {
+    func filterModel(searchText: String?) {
         
         //reset the filtered array
         filteredArray = modelArray

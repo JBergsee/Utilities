@@ -60,13 +60,13 @@ extension NWPath.Status: CustomStringConvertible {
 
 
 @objcMembers
-public class ConnectivityMonitor : NSObject {
+public class ConnectivityMonitor: NSObject {
     
     //Singleton
     @objc(sharedMonitor) public static let shared = ConnectivityMonitor()
 
     //Public property
-    @objc public var currentStatus : ConnectivityStatus = .unknown
+    @objc public var currentStatus: ConnectivityStatus = .unknown
     
     //Private properties
     let monitor = NWPathMonitor()
@@ -90,8 +90,7 @@ public class ConnectivityMonitor : NSObject {
         Log.debug(message: "Connectivity status: \(path.status)", in: .network)
         Log.debug(message: "Available interfaces: \(path.availableInterfaces)", in: .network)
         
-        
-        var newStatus : ConnectivityStatus
+        var newStatus: ConnectivityStatus
         
         if path.status == .satisfied {
             Log.trace(message: "Connectivity: We have internet!\n", in: .network)
@@ -100,16 +99,16 @@ public class ConnectivityMonitor : NSObject {
             Log.trace(message: "Connectivity: No internet available.\n", in: .network)
             newStatus = .notConnected
         }
+        
         //Update status if it has changed
-        if (newStatus != self.currentStatus) {
+        if (newStatus != currentStatus) {
             
             //update current status before sending notification
-            self.currentStatus = newStatus
+            currentStatus = newStatus
 
             //Send a notification if the status have changed. Provide self as object.
             NotificationCenter.default.post(name: .ConnectivityDidChange, object: self)
         }
-        
     }
     
     @objc public func isOnline() -> Bool {

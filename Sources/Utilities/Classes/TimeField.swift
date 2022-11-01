@@ -10,11 +10,11 @@ import UIKit
 @objc public protocol TimeFieldDelegate {
     
     @objc(presentTimeAlertFor:message:changeAction:cancelAction:)
-    func presentAlertFor(_ timeField:TimeField, message:String, changeAction:UIAlertAction, cancelAction:UIAlertAction)
+    func presentAlertFor(_ timeField: TimeField, message: String, changeAction: UIAlertAction, cancelAction: UIAlertAction)
     
-    @objc optional func timeFieldDidBeginEditing(_ timeField:TimeField)
+    @objc optional func timeFieldDidBeginEditing(_ timeField: TimeField)
     ///Time in minutes or -1 if not set or unparseable
-    @objc optional func timeField(_ timeField:TimeField, didReturnMinutes minutes:Int)
+    @objc optional func timeField(_ timeField: TimeField, didReturnMinutes minutes: Int)
 }
 
 public extension TimeFieldDelegate where Self: UIViewController {
@@ -33,11 +33,9 @@ public extension TimeFieldDelegate where Self: UIViewController {
 
 public class TimeField: ChainedField, UITextFieldDelegate {
     
-    @IBOutlet public var timeDelegate:TimeFieldDelegate?
+    @IBOutlet public weak var timeDelegate:TimeFieldDelegate?
     
-    
-    override init(frame:CGRect)
-    {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setupSelf()
         setupBar()
@@ -49,8 +47,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         setupBar()
     }
     
-    public override func awakeFromNib()
-    {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         setupSelf()
         setupBar()
@@ -61,16 +58,15 @@ public class TimeField: ChainedField, UITextFieldDelegate {
      * Set keyboard type,
      */
     private func setupSelf() {
-        self.addTarget(self, action: #selector(insertColonIfAppropriate), for: .editingChanged)
-        self.delegate = self
-        self.keyboardType = .numberPad
+        addTarget(self, action: #selector(insertColonIfAppropriate), for: .editingChanged)
+        delegate = self
+        keyboardType = .numberPad
     }
     
     
     
     //Setup a now button on the bar and disable autocorrection
-    private func setupBar()
-    {
+    private func setupBar() {
         
         //Create a "NOW" button
         let clockIcon = UIImage(systemName: "clock")
@@ -92,14 +88,12 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         bar.trailingBarButtonGroups = [group];
         
         //Disable autocorrection
-        self.autocorrectionType = .no
-        
-        
+        autocorrectionType = .no
     }
     
     
-    @objc private func setCurrentTime()
-    {
+    @objc private func setCurrentTime() {
+        
         //Get the time
         let now = Date()
         
@@ -109,19 +103,17 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         let time = now.toString(using: .HHmm)
         Log.debug(message: "Current time (UTC): \(time)", in: .functionality)
         
-        
         //Handle as if it was written manually.
-        self.text = time
+        text = time
         
         //press "enter", this will call the delegate and eventually move to the next field.
         let tReturn = textFieldShouldReturn(self)
-        
         
         //If not we do it manually:
         if (!tReturn) {
             //Switch to next textfield
             nextField?.becomeFirstResponder()
-            print("Code should not come here, something is wrong with the responderchain on \(self)")
+            Log.fault(message: "Code should not come here, something is wrong with the responderchain on \(self)", in: .functionality)
         }
     }
     
@@ -148,13 +140,13 @@ public class TimeField: ChainedField, UITextFieldDelegate {
      *     return YES; //All "normal" values and other textfields
      * }
      */
-    private func checkAllowedCharactersIn(string:String) -> Bool
+    private func checkAllowedCharactersIn(string: String) -> Bool
     {
         //Check for backspace first
         guard string.count > 0 else { return true } //allow backspace
         
         //begin with an easy test of length: hh:mm
-        if (self.text?.count ?? 0 > 4) { return false }
+        if (text?.count ?? 0 > 4) { return false }
         
         //allowedCharacterSet
         var allowedCharacters:CharacterSet = .decimalDigits
@@ -177,8 +169,8 @@ public class TimeField: ChainedField, UITextFieldDelegate {
     //This will be called every time editingChanged event is sent
     @objc private func insertColonIfAppropriate()
     {
-        if (self.text?.count == 3) {
-            guard let string = self.text else { return }
+        if (text?.count == 3) {
+            guard let string = text else { return }
             let thirdComponent = string[2]
             let secondComponent = string[1] //someone may enter 1:...
             if (!(thirdComponent == ":" || secondComponent == ":")) { //if it's not already there
@@ -186,24 +178,23 @@ public class TimeField: ChainedField, UITextFieldDelegate {
                 let newString = NSMutableString(string: string)
                 newString.deleteCharacters(in: NSRange(location: 2, length: 1))
                 newString.appendFormat(":%@", thirdComponent)
-                self.text = "\(newString)"
+                text = "\(newString)"
             }
         }
-        
     }
     
     
     /* When using the TimeField as a self-contained unit (being its own UITextFieldDelegate),
-         * this method is called when the textfield ends editing (either by pressing return or loosing focus).
-         */
-    private func checkTimeAndAlert(_ showAlert:Bool) -> Bool
-    {
+     * this method is called when the textfield ends editing (either by pressing return or loosing focus).
+     */
+    private func checkTimeAndAlert(_ showAlert:Bool) -> Bool {
+        
         //exit an empty field
         guard text?.count ?? 0 > 0 else { return true }
         
         //Make sure it's a valid time value
         let validTime = (((hours ?? 25 ) < 24) && ((minutes ?? 61) < 60))
-
+        
         if (!validTime && showAlert) {
             
             //Show AlertView
@@ -231,13 +222,10 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         return validTime
     }
     
-    
-    
-    
-//MARK: - Return values from the string
+    //MARK: - Return values from the string
     
     /* returns nil if not set */
-    public var minutes:Int? {
+    public var minutes: Int? {
         let times = text?.components(separatedBy: ":") ?? []
         
         switch (times.count) {
@@ -260,7 +248,7 @@ public class TimeField: ChainedField, UITextFieldDelegate {
     }
     
     /* returns nil if not set */
-    public var hours:Int? {
+    public var hours: Int? {
         let times = text?.components(separatedBy: ":") ?? []
         
         switch (times.count) {
@@ -279,8 +267,8 @@ public class TimeField: ChainedField, UITextFieldDelegate {
     }
     
     /* returns nil if not set */
-    public var allMinutes:Int? {
-        guard let mins = minutes, let hrs = hours, let str = self.text else {return nil}
+    public var allMinutes: Int? {
+        guard let mins = minutes, let hrs = hours, let str = self.text else { return nil }
         
         //Take into account a deleted figure!! return nil
         //Assume that the value is removed, or half removed when less than h:mm
@@ -314,14 +302,13 @@ public class TimeField: ChainedField, UITextFieldDelegate {
     
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        
         if let tf = (textField as? TimeField) {
             return tf.checkTimeAndAlert(true)
         }
         return true
         //When true is returned, textfieldDidEndEditing will be called
     }
-
-    
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         //Call the delegate and give the new value

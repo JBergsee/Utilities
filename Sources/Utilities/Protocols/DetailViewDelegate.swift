@@ -10,7 +10,7 @@ import UIKit
 
 
 //To be implemented by e.g. TableViewController
-public protocol NextPrevDetailViewDelegate {
+public protocol NextPrevDetailViewDelegate: AnyObject {
     associatedtype DetailModelType
     
     func getNextAfter(actual:DetailModelType) -> DetailModelType?

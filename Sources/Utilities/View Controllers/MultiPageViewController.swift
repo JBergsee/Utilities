@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-public protocol PageProviding {
+public protocol PageProviding: AnyObject {
     func viewControllerForPage(_ pageNumber: Int) -> UIViewController
     func numberOfPages() -> Int
     func titleForPage(_ nbr: Int) -> String
@@ -24,8 +24,7 @@ open class MultiPageViewController : UIViewController {
     @IBOutlet var pageControl:UIPageControl?
     
     //PageProvider
-    public var pageProvider: PageProviding?
-    
+    public weak var pageProvider: PageProviding?
     
     // To be used when scrolls originate from the UIPageControl
     private var pageControlUsed:Bool = false
@@ -51,47 +50,47 @@ open class MultiPageViewController : UIViewController {
         // view controllers are created lazily
         
         //Set up scroll view
-        self.scrollView?.isPagingEnabled = true;
-        self.scrollView?.clipsToBounds = true; //Do not show anything outside the bounds, as this makes it really hard to debug...
-        self.scrollView?.showsHorizontalScrollIndicator = false
-        self.scrollView?.showsVerticalScrollIndicator = false
-        self.scrollView?.scrollsToTop = false
-        self.scrollView?.delegate = self
+        scrollView?.isPagingEnabled = true;
+        scrollView?.clipsToBounds = true; //Do not show anything outside the bounds, as this makes it really hard to debug...
+        scrollView?.showsHorizontalScrollIndicator = false
+        scrollView?.showsVerticalScrollIndicator = false
+        scrollView?.scrollsToTop = false
+        scrollView?.delegate = self
         
         //set up pagecontrol
-        self.pageControl?.numberOfPages = numberOfPages
-        self.pageControl?.currentPage = 0;
+        pageControl?.numberOfPages = numberOfPages
+        pageControl?.currentPage = 0;
         
         //Set up segmentedControl
-        if (self.segmentedControl != nil) {
+        if (segmentedControl != nil) {
             
             //Titles
-            self.segmentedControl?.removeAllSegments() //In case they're set in IB
+            segmentedControl?.removeAllSegments() //In case they're set in IB
             
             for segment in 0...numberOfPages-1 {
                 let segmentTitle = pageProvider?.titleForPage(segment)
-                self.segmentedControl?.insertSegment(withTitle: segmentTitle, at: segment, animated: false)
+                segmentedControl?.insertSegment(withTitle: segmentTitle, at: segment, animated: false)
             }
             
             //Set the action
-            self.segmentedControl?.addTarget(self, action:#selector(changePage), for: .valueChanged)
+            segmentedControl?.addTarget(self, action:#selector(changePage), for: .valueChanged)
         }
         
         //Pages are not yet created
         //A call to change viewport size is required
         
         //Select the first page for first view load
-        self.segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentIndex = 0
     }
     
     open override func viewDidLayoutSubviews() {
         //Set the correct scrollview width and prepare subviews.
-        changeViewPortSize(newSize: self.scrollView.frame.size)
+        changeViewPortSize(newSize: scrollView.frame.size)
     }
     
     open override func viewDidDisappear(_ animated: Bool) {
         //Get the inputs from any active field...
-        self.view.endEditing(false)
+        view.endEditing(false)
         
         super.viewDidDisappear(animated)
     }
@@ -111,17 +110,17 @@ open class MultiPageViewController : UIViewController {
         
         let numberOfPages = pageProvider!.numberOfPages()
         
-        self.scrollView.contentSize = CGSize(width: newSize.width * CGFloat(numberOfPages), height: newSize.height)
+        scrollView.contentSize = CGSize(width: newSize.width * CGFloat(numberOfPages), height: newSize.height)
         
         //remove all old page views from scrollView.
-        for subview in self.scrollView.subviews {
+        for subview in scrollView.subviews {
             subview.removeFromSuperview()
         }
         
         
         // load the visible page
-        let currentPage = self.segmentedControl?.selectedSegmentIndex ?? 0
-        self.goTo(currentPage) //Will also load pages on either side
+        let currentPage = segmentedControl?.selectedSegmentIndex ?? 0
+        goTo(currentPage) //Will also load pages on either side
         
     }
     
@@ -157,7 +156,7 @@ open class MultiPageViewController : UIViewController {
         guard let controller = pageProvider?.viewControllerForPage(page) else { return }
         
         //And add as child controller
-        self.addChild(controller)
+        addChild(controller)
         
         //Tell it will appear
         //Explicit call since we're already in the superview's viewWillAppear
@@ -172,7 +171,7 @@ open class MultiPageViewController : UIViewController {
             frame.origin.y = 0;
             controller.view.frame = frame
             controller.view.autoresizesSubviews = true
-            self.scrollView.addSubview(controller.view)
+            scrollView.addSubview(controller.view)
             
             //Invalidate views for redisplay
             controller.view.setNeedsLayout()
@@ -192,33 +191,28 @@ open class MultiPageViewController : UIViewController {
         
         // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
         
-        self.loadScrollViewWithPageNbr(page - 1)
-        self.loadScrollViewWithPageNbr(page)
-        self.loadScrollViewWithPageNbr(page + 1)
+        loadScrollViewWithPageNbr(page - 1)
+        loadScrollViewWithPageNbr(page)
+        loadScrollViewWithPageNbr(page + 1)
         
         // update the scroll view to the appropriate page
         var viewPort = self.scrollView.bounds
         viewPort.origin.x = viewPort.size.width * CGFloat(page)
         viewPort.origin.y = 0 //sets us at the top of the page
         
-        self.scrollView.scrollRectToVisible(viewPort, animated:true) //Changing bounds
+        scrollView.scrollRectToVisible(viewPort, animated:true) //Changing bounds
         
         // Set the boolean used when scrolls originate externally, for example the UIPageControl or a button. See scrollViewDidScroll: above.
         pageControlUsed = true
         
         //Update the pagecontrol if another control was used
-        if (self.pageControl != nil) {
-            self.pageControl?.currentPage = page
-        }
+        pageControl?.currentPage = page
         
         //Update the segmented control if another control was used
-        if (self.segmentedControl != nil) {
-            self.segmentedControl?.selectedSegmentIndex = page
-        }
-        
+        segmentedControl?.selectedSegmentIndex = page
     }
     
-    //This should be set as selector of the UIPageControl and UISegmentedControl
+    ///This should be set as selector of the UIPageControl and UISegmentedControl
     @objc func changePage(sender:Any) {
         var page = 0;
         if let control = sender as? UISegmentedControl {
@@ -227,20 +221,19 @@ open class MultiPageViewController : UIViewController {
             page = control.currentPage
         }
         
-        self.goTo(page)
-        
+        goTo(page)
     }
     
     func increasePage() {
         
-        let page = self.pageControl?.currentPage ?? 0
+        let page = pageControl?.currentPage ?? 0
         self.goTo(page+1)
     }
     
     func decreasePage() {
         
-        let page = self.pageControl?.currentPage ?? 0
-        self.goTo(page-1)
+        let page = pageControl?.currentPage ?? 0
+        goTo(page-1)
         
     }
 }
@@ -259,19 +252,19 @@ extension MultiPageViewController: UIScrollViewDelegate {
         }
         
         // Switch the indicator when more than 50% of the previous/next page is visible
-        let pageWidth = self.scrollView.frame.size.width
-        let page = Int(floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
+        let pageWidth = scrollView.frame.size.width
+        let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
         
         //update pageControl
-        self.pageControl?.currentPage = page
+        pageControl?.currentPage = page
         
         //update the segmented control
-        self.segmentedControl?.selectedSegmentIndex = page;
+        segmentedControl?.selectedSegmentIndex = page;
         
         // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
-        self.loadScrollViewWithPageNbr(page - 1)
-        self.loadScrollViewWithPageNbr(page)
-        self.loadScrollViewWithPageNbr(page + 1)
+        loadScrollViewWithPageNbr(page - 1)
+        loadScrollViewWithPageNbr(page)
+        loadScrollViewWithPageNbr(page + 1)
         // A possible optimization would be to unload the views+controllers which are no longer visible
     }
     

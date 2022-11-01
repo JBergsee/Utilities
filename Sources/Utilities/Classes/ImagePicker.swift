@@ -51,12 +51,12 @@ open class ImagePicker: NSObject {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         //Cameraaction
-        if let action = self.action(for: .camera, title: "Take photo") {
+        if let action = action(for: .camera, title: "Take photo") {
             alertController.addAction(action)
         }
         
         //Photolibrary and camera roll looks the same, so use just library
-        if let action = self.action(for: .photoLibrary, title: "Photo library") {
+        if let action = action(for: .photoLibrary, title: "Photo library") {
             alertController.addAction(action)
         }
         
@@ -69,15 +69,15 @@ open class ImagePicker: NSObject {
             alertController.popoverPresentationController?.permittedArrowDirections = [.down, .up]
         }
         
-        checkPermissions { granted in
+        checkPermissions { [weak self] granted in
             //We are now coming back on a background thread!
             if granted {
                 DispatchQueue.main.async {
-                    self.presentationController?.present(alertController, animated: true)
+                    self?.presentationController?.present(alertController, animated: true)
                 }
             } else {
                 DispatchQueue.main.async {
-                    self.delegate?.didFail(error: PermissionError.denied)
+                    self?.delegate?.didFail(error: PermissionError.denied)
                 }
             }
         }
@@ -85,34 +85,33 @@ open class ImagePicker: NSObject {
     
     private func pickerController(_ controller: UIImagePickerController, didSelect image: UIImage?) {
         controller.dismiss(animated: true, completion: nil)
-        self.delegate?.didSelect(image: image)
+        delegate?.didSelect(image: image)
     }
 }
 
 extension ImagePicker: UIImagePickerControllerDelegate {
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.pickerController(picker, didSelect: nil)
+        pickerController(picker, didSelect: nil)
     }
     
     public func imagePickerController(_ picker: UIImagePickerController,
                                       didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[.editedImage] as? UIImage {
             //Edited image, only available if allowsEditing = true
-            self.pickerController(picker, didSelect: image)
+            pickerController(picker, didSelect: image)
         } else if let image = info[.originalImage] as? UIImage {
             //use original image
-            self.pickerController(picker, didSelect: image)
+            pickerController(picker, didSelect: image)
         } else {
             //No image
-            self.pickerController(picker, didSelect: nil)
+            pickerController(picker, didSelect: nil)
         }
     }
 }
 
-extension ImagePicker: UINavigationControllerDelegate {
-    
-}
+//Required for UIImagePickerController
+extension ImagePicker: UINavigationControllerDelegate {}
 
 //MARK: - Authorization
 

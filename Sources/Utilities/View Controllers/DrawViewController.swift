@@ -17,7 +17,7 @@ public protocol DrawViewControllerDelegate {
 @objcMembers
 open class DrawViewController: UIViewController {
     
-    public var delegate: DrawViewControllerDelegate?
+    public weak var delegate: DrawViewControllerDelegate?
     
     @IBOutlet public var canvas: PKCanvasView!
     

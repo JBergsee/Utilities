@@ -9,14 +9,15 @@ import Foundation
 import UIKit
 
 
-public protocol GenericTableViewControlling {
-
+public protocol GenericTableViewControlling: AnyObject {
+    ///Should be declared weak in implementation
     var modelProvider: ModelProviding? { get set }
+    ///Should be declared weak in implementation
     var delegate: GenericTableViewDelegate? { get set }
 }
     
     
-public protocol GenericTableViewDelegate {
+public protocol GenericTableViewDelegate: AnyObject {
     
     var cellIdentifier:String { get }
     var headerIdentifier:String { get }

@@ -52,23 +52,23 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     private static let stringMaxLength = "Max length is %d characters"
     
     //Delegate to set in Interface Builder
-    @IBOutlet public var rangeDelegate:RangeFieldDelegate?
+    @IBOutlet public weak var rangeDelegate: RangeFieldDelegate?
     
     // Before initializing we make a floating point textfield with all floating point values (min to max)
-    public var rangeType:RangeFieldType = .floatingPoint
-    public var minValue:NSNumber = NSNumber(value:-Double.greatestFiniteMagnitude)
-    public var maxValue:NSNumber = NSNumber(value:Double.greatestFiniteMagnitude)
-    public var maxLength:Int?
-    public var allowedCharacters:CharacterSet?
+    public var rangeType: RangeFieldType = .floatingPoint
+    public var minValue: NSNumber = NSNumber(value: -Double.greatestFiniteMagnitude)
+    public var maxValue: NSNumber = NSNumber(value: Double.greatestFiniteMagnitude)
+    public var maxLength: Int?
+    public var allowedCharacters: CharacterSet?
     
     private class var floatCharacterSet:CharacterSet {
-        var set:CharacterSet = .decimalDigits
-        set.insert(charactersIn:".-") //point and minus
+        var set: CharacterSet = .decimalDigits
+        set.insert(charactersIn: ".-") //point and minus
         return set
     }
     
     private class var intCharacterSet:CharacterSet {
-        var set:CharacterSet = .decimalDigits
+        var set: CharacterSet = .decimalDigits
         set.insert("-") //add minus
         return set
     }
@@ -77,11 +77,11 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     //MARK: - Initialization
     
     // default init makes a floating point textfield with all floating point values (min to max)
-    init(rangeType:RangeFieldType? = .floatingPoint,
-         minValue:NSNumber? = NSNumber(value: -Double.greatestFiniteMagnitude),
-         maxValue:NSNumber? = NSNumber(value: Double.greatestFiniteMagnitude),
-         maxLength:Int? = Int.max,
-         allowedCharacters:CharacterSet? = floatCharacterSet) {
+    init(rangeType: RangeFieldType? = .floatingPoint,
+         minValue: NSNumber? = NSNumber(value: -Double.greatestFiniteMagnitude),
+         maxValue: NSNumber? = NSNumber(value: Double.greatestFiniteMagnitude),
+         maxLength: Int? = Int.max,
+         allowedCharacters: CharacterSet? = floatCharacterSet) {
         
         self.rangeType = rangeType!
         self.minValue = minValue!
@@ -91,7 +91,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
         super.init(frame: CGRect())
     }
     
-    override init(frame:CGRect)
+    override init(frame: CGRect)
     {
         super.init(frame: frame)
         setupSelf()
@@ -105,28 +105,29 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     public override func awakeFromNib()
     {
         super.awakeFromNib()
-        setupFloatRange(min: -Double.greatestFiniteMagnitude, max: Double.greatestFiniteMagnitude)
+        setupFloatRange(min: -Double.greatestFiniteMagnitude,
+                        max: Double.greatestFiniteMagnitude)
         setupSelf()
         
     }
     
     //MARK: - Easy setup
     
-    public func setupIntRange(min:Int, max:Int) {
+    public func setupIntRange(min: Int, max: Int) {
         rangeType = .integer
-        minValue = NSNumber(value:min)
-        maxValue = NSNumber(value:max)
+        minValue = NSNumber(value: min)
+        maxValue = NSNumber(value: max)
         allowedCharacters = RangeField.intCharacterSet
     }
     
-    public func setupFloatRange(min:Double, max:Double) {
+    public func setupFloatRange(min: Double, max: Double) {
         rangeType = .floatingPoint
-        minValue = NSNumber(value:min)
-        maxValue = NSNumber(value:max)
+        minValue = NSNumber(value: min)
+        maxValue = NSNumber(value: max)
         allowedCharacters = RangeField.floatCharacterSet
     }
     
-    public func setupCharacterRange(allowedCharacters:CharacterSet) {
+    public func setupCharacterRange(allowedCharacters: CharacterSet) {
         rangeType = .character
         self.allowedCharacters = allowedCharacters
     }
@@ -169,7 +170,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
      }
      */
     
-    private func check(string:String) -> Bool {
+    private func check(string: String) -> Bool {
         //If there is no set of allowed characters nothing is allowed
         guard let allowed = allowedCharacters else { return false }
         
@@ -207,11 +208,11 @@ public class RangeField: ChainedField, UITextFieldDelegate {
      
      */
     
-    public func checkRangeAndAlert(_ showAlert:Bool) -> ComparisonResult?
+    public func checkRangeAndAlert(_ showAlert: Bool) -> ComparisonResult?
     {
         let result = verifyStringValueWithinRange()
         
-        if((result != .orderedSame) && showAlert) {
+        if (result != .orderedSame) && showAlert {
             //Show Alert
             delegateWarningFor(result)
         }
@@ -219,12 +220,11 @@ public class RangeField: ChainedField, UITextFieldDelegate {
         return result
     }
     
-    private func delegateWarningFor(_ result:ComparisonResult?)
-    {
+    private func delegateWarningFor(_ result: ComparisonResult?) {
         
-        let currStr:String = text ?? "No value"
+        let currStr: String = text ?? "No value"
         
-        var warning:String = "Value is within range"
+        var warning: String = "Value is within range"
         
         if let result = result {
             
@@ -334,7 +334,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     //MARK: - Return values from the string
     
     /* returns empty string if no text set */
-    public var value:Any? {
+    public var value: Any? {
         switch rangeType {
         case .floatingPoint:
             return Float(text ?? "a") ?? .nan
@@ -362,7 +362,6 @@ public class RangeField: ChainedField, UITextFieldDelegate {
                 return false
             }
         }
-        
         return check(string: string)
     }
     
@@ -391,7 +390,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         //Call the delegate and give the new value
-        var number:NSNumber? = nil
+        var number: NSNumber? = nil
         
         switch rangeType {
         case .floatingPoint:

@@ -13,8 +13,8 @@ import UIKit
 public class PopoverPicker : NSObject {
     
     private var contentController = UITableViewController(style: .plain)
-    private var textField:UITextField
-    private var model:[String]
+    private var textField: UITextField
+    private var model: [String]
     
     private typealias popoverCheckedContinuation = CheckedContinuation<String?, Never>
     
@@ -68,6 +68,7 @@ public class PopoverPicker : NSObject {
                 showPopover()
                 break
             @unknown default:
+                Log.fault(message: "New presentation style in PopoverPresenter: \(presentationStyle)", in: .functionality)
                 showPopover()
             }
         })

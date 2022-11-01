@@ -8,14 +8,15 @@
 import UIKit
 
 //The tableView or the ModelProvider
-public protocol CollapseControllingDelegate {
-    func toggleSection(_ section: Int, for header:CollapseControlling?)
+public protocol CollapseControllingDelegate: AnyObject {
+    func toggleSection(_ section: Int, for header: CollapseControlling?)
 }
 
 //Normally a UITableViewHeaderFooterView
-public protocol CollapseControlling {
+public protocol CollapseControlling: AnyObject {
     var collapseButton: UIView? { get }
     var section: Int { get set }
+    ///Should be declared weak in implementation
     var delegate: CollapseControllingDelegate? { get set }
     
     func setCollapsed(_ collapsed: Bool, animated: Bool)
