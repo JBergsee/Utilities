@@ -33,7 +33,8 @@ public protocol ModelProviding: AnyObject {
 }
 
 
-//Provides the model when the Model is an Array
+///Provides the model when the Model is an Array
+///For sections use array of arrays.
 public protocol ArrayModelProviding: ModelProviding {
 
     associatedtype CellModel: Equatable
@@ -41,7 +42,7 @@ public protocol ArrayModelProviding: ModelProviding {
     var modelArray:[[CellModel]] { get set }
     var filteredArray:[[CellModel]] { get set }
     func searchPredicate(for searchText:String) -> NSPredicate
-    func newObject() -> CellModel
+    func newObject() -> CellModel?
 }
 
 public extension ArrayModelProviding {
@@ -69,7 +70,7 @@ public extension ArrayModelProviding {
     
     func insertAt(row: Int, section: Int) {
         //Create a new "entity" and insert
-        let newObject = newObject()
+        guard let newObject = newObject() else { return }
         filteredArray[section].insert(newObject, at: row)
         //Insert in original array as well
         if row == 0 {

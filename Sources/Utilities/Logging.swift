@@ -74,7 +74,7 @@ public struct LogCategory:RawRepresentable {
         switch level {
         case .error:
             let localizedDescription: String = NSLocalizedString("Error in ObjC code", comment: "Refer to Objective C code")
-            let objCError = Log.createError(localizedDescription)
+            let objCError = Log.createError(localizedDescription, domain: "ObjC")
             Log.error(error ?? objCError, message: message, in: cat)
             break
         case .fault:
@@ -94,7 +94,7 @@ public struct LogCategory:RawRepresentable {
     
     //Log errors, where an error object is thrown
     //Optional message
-    public class func error(_ error:Error, message:String?, in category:LogCategory) {
+    public class func error(_ error: Error, message: String?, in category: LogCategory) {
         if let message = message {
             
             //Internal logging (message)
@@ -110,7 +110,7 @@ public struct LogCategory:RawRepresentable {
     }
     
     //Log faults (Errors in code, but where no error object is provided)
-    public class func fault(message:String, in category:LogCategory) {
+    public class func fault(message: String, in category: LogCategory) {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).fault("Fault: \(message, privacy: .public)")
         //Create an error and Notify crashlytics
@@ -119,7 +119,7 @@ public struct LogCategory:RawRepresentable {
     
     
     //Log code passes and events that needs attention, but are not necessarily serious
-    public class func notify(message:String, in category:LogCategory) {
+    public class func notify(message: String, in category: LogCategory) {
         Logger(subsystem: subsystem, category: category.rawValue).fault("Attention: \(message, privacy: .public)")
         //Notify crashlytics
         firebase?.crashlyticsLog("Attention: \(message)")
@@ -132,7 +132,7 @@ public struct LogCategory:RawRepresentable {
     
     
     //Log notices (for app flow and user actions)
-    public class func trace(message:String, in category:LogCategory) {
+    public class func trace(message: String, in category: LogCategory) {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).notice("\(message, privacy: .public)")
         //Notify crashlytics
@@ -140,7 +140,7 @@ public struct LogCategory:RawRepresentable {
     }
     
     //Log debugging
-    public class func debug(message:String, in category:LogCategory) {
+    public class func debug(message: String, in category: LogCategory) {
         //Internal logging only, and not persisted.
         Logger(subsystem: subsystem, category: category.rawValue).debug("\(message, privacy: .public)")
         //Don't notify crashlytics
@@ -154,8 +154,8 @@ public struct LogCategory:RawRepresentable {
         let functionKey = "\(domain).function"
         let fileKey = "\(domain).file"
         let lineKey = "\(domain).line"
-        
-        let error = NSError(domain: domain, code: code, userInfo: [
+        let calculatedCode = code != 0 ? code : message.hash
+        let error = NSError(domain: domain, code: calculatedCode, userInfo: [
             NSLocalizedDescriptionKey: message,
             functionKey: function,
             fileKey: file,

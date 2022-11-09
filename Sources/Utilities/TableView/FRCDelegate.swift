@@ -10,7 +10,7 @@ import CoreData
 
 
 //MARK: - Fetched Results controller delegate standard implementation
-public extension NSFetchedResultsControllerDelegate where Self: GenericTableViewController {
+extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
     /*
      For changes in the underlying model that is NOT already done by the user, such as giving new sortIndexes...
@@ -21,7 +21,7 @@ public extension NSFetchedResultsControllerDelegate where Self: GenericTableView
     
     
     //Start updates
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    @objc public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         guard !_changeIsUserDriven else { return }
         //Do nothing if the user is rearranging the table
@@ -39,7 +39,7 @@ public extension NSFetchedResultsControllerDelegate where Self: GenericTableView
     }
     
     //Insert or remove a whole section
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    @objc public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange sectionInfo: NSFetchedResultsSectionInfo,
                     atSectionIndex sectionIndex: Int,
                     for type: NSFetchedResultsChangeType) {
@@ -74,7 +74,7 @@ public extension NSFetchedResultsControllerDelegate where Self: GenericTableView
     }
     
     //Insert, delete, move or change an object
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    @objc public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange anObject: Any,
                     at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType,
@@ -86,26 +86,39 @@ public extension NSFetchedResultsControllerDelegate where Self: GenericTableView
         switch(type) {
             
         case .insert:
-            tableView.insertRows(at: [newIndexPath!],
+            guard let newIndexPath = newIndexPath else {
+                return
+            }
+            
+            tableView.insertRows(at: [newIndexPath],
                                  with:.automatic)
             break;
             
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .automatic)
+            guard let indexPath = indexPath else { return }
+            
+            tableView.deleteRows(at: [indexPath], with: .automatic)
             
             break;
             
+            
         case .update:
-            _ = tableView.cellForRow(at: indexPath!)
+            guard let indexPath = indexPath else { return }
+            
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            
             //Should be enough to redraw the cell...
             //But is not enough when the change is taking place and the view is not attached to a window.
             //Therefore, a reload should be added to the viewWillAppear: of this viewController.
             break
             
         case .move:
-            tableView.deleteRows(at: [indexPath!],
+            guard let indexPath = indexPath,
+                  let newIndexPath = newIndexPath else { return }
+            
+            tableView.deleteRows(at: [indexPath],
                                  with:.automatic)
-            tableView.insertRows(at: [newIndexPath!],
+            tableView.insertRows(at: [newIndexPath],
                                  with:.automatic)
             break
             
@@ -114,7 +127,7 @@ public extension NSFetchedResultsControllerDelegate where Self: GenericTableView
         }
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    @objc public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         guard !_changeIsUserDriven else { return }
         //Do nothing if the user is rearranging the table

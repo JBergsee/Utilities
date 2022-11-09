@@ -9,13 +9,13 @@ import Foundation
 import CoreData
 
 
-//Provides the model when coming from a Fetched Results Controller and underlying core data.
+///Provides the model when coming from a Fetched Results Controller and underlying core data.
 public protocol FRCModelProviding: ModelProviding {
     
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult> { get set }
     var moc: NSManagedObjectContext { get set }
     
-    //Fetch parameters
+    ///Fetch parameters
     func fetchRequestWith(predicate: NSPredicate) -> NSFetchRequest<NSFetchRequestResult>
     func fetchPredicate() -> NSPredicate
     func searchPredicateFor(searchText: String) -> NSPredicate
@@ -27,6 +27,10 @@ public protocol FRCModelProviding: ModelProviding {
     
     ///Make sure to call in ViewController setup code
     func initializeFetchedResultsController()
+    
+    ///Standard implementation to provide in modelFor(row: Int, section: Int) -> Any
+    ///Provides the fetched object at the row in section.
+    func standardModelFor(row: Int, section: Int) -> Any
     
     ///Standard implementation provided
     func performNewFetch()
@@ -44,18 +48,13 @@ public extension FRCModelProviding {
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
-    func modelFor(row: Int, section: Int) -> Any {
+    func standardModelFor(row: Int, section: Int) -> Any {
         return fetchedResultsController.object(at: IndexPath(row: row, section: section))
     }
     
     func headerTitle(_ section: Int) -> String? {
         let sectionName = fetchedResultsController.sections?[section].name
         return headerTitleFor(sectionName: sectionName)
-    }
-    
-    //Default implementation, implementing classes can ovverride and translate.
-    func headerTitleFor(sectionName: String?) -> String? {
-        return sectionName
     }
     
     func delete(row: Int, section: Int) {

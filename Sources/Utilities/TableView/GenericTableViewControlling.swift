@@ -20,12 +20,12 @@ public protocol GenericTableViewControlling: AnyObject {
 public protocol GenericTableViewDelegate: AnyObject {
     
     var cellIdentifier:String { get }
+    ///Headers (and footers) can be defined in the same tableview as the cells.
+    ///Set cell identifier of that cell as headerIdentifier.
+    ///Make the Header/footer view a subview of the cell's ContentView
     var headerIdentifier:String { get }
     var footerIdentifier:String { get }
     
     var searchPlaceHolder: String { get }
-    
-    func headerHeight(section: Int) -> CGFloat
-    func footerHeight(section: Int) -> CGFloat
 }
 

@@ -19,7 +19,7 @@ open class StringArrayModelProvider: ArrayModelProviding {
         filteredArray = modelArray
     }
     
-    open func newObject() -> String {
+    open func newObject() -> String? {
         return "New String"
     }
     

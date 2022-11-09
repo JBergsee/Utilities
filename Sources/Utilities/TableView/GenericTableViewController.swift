@@ -11,7 +11,7 @@ import UIKit
 //Might have to be an extension of the modelprovider directly! 
 extension GenericTableViewController: CollapseControllingDelegate {
     
-    public func toggleSection(_ section: Int, for header: CollapseControlling?) {
+    open func toggleSection(_ section: Int, for header: CollapseControlling?) {
         
         tableView.beginUpdates()
         
@@ -43,7 +43,7 @@ extension GenericTableViewController: CollapseControllingDelegate {
     }
 }
 
-open class GenericTableViewController: UITableViewController {
+open class GenericTableViewController: UITableViewController, GenericTableViewControlling {
     
     //Basis for the whole controller
     public weak var modelProvider: ModelProviding?
@@ -63,8 +63,6 @@ open class GenericTableViewController: UITableViewController {
         setupSearch()
         tableView.sectionHeaderTopPadding = 0
     }
-    
-    
     
     //MARK: - Collapsing
     
@@ -109,7 +107,6 @@ open class GenericTableViewController: UITableViewController {
         return modelProvider?.headerTitle(section)
     }
     
-    
     open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.headerIdentifier ?? "header")
         //Collapsible?
@@ -133,12 +130,14 @@ open class GenericTableViewController: UITableViewController {
         return cell?.contentView
     }
     
+    ///Return 0.0 to suppress header. Default is automaticDimension
     open override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return delegate?.headerHeight(section: section) ?? 0.0
+        return UITableView.automaticDimension
     }
     
+    ///Return 0.0 to suppress footer. Default is automaticDimension
     open override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return delegate?.footerHeight(section: section) ?? 0.0
+        return UITableView.automaticDimension
     }
     
     //MARK: - Rearranging
@@ -177,11 +176,8 @@ open class GenericTableViewController: UITableViewController {
      return true
      }
      */
-    
-}
 
 //MARK: - Search setup
-public extension GenericTableViewController {
     
     private func setupSearch() {
         
@@ -202,7 +198,7 @@ public extension GenericTableViewController {
         install(searchController: searchController)
     }
     
-    func setup(searchBar: UISearchBar?) {
+    open func setup(searchBar: UISearchBar?) {
         
         guard let searchBar = searchBar else {
             return
@@ -225,7 +221,7 @@ public extension GenericTableViewController {
     }
     
     //May be overridden by subclasses
-    func install(searchController: UISearchController?) {
+    open func install(searchController: UISearchController?) {
         guard let searchController = searchController else {
             return
         }
@@ -252,7 +248,7 @@ public extension GenericTableViewController {
         addSearchButton()
     }
     
-    func addSearchButton() {
+    open func addSearchButton() {
         let searchButton = UIBarButtonItem(barButtonSystemItem: .search,
                                            target: self,
                                            action: #selector(showSearchBar))
@@ -261,7 +257,7 @@ public extension GenericTableViewController {
         //(Could eventually use the array to add the search button with other items.)
     }
     
-    @IBAction func showSearchBar()
+    @IBAction open func showSearchBar()
     {
         searchController?.searchBar.becomeFirstResponder()
     }
@@ -274,7 +270,7 @@ extension GenericTableViewController: UISearchControllerDelegate {
 
 extension GenericTableViewController: UISearchResultsUpdating {
     
-    public func updateSearchResults(for searchController: UISearchController) {
+    open func updateSearchResults(for searchController: UISearchController) {
         
         //Get the search text
         var searchText = searchController.searchBar.text

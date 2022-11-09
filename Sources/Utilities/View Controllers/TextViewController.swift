@@ -9,9 +9,10 @@ import UIKit
 
 @objc public class TextViewController: UIViewController {
 
-    @IBOutlet var textView:UITextView!
+    @IBOutlet var textView:UITextView?
 
     public var text:String?
+    
     public var rightMenuButtons:[UIBarButtonItem] {
         get {
             navigationItem.rightBarButtonItems ?? []
@@ -22,7 +23,7 @@ import UIKit
     }
  
     public override func viewWillAppear(_ animated:Bool) {
-        textView.text = text
+        textView?.text = text
 
         //        //A bug in iOS SDK resets the font when using settext and property selectable = NO,
         //        // therefore we set it programmatically here
