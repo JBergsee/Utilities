@@ -16,6 +16,9 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
     public weak var delegate: CollapseControllingDelegate?
     public var section: Int = 0
     
+    public var isCollapsed: Bool {
+        delegate?.isCollapsed(section) ?? false //Open by default
+    }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -41,10 +44,12 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
     // Trigger toggle section when tapping on the header
     //
     @objc func tapCollapse(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard let headerView = gestureRecognizer.view?.superview as? CollapseHeader else {
-            return
-        }
-        delegate?.toggleSection(headerView.section, for: self)
+        delegate?.toggleSection(section, for: self)
+    }
+    
+    //Or on the button
+    @IBAction open func collapseButtonTapped(_ sender: UIButton) {
+        delegate?.toggleSection(section, for: self)
     }
     
     //Called by the delegate with correct status
@@ -56,5 +61,4 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
         collapseButton?.rotateAnimated(collapsed ? -.pi / 2 : 0.0 , duration: animated ? 0.3 : 0.0)
         
     }
-    
 }

@@ -18,7 +18,8 @@ public protocol ModelProviding: AnyObject {
     func rowsIn(section: Int) -> Int
     
     //TODO: associated types and generics instead of Any
-    func modelFor(row: Int, section: Int) -> Any
+    func modelFor(row: Int, section: Int) -> Any //To be implemented by each class
+    func standardModelFor(row: Int, section: Int) -> Any //Default implementation providing an object from array or FRC
     func modelForHeader(section: Int) -> Any
     func modelForFooter(section: Int) -> Any
     
@@ -29,6 +30,7 @@ public protocol ModelProviding: AnyObject {
     func insertAt(row: Int, section: Int)
     func move(from:IndexPath, to:IndexPath)
     
+    func searchPredicate(for searchText:String) -> NSPredicate
     func filterModel(searchText:String?)
 }
 
@@ -41,7 +43,7 @@ public protocol ArrayModelProviding: ModelProviding {
     
     var modelArray:[[CellModel]] { get set }
     var filteredArray:[[CellModel]] { get set }
-    func searchPredicate(for searchText:String) -> NSPredicate
+
     func newObject() -> CellModel?
 }
 
@@ -55,7 +57,7 @@ public extension ArrayModelProviding {
         return filteredArray[section].count
     }
     
-    func modelFor(row: Int, section: Int) -> Any {
+    func standardModelFor(row: Int, section: Int) -> Any {
         return filteredArray[section][row]
     }
     

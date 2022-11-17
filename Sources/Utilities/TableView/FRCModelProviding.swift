@@ -18,7 +18,7 @@ public protocol FRCModelProviding: ModelProviding {
     ///Fetch parameters
     func fetchRequestWith(predicate: NSPredicate) -> NSFetchRequest<NSFetchRequestResult>
     func fetchPredicate() -> NSPredicate
-    func searchPredicateFor(searchText: String) -> NSPredicate
+    
     ///Must be same as first sort descriptor key path
     func sectionNameKeyPath() -> String //TODO: change to KeyPath
     
@@ -79,7 +79,7 @@ public extension FRCModelProviding {
             Log.debug(message: "Searching for \(searchText).", in: .functionality)
             
             //Make a predicate for the search
-            let sPredicate = searchPredicateFor(searchText: searchText)
+            let sPredicate = searchPredicate(for: searchText)
             
             let fPredicate = fetchPredicate()
             

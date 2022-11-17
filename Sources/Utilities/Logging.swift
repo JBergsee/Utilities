@@ -21,7 +21,18 @@ import OSLog
 
 
 
-public struct LogCategory:RawRepresentable {
+/**
+ Extend in dependent projects to add categories.
+ 
+ Example usage:
+```
+public extension LogCategory {
+    //Logs airline specific Journey Log
+    static let journeyLog = LogCategory(rawValue: "Journey Log")!
+}
+```
+*/
+public struct LogCategory: RawRepresentable {
     public var rawValue: String
     public init?(rawValue: String) {
         self.rawValue = rawValue
@@ -36,12 +47,13 @@ public struct LogCategory:RawRepresentable {
     fileprivate static let unknown = LogCategory(rawValue: "Unknown, change this!")!
 }
 
-//Use this in dependent projects:
-//public extension LogCategory {
-//    ///Logs airline specific Journey Log
-//    static let journeyLog = LogCategory(rawValue: "Journey Log")!
-//}
-
+public struct LogErrorCode: RawRepresentable {
+    public var rawValue: Int
+    public init?(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    public static let defaultError = LogErrorCode(rawValue: 1)
+}
 
 @objc public enum logLevel: Int {
     case fault, // Bug in program
@@ -92,8 +104,10 @@ public struct LogCategory:RawRepresentable {
         }
     }
     
-    //Log errors, where an error object is thrown
-    //Optional message
+    //MARK: - Logging
+    
+    ///Log errors, where an error object is thrown
+    ///Optional message will be added to Crashlytics log.
     public class func error(_ error: Error, message: String?, in category: LogCategory) {
         if let message = message {
             
@@ -109,16 +123,18 @@ public struct LogCategory:RawRepresentable {
         firebase?.crashlyticsError(error)
     }
     
-    //Log faults (Errors in code, but where no error object is provided)
-    public class func fault(message: String, in category: LogCategory) {
+    ///Log faults (Errors in code, but where no error object is provided)
+    ///Creates an error in Crashlytics with optional error code
+    public class func fault(message: String, code: LogErrorCode? = .defaultError, in category: LogCategory) {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).fault("Fault: \(message, privacy: .public)")
         //Create an error and Notify crashlytics
-        firebase?.crashlyticsError(Log.createError(message, domain: category.rawValue))
+        firebase?.crashlyticsError(Log.createError(message, code: code?.rawValue ?? 0, domain: category.rawValue))
     }
     
     
-    //Log code passes and events that needs attention, but are not necessarily serious
+    ///Log code passes and events that needs attention, but are not necessarily serious
+    ///Notifies Crashlytics and Analytics
     public class func notify(message: String, in category: LogCategory) {
         Logger(subsystem: subsystem, category: category.rawValue).fault("Attention: \(message, privacy: .public)")
         //Notify crashlytics
@@ -131,7 +147,7 @@ public struct LogCategory:RawRepresentable {
     }
     
     
-    //Log notices (for app flow and user actions)
+    ///Logs app flow and user actions
     public class func trace(message: String, in category: LogCategory) {
         //Internal logging
         Logger(subsystem: subsystem, category: category.rawValue).notice("\(message, privacy: .public)")
@@ -139,7 +155,9 @@ public struct LogCategory:RawRepresentable {
         firebase?.crashlyticsLog(message)
     }
     
-    //Log debugging
+    ///Log debug messages
+    ///Internal logging only, and not persisted.
+    ///Nothing sent to crashlytics
     public class func debug(message: String, in category: LogCategory) {
         //Internal logging only, and not persisted.
         Logger(subsystem: subsystem, category: category.rawValue).debug("\(message, privacy: .public)")
@@ -148,14 +166,13 @@ public struct LogCategory:RawRepresentable {
     
     
     
-    //Convenience function for creating errors
+    ///Convenience function for creating errors
     public static func createError(_ message: String, code: Int = 0, domain: String = "FlightBriefingErrorDomain", function: String = #function, file: String = #file, line: Int = #line) -> NSError {
         
         let functionKey = "\(domain).function"
         let fileKey = "\(domain).file"
         let lineKey = "\(domain).line"
-        let calculatedCode = code != 0 ? code : message.hash
-        let error = NSError(domain: domain, code: calculatedCode, userInfo: [
+        let error = NSError(domain: domain, code: code, userInfo: [
             NSLocalizedDescriptionKey: message,
             functionKey: function,
             fileKey: file,
@@ -166,6 +183,8 @@ public struct LogCategory:RawRepresentable {
     }
 }
 
+
+//MARK: - Retrieving logs
 
 
 extension Log {

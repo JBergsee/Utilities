@@ -8,6 +8,10 @@
 import UIKit
 
 
+/** Based on https://stackoverflow.com/questions/36507885/expand-collapse-uitableview-sections-with-a-backing-nsfetchedresultscontroller
+ and even more https://github.com/jeantimex/CollapsibleTableSectionViewController
+*/
+
 //Might have to be an extension of the modelprovider directly! 
 extension GenericTableViewController: CollapseControllingDelegate {
     
@@ -68,7 +72,7 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     
     private var sectionsState = [String : Bool]()
     
-    private func isCollapsed(_ section: Int) -> Bool {
+    public func isCollapsed(_ section: Int) -> Bool {
         let sectionId = modelProvider!.uuid(for: section)
         if sectionsState.index(forKey: sectionId) == nil {
             sectionsState[sectionId] = false //set default value if not set before
@@ -109,17 +113,21 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     
     open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.headerIdentifier ?? "header")
+        
+        guard let header = cell?.contentView.subviews.first else {
+            return nil
+        }
         //Collapsible?
-        if let collapseHeader = cell?.contentView.subviews.first as? CollapseControlling {
+        if let collapseHeader = header as? CollapseControlling {
             collapseHeader.delegate = self //Or modelprovider if changed later on?
             collapseHeader.section = section
             collapseHeader.setCollapsed(isCollapsed(section), animated: false) //Do not animate at creation
         }
         //Configurable?
-        if let header = cell?.contentView.subviews.first as? ModelConfigurable {
-            header.configureWith(model: modelProvider!.modelForHeader(section: section))
+        if let configurableHeader = header as? ModelConfigurable {
+            configurableHeader.configureWith(model: modelProvider!.modelForHeader(section: section))
         }
-        return cell?.contentView
+        return header
     }
     
     open override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

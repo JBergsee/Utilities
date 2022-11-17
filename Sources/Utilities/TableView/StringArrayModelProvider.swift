@@ -30,10 +30,14 @@ open class StringArrayModelProvider: ArrayModelProviding {
     }
     
     // Overrideable default implementations
-    // (Protocol extensions cannot be ovverridden by subclasses to a class compliant with that protocol,
+    // (Protocol extensions cannot be overridden by subclasses to a class compliant with that protocol,
     // unless overridden in the class itself)
     open func uuid(for section:Int) -> String {
         return "\(section)"
+    }
+    
+    public func modelFor(row: Int, section: Int) -> Any {
+        return standardModelFor(row: row, section: section)
     }
     
     open func modelForHeader(section: Int) -> Any {
