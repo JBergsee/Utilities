@@ -21,7 +21,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
     
     //Start updates
-    @objc public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    @objc open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         guard !_changeIsUserDriven else { return }
         //Do nothing if the user is rearranging the table
@@ -39,7 +39,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     }
     
     //Insert or remove a whole section
-    @objc public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    @objc open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange sectionInfo: NSFetchedResultsSectionInfo,
                     atSectionIndex sectionIndex: Int,
                     for type: NSFetchedResultsChangeType) {
@@ -74,7 +74,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     }
     
     //Insert, delete, move or change an object
-    @objc public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    @objc open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange anObject: Any,
                     at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType,
@@ -127,7 +127,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    @objc public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    @objc open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         guard !_changeIsUserDriven else { return }
         //Do nothing if the user is rearranging the table

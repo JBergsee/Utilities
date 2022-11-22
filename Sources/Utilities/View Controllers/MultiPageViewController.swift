@@ -145,7 +145,7 @@ open class MultiPageViewController : UIViewController {
     
     //MARK: - Insert actual views
     
-    func loadScrollViewWithPageNbr(_ page:Int) {
+    open func loadScrollViewWithPageNbr(_ page:Int) {
         
         let numberOfPages = pageProvider!.numberOfPages()
         

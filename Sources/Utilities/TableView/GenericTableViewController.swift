@@ -132,10 +132,14 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     
     open override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.footerIdentifier ?? "footer")
-        if let footer = cell?.contentView.subviews.first as? ModelConfigurable {
-            footer.configureWith(model: modelProvider!.modelForFooter(section: section))
+        guard let footer = cell?.contentView.subviews.first else {
+            return nil
         }
-        return cell?.contentView
+        //Configurable?
+        if let configurableFooter = cell?.contentView.subviews.first as? ModelConfigurable {
+            configurableFooter.configureWith(model: modelProvider!.modelForFooter(section: section))
+        }
+        return footer
     }
     
     ///Return 0.0 to suppress header. Default is automaticDimension
