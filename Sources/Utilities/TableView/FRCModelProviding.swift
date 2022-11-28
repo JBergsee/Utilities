@@ -13,7 +13,7 @@ import CoreData
 public protocol FRCModelProviding: ModelProviding {
     
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult> { get set }
-    var moc: NSManagedObjectContext { get set }
+    var moc: NSManagedObjectContext? { get set }
     
     ///Fetch parameters
     func fetchRequestWith(predicate: NSPredicate) -> NSFetchRequest<NSFetchRequestResult>
@@ -106,7 +106,7 @@ public extension FRCModelProviding {
         let request = fetchRequestWith(predicate:  fetchPredicate())
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                              managedObjectContext: moc,
+                                                              managedObjectContext: moc!,
                                                               sectionNameKeyPath: sectionNameKeyPath(), cacheName: nil)
         fetchedResultsController.delegate = self as? NSFetchedResultsControllerDelegate
         

@@ -12,14 +12,6 @@ import CoreData
 //MARK: - Fetched Results controller delegate standard implementation
 extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
-    /*
-     For changes in the underlying model that is NOT already done by the user, such as giving new sortIndexes...
-     
-     Assume self has a property 'tableView' -- as is the case for an instance of a UITableViewController subclass -- and a method configureCell:atIndexPath: which updates the contents of a given cell
-     with information from a managed object at the given index path in the fetched results controller.
-     */
-    
-    
     //Start updates
     @objc open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
@@ -49,21 +41,13 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         
         switch(type) {
         case .insert:
-            //Add the new section in the open sections model
-            /*
-             [self.openSections insertObject:[NSNumber numberWithBool:YES] atIndex:sectionIndex];
-             */
-            //And add the new section in the table
+            //Add the new section in the table
             tableView.insertSections(IndexSet([sectionIndex]),
                                      with:.automatic)
             break
             
         case .delete:
-            //Remove the section from the open sections model
-            /*
-             [self.openSections removeObjectAtIndex:sectionIndex];
-             */
-            //And remove the section from the table
+            //Remove the section from the table
             tableView.deleteSections(IndexSet([sectionIndex]),
                                      with:.automatic)
             break
