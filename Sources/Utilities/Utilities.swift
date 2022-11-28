@@ -28,12 +28,15 @@ public class Utilities {
 }
 
 public extension BinaryInteger {
+    ///Returns a string in format HH:mm or empty string if the value is less than 0
     func toTimeString() -> String {
         return Utilities.timeStringWith(minutes: self)
     }
 }
 
 public extension BinaryFloatingPoint {
+    ///Rounds a positive or zero value to the given number of `decimals` places and returns as String.
+    ///Negative values will return empty string.
     func toValueString(decimals: Int) -> String {
         return Utilities.stringValueIfSet(self, withDecimals: decimals)
     }
