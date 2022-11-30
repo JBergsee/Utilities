@@ -33,19 +33,6 @@ class TimePickerViewController: UIViewController {
         picker.date = Date(timeIntervalSince1970: 0)
     }
     
-    ///Set current time in picker
-    ///and tap "Done"
-    @IBAction func nowTapped() {
-        
-        //Get the time
-        let now = Date()
-        
-        //Set in picker
-        picker.date = now
-        
-        //Call delegate and close
-        doneTapped()
-    }
     
     ///Remove view and update time in delegate
     @IBAction func doneTapped() {

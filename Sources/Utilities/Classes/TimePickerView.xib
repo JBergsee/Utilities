@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -14,90 +14,19 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <visualEffectView opaque="NO" alpha="0.55000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AKb-AC-udE">
-                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="rqJ-yl-Esm">
-                        <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" style="wheels" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ewb-z5-DeT">
-                                <rect key="frame" x="7" y="74" width="218" height="128"/>
-                                <date key="date" timeIntervalSinceReferenceDate="-978310798.92037594">
-                                    <!--1969-12-31 23:00:01 +0000-->
-                                </date>
-                                <locale key="locale" localeIdentifier="sv"/>
-                            </datePicker>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HOn-dN-N3p">
-                                <rect key="frame" x="141" y="54" width="76" height="31"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" title="Remove"/>
-                                <connections>
-                                    <action selector="removeTapped" destination="-1" eventType="touchUpInside" id="VhE-4r-IYh"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vHP-7r-klz">
-                                <rect key="frame" x="15" y="54" width="46" height="31"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" title="Set"/>
-                                <connections>
-                                    <action selector="doneTapped" destination="-1" eventType="touchUpInside" id="e1Z-pR-qJC"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k0y-SA-g66">
-                                <rect key="frame" x="77" y="191" width="78" height="31"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" image="clock" catalog="system" title=" Now"/>
-                                <connections>
-                                    <action selector="nowTapped" destination="-1" eventType="touchUpInside" id="KxK-G4-dgu"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="ZtQ-PF-LU4"/>
-                        <constraints>
-                            <constraint firstItem="HOn-dN-N3p" firstAttribute="top" secondItem="ZtQ-PF-LU4" secondAttribute="top" constant="10" id="4cm-fe-Wdo"/>
-                            <constraint firstItem="ZtQ-PF-LU4" firstAttribute="trailing" secondItem="HOn-dN-N3p" secondAttribute="trailing" constant="15" id="5KR-Oh-igE"/>
-                            <constraint firstItem="vHP-7r-klz" firstAttribute="leading" secondItem="ZtQ-PF-LU4" secondAttribute="leading" constant="15" id="8m0-nG-vPh"/>
-                            <constraint firstItem="vHP-7r-klz" firstAttribute="top" secondItem="ZtQ-PF-LU4" secondAttribute="top" constant="10" id="KJZ-8C-2br"/>
-                            <constraint firstItem="k0y-SA-g66" firstAttribute="centerX" secondItem="ZtQ-PF-LU4" secondAttribute="centerX" id="aRb-Z8-YzL"/>
-                            <constraint firstItem="ZtQ-PF-LU4" firstAttribute="bottom" secondItem="ewb-z5-DeT" secondAttribute="bottom" constant="30" id="lmn-bZ-F4K"/>
-                            <constraint firstItem="ZtQ-PF-LU4" firstAttribute="trailing" secondItem="ewb-z5-DeT" secondAttribute="trailing" constant="7" id="n9O-ho-77l"/>
-                            <constraint firstItem="ZtQ-PF-LU4" firstAttribute="bottom" secondItem="k0y-SA-g66" secondAttribute="bottom" constant="10" id="nJ6-5F-Hsc"/>
-                            <constraint firstItem="ewb-z5-DeT" firstAttribute="top" secondItem="ZtQ-PF-LU4" secondAttribute="top" constant="30" id="oER-dQ-f0h"/>
-                            <constraint firstItem="ewb-z5-DeT" firstAttribute="leading" secondItem="ZtQ-PF-LU4" secondAttribute="leading" constant="7" id="vFx-P7-lvG"/>
-                        </constraints>
-                    </view>
-                    <blurEffect style="regular"/>
-                </visualEffectView>
-            </subviews>
-            <constraints>
-                <constraint firstAttribute="trailing" secondItem="AKb-AC-udE" secondAttribute="trailing" id="jNK-E1-3yc"/>
-                <constraint firstItem="AKb-AC-udE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="jP8-Fi-mqf"/>
-                <constraint firstAttribute="bottom" secondItem="AKb-AC-udE" secondAttribute="bottom" id="xxM-7E-PDx"/>
-                <constraint firstItem="AKb-AC-udE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="y1H-mM-iX5"/>
-            </constraints>
-            <nil key="simulatedTopBarMetrics"/>
-            <nil key="simulatedBottomBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-1.4492753623188408" y="-154.01785714285714"/>
-        </view>
         <view opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.55000000000000004" contentMode="center" id="ldF-U8-nXu">
-            <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
+            <rect key="frame" x="0.0" y="0.0" width="232" height="201"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" style="wheels" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dcz-Pd-HQr">
-                    <rect key="frame" x="7" y="74" width="218" height="128"/>
+                    <rect key="frame" x="7" y="74" width="218" height="127"/>
                     <date key="date" timeIntervalSinceReferenceDate="-978310798.92037594">
                         <!--1969-12-31 23:00:01 +0000-->
                     </date>
                     <locale key="locale" localeIdentifier="sv"/>
                 </datePicker>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Nl-LN-RZD">
-                    <rect key="frame" x="141" y="54" width="76" height="31"/>
+                    <rect key="frame" x="126" y="54" width="91" height="31"/>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="tinted" title="Remove"/>
                     <connections>
@@ -105,7 +34,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CU5-5B-lAs">
-                    <rect key="frame" x="15" y="54" width="46" height="31"/>
+                    <rect key="frame" x="15" y="54" width="91" height="31"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="tinted" title="Set"/>
@@ -113,33 +42,22 @@
                         <action selector="doneTapped" destination="-1" eventType="touchUpInside" id="o5N-1l-PSy"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Md-kp-M3W">
-                    <rect key="frame" x="77" y="191" width="78" height="31"/>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="tinted" image="clock" catalog="system" title=" Now"/>
-                    <connections>
-                        <action selector="nowTapped" destination="-1" eventType="touchUpInside" id="iTi-dz-3sk"/>
-                    </connections>
-                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="gao-cI-rH4"/>
             <constraints>
-                <constraint firstItem="gao-cI-rH4" firstAttribute="bottom" secondItem="Dcz-Pd-HQr" secondAttribute="bottom" constant="30" id="3Zr-Lk-ksM"/>
+                <constraint firstItem="gao-cI-rH4" firstAttribute="bottom" secondItem="Dcz-Pd-HQr" secondAttribute="bottom" id="3Zr-Lk-ksM"/>
                 <constraint firstItem="Dcz-Pd-HQr" firstAttribute="leading" secondItem="gao-cI-rH4" secondAttribute="leading" constant="7" id="5wb-jI-ehU"/>
                 <constraint firstItem="gao-cI-rH4" firstAttribute="trailing" secondItem="8Nl-LN-RZD" secondAttribute="trailing" constant="15" id="MJN-OP-1o8"/>
-                <constraint firstItem="gao-cI-rH4" firstAttribute="bottom" secondItem="9Md-kp-M3W" secondAttribute="bottom" constant="10" id="TNC-Bq-zTp"/>
                 <constraint firstItem="Dcz-Pd-HQr" firstAttribute="top" secondItem="gao-cI-rH4" secondAttribute="top" constant="30" id="U6P-qb-lVv"/>
                 <constraint firstItem="8Nl-LN-RZD" firstAttribute="top" secondItem="gao-cI-rH4" secondAttribute="top" constant="10" id="X0V-0L-L3e"/>
-                <constraint firstItem="9Md-kp-M3W" firstAttribute="centerX" secondItem="gao-cI-rH4" secondAttribute="centerX" id="b5k-ff-phV"/>
                 <constraint firstItem="CU5-5B-lAs" firstAttribute="leading" secondItem="gao-cI-rH4" secondAttribute="leading" constant="15" id="cEk-uW-d6V"/>
+                <constraint firstItem="8Nl-LN-RZD" firstAttribute="leading" secondItem="gao-cI-rH4" secondAttribute="centerX" constant="10" id="j4G-0P-YGU"/>
                 <constraint firstItem="CU5-5B-lAs" firstAttribute="top" secondItem="gao-cI-rH4" secondAttribute="top" constant="10" id="kIV-WC-KCa"/>
                 <constraint firstItem="gao-cI-rH4" firstAttribute="trailing" secondItem="Dcz-Pd-HQr" secondAttribute="trailing" constant="7" id="loZ-pQ-0Ae"/>
+                <constraint firstItem="gao-cI-rH4" firstAttribute="centerX" secondItem="CU5-5B-lAs" secondAttribute="trailing" constant="10" id="xng-3w-nPE"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="432" y="-153"/>
+            <point key="canvasLocation" x="-23" y="-182"/>
         </view>
     </objects>
-    <resources>
-        <image name="clock" catalog="system" width="128" height="121"/>
-    </resources>
 </document>

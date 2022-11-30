@@ -55,9 +55,17 @@ public extension Decodable {
             let data = try JSONSerialization.data(withJSONObject: fromJSONDict, options: [.prettyPrinted])
             let decoder = JSONDecoder()
             self = try decoder.decode(Self.self, from: data)
+        
+        } catch DecodingError.keyNotFound(_, let context),
+                DecodingError.valueNotFound(_, let context),
+                DecodingError.typeMismatch(_, let context),
+                DecodingError.dataCorrupted(let context) {
+            let error = Log.createError(context.debugDescription, code: 999, domain: "Decodable")
+            Log.error(error, message: "Unable to initialize \(Self.self) from dictionary.", in: .functionality)
+            fatalError("Decoding error")
         } catch {
             Log.error(error, message: "Unable to initialize \(Self.self) from dictionary: \n\(fromJSONDict)", in: .functionality)
-            fatalError()
+            fatalError("Other error")
         }
     }
 }

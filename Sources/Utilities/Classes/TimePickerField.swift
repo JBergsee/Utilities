@@ -20,6 +20,20 @@ import UIKit
     
     private var pickerView = TimePickerViewController(nibName: "TimePickerView", bundle: .module)
     
+    public enum Mode: Int {
+        case time, interval
+    }
+    
+    public var mode: Mode {
+        get {
+            intervalMode ? .interval : .time
+        }
+        set {
+            intervalMode = newValue == .interval ? true : false
+        }
+    }
+    
+    @IBInspectable public var intervalMode: Bool = false
     
     public override func awakeFromNib() {
         super.awakeFromNib()
@@ -100,14 +114,24 @@ extension TimePickerField: UITextFieldDelegate {
         
         //Show a popup with the pickerView
         pickerView.modalPresentationStyle = .popover
-        pickerView.preferredContentSize = CGSize(width: 232, height: 232)
+        pickerView.preferredContentSize = CGSize(width: 232, height: 201)
         pickerView.popoverPresentationController?.sourceView = self
         
         timeDelegate?.present(pickerView, animated: true)
         
-        //Set current value in the pickerView
-        let minutes = timeInMinutes ?? 0
+        //Set value in the pickerView, 3 cases:
+        if let minutes = timeInMinutes {
+        //1: Value exists
         pickerView.date = Date(timeIntervalSince1970: Double(minutes*60))
+        } else if intervalMode {
+            //2: Value does not exist and we are in interval mode
+            //Set zero
+            pickerView.date = Date(timeIntervalSince1970: 0)
+        } else {
+            //3: No value and we are in time mode
+            //Set current time
+            pickerView.date = Date()
+        }
         
         //Do not show the keyboard
         return false;
