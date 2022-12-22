@@ -42,7 +42,10 @@ public extension UIImage {
      func prettyPrintedSize() -> String {
          let jpeg = jpegData(compressionQuality: 1.0)
         //let png = pngData()
-         return "(\(self.size.width),\(self.size.height)), jpeg: \(jpeg?.prettySize ?? "[no]")"
+         return String(format: "(%.f * %.f), jpeg: %@",
+                       size.width,
+                       size.height,
+                       jpeg?.prettySize ?? "[no]")
     }
 }
 

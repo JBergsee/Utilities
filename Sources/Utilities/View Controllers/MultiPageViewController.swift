@@ -160,6 +160,8 @@ open class MultiPageViewController : UIViewController {
         
         //Tell it will appear
         //Explicit call since we're already in the superview's viewWillAppear
+        //But first, since this get's called when scrolling, save any possible input.
+        controller.view.endEditing(false) //Asks the view and it's subviews to resign first responder.
         controller.viewWillAppear(true)
         
         // add the controller's view to the scroll view

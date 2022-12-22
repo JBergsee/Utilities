@@ -92,7 +92,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="Text" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jmv-iG-EY1">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                                <rect key="frame" x="0.0" y="56" width="414" height="786"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -100,9 +100,10 @@
                             </textView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9Vf-1q-gEe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="9Vf-1q-gEe" firstAttribute="bottom" secondItem="Jmv-iG-EY1" secondAttribute="bottom" id="C14-Cz-2VZ"/>
-                            <constraint firstItem="Jmv-iG-EY1" firstAttribute="top" secondItem="iO7-n2-c0U" secondAttribute="top" id="JLm-Wp-HgS"/>
+                            <constraint firstItem="Jmv-iG-EY1" firstAttribute="top" secondItem="9Vf-1q-gEe" secondAttribute="top" id="JLm-Wp-HgS"/>
                             <constraint firstItem="Jmv-iG-EY1" firstAttribute="leading" secondItem="9Vf-1q-gEe" secondAttribute="leading" id="fiC-Gp-p3s"/>
                             <constraint firstItem="Jmv-iG-EY1" firstAttribute="trailing" secondItem="9Vf-1q-gEe" secondAttribute="trailing" id="kkC-YB-3Jp"/>
                         </constraints>

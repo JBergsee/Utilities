@@ -76,8 +76,6 @@ public extension FRCModelProviding {
         if let searchText = searchText,
            !searchText.isEmpty {
             
-            Log.debug(message: "Searching for \(searchText).", in: .functionality)
-            
             //Make a predicate for the search
             let sPredicate = searchPredicate(for: searchText)
             
@@ -88,7 +86,6 @@ public extension FRCModelProviding {
             fetchedResultsController.fetchRequest.predicate = cPredicate
             
         } else {
-            Log.debug(message: "Reset search.", in: .functionality)
             
             //Reset the fetch request
             fetchedResultsController.fetchRequest.predicate = fetchPredicate()
