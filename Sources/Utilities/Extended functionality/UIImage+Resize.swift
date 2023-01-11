@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Logging
 
 public extension UIImage {
     

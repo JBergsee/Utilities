@@ -2,16 +2,8 @@ import XCTest
 @testable import Utilities
 import OSLog
 
-//let sut = Utilities()
-
-public extension LogCategory {
-    ///Log messages during testing
-    static let testing = LogCategory(rawValue: "Unit Testing")!
-}
-
 
 final class UtilitiesTests: XCTestCase {
-
 
     func testMinuteStrings() {
         
@@ -48,36 +40,7 @@ final class UtilitiesTests: XCTestCase {
         XCTAssert(Utilities.stringValueIfSet(value, withDecimals: 2) == "1.99", "Got errouneous string")
 
     }
-
-    func testFirebase() {
-        
-        //Notify calls both Crashlytics and Analytics
-        Log.notify(message: "Initializing firebase", in: .testing)
-        measure {
-            Log.initFirebase()
-        }
-        Log.notify(message: "Firebase initialized", in: .testing)
- 
-    }
-    func testLogging() {
-        
-        
-        var logs = [OSLogEntryLog]()
-        
-        measure {
-            //Getting logs is pretty slow, preferably this should be on a background thread
-            logs = try! getLogEntries()
-        }
-        XCTAssert(logs.count > 0, "No logs!")
-        print("**************************** Log: ****************************")
-        logs.forEach { entry in
-            print("\(entry.subsystem): \(entry.composedMessage)")
-        }
-        print("**************************** End log: ************************")
-
-        print(logString())
-    }
-    
+  
     func testStringSlicing() {
         let noD = "A0208/22 NOTAMN\nQ) VVHM/QMXHW/IV/BO/A/000/999/1049N10640E005\nA) VVTS B) 2201260958 C) PERM\nE) THE INSTALLATION OF THE LGT SYSTEM AND SIGNBOARDS ON TWY S (THE\nPORTION FM S5 TO S6) AND TWY S6, DETAILS AS FLW:\n1. ON TWY S (THE PORTION FM S5 TO S6):\n- TWY EGDE LGT\n- TWY CL LGT\n- IMT HLDG PSN LGT\n- SIGNBOARDS\n2. ON TWY S6: \n- TWY EGDE LGT\n- TWY CL LGT\n- STOP BARS LGT\n- SIGNBOARDS\nHR OF OPS: H24\nREF AIP VIET NAM PAGE AD 2.VVTS-7 DATED 30 MAR 2021.\n"
         

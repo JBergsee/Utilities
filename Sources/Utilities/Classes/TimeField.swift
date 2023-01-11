@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Logging
 
 @objc public protocol TimeFieldDelegate {
     
@@ -101,7 +102,6 @@ public class TimeField: ChainedField, UITextFieldDelegate {
         //(using a cached date formatter in Utilities extension
         
         let time = now.toString(using: .HHmm)
-        Log.debug(message: "Current time (UTC): \(time)", in: .functionality)
         
         //Handle as if it was written manually.
         text = time

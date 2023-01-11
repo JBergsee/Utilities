@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import Logging
 
 
 ///Provides the model when coming from a Fetched Results Controller and underlying core data.

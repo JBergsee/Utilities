@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Logging
 
 public extension UIViewController {
     

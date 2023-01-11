@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import Logging
 
 
 //MARK: - Fetched Results controller delegate standard implementation
