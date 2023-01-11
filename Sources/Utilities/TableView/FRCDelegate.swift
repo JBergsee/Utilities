@@ -12,32 +12,37 @@ import CoreData
 //MARK: - Fetched Results controller delegate standard implementation
 extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
+    private func viewIsInHierarchy() -> Bool {
+        return view.window != nil &&
+        view.superview != nil &&
+        isViewLoaded
+    }
+    
     //Start updates
     @objc open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
-        guard !_changeIsUserDriven else { return }
         //Do nothing if the user is rearranging the table
+        guard !_changeIsUserDriven else { return }
         
-        //Testing if it is in the hierarchy
-        //        guard view.window != nil,
-        //              view.superview != nil,
-        //              isViewLoaded else {
-        //
-        //                  Log.debug(message: "Not in hierarchy!", in: .functionality)
-        //                  return //Do nothing if the view is not in the hierarchy. (Avoids LayoutOutsideViewHierarchy warnings)
-        //              }
+        //Do nothing if the view is not in the hierarchy.
+        //(Avoids LayoutOutsideViewHierarchy warnings
+        // and crashes on flight deletions)
+//        guard viewIsInHierarchy() else {
+//            Log.debug(message: "Not updating FRC while view is not in hierarchy!", in: .functionality)
+//            return
+//        }
         
         tableView.beginUpdates()
     }
     
     //Insert or remove a whole section
     @objc open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                    didChange sectionInfo: NSFetchedResultsSectionInfo,
-                    atSectionIndex sectionIndex: Int,
-                    for type: NSFetchedResultsChangeType) {
+                               didChange sectionInfo: NSFetchedResultsSectionInfo,
+                               atSectionIndex sectionIndex: Int,
+                               for type: NSFetchedResultsChangeType) {
         
         guard !_changeIsUserDriven else { return }
-        //Do nothing if the user is rearranging the table
+//        guard viewIsInHierarchy() else { return }
         
         switch(type) {
         case .insert:
@@ -59,14 +64,14 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
     //Insert, delete, move or change an object
     @objc open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                    didChange anObject: Any,
-                    at indexPath: IndexPath?,
-                    for type: NSFetchedResultsChangeType,
-                    newIndexPath: IndexPath?) {
+                               didChange anObject: Any,
+                               at indexPath: IndexPath?,
+                               for type: NSFetchedResultsChangeType,
+                               newIndexPath: IndexPath?) {
         
         guard !_changeIsUserDriven else { return }
-        //Do nothing if the user is rearranging the table
-        
+//        guard viewIsInHierarchy() else { return }
+
         switch(type) {
             
         case .insert:
@@ -114,12 +119,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     @objc open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         guard !_changeIsUserDriven else { return }
-        //Do nothing if the user is rearranging the table
-        
-        //        guard view.window != nil else {
-        //            return
-        //            //Do nothing if the view is not in the hierarchy. (Avoids LayoutOutsideViewHierarchy warnings)
-        //        }
+//        guard viewIsInHierarchy() else { return }
         
         tableView.endUpdates()
     }

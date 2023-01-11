@@ -117,7 +117,6 @@ open class MultiPageViewController : UIViewController {
             subview.removeFromSuperview()
         }
         
-        
         // load the visible page
         let currentPage = segmentedControl?.selectedSegmentIndex ?? 0
         goTo(currentPage) //Will also load pages on either side
@@ -158,13 +157,7 @@ open class MultiPageViewController : UIViewController {
         //And add as child controller
         addChild(controller)
         
-        //Tell it will appear
-        //Explicit call since we're already in the superview's viewWillAppear
-        //But first, since this get's called when scrolling, save any possible input.
-        controller.view.endEditing(false) //Asks the view and it's subviews to resign first responder.
-        controller.viewWillAppear(true)
-        
-        // add the controller's view to the scroll view
+        // add the controller's view to the scroll view (if it ain't already added)
         if (controller.view.superview == nil)
         {
             
@@ -177,6 +170,10 @@ open class MultiPageViewController : UIViewController {
             
             //Invalidate views for redisplay
             controller.view.setNeedsLayout()
+            
+            //Tell it will appear
+            //Explicit call since we're already in the superview's viewWillAppear
+            controller.viewWillAppear(true)
             
         }
         
@@ -274,6 +271,15 @@ extension MultiPageViewController: UIScrollViewDelegate {
     // At the begin of scroll dragging, reset the boolean used when scrolls originate from the UIPageControl
     public func scrollViewWillBeginDragging(_ scrollView:UIScrollView) {
         pageControlUsed = false
+        
+        //Since this get's called scrolling starts, save any possible input.
+        //We need the current view to resign first responder
+        let pageWidth = scrollView.frame.size.width
+        let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
+        
+        //Get the viewController
+        guard let controller = pageProvider?.viewControllerForPage(page) else { return }
+        controller.view.endEditing(false) //Asks the view and it's subviews to resign first responder.
     }
     
     // At the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
