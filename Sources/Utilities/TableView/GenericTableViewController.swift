@@ -70,12 +70,16 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     
     //MARK: - Collapsing
     
+    /// True for collapsed
     private var sectionsState = [String : Bool]()
+    
+    /// Default open is true, change to false in view did load if all sections should be closed by default
+    public var defaultOpen = true
     
     public func isCollapsed(_ section: Int) -> Bool {
         let sectionId = modelProvider!.uuid(for: section)
         if sectionsState.index(forKey: sectionId) == nil {
-            sectionsState[sectionId] = false //set default value if not set before
+            sectionsState[sectionId] = !defaultOpen //set default value if not set before
         }
         return sectionsState[sectionId]!
     }

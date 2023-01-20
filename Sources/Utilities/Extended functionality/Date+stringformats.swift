@@ -47,7 +47,7 @@ public extension DateFormatter {
     static let dateAndTime: DateFormatter = {
        let formatter = DateFormatter()
        formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current
-       formatter.dateFormat = "yyyy'-'MM'-'dd' 'hh:mm" //ex: 2012-07-28 04:39
+       formatter.dateFormat = "yyyy'-'MM'-'dd' 'HH:mm" //ex: 2012-07-28 20:39
        return formatter
     }()
 }

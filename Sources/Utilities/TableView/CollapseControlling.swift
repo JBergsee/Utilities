@@ -16,7 +16,7 @@ public protocol CollapseControllingDelegate: AnyObject {
 ///Normally a UITableViewHeaderFooterView
 public protocol CollapseControlling: AnyObject {
     var collapseButton: UIView? { get }
-    var section: Int { get set }
+    var sectionUUID: Int { get set }
     var isCollapsed: Bool { get }
     ///Should be declared weak in implementation
     var delegate: CollapseControllingDelegate? { get set }

@@ -116,6 +116,7 @@ open class MultiPageViewController : UIViewController {
         for subview in scrollView.subviews {
             subview.removeFromSuperview()
         }
+        print("Reset pages")
         
         // load the visible page
         let currentPage = segmentedControl?.selectedSegmentIndex ?? 0
@@ -154,12 +155,13 @@ open class MultiPageViewController : UIViewController {
         //Get the viewController
         guard let controller = pageProvider?.viewControllerForPage(page) else { return }
         
-        //And add as child controller
-        addChild(controller)
-        
         // add the controller's view to the scroll view (if it ain't already added)
         if (controller.view.superview == nil)
         {
+            
+            //And add as child controller
+            addChild(controller)
+            print("Add child \(controller)")
             
             var frame = self.scrollView.frame //controller.view.frame;
             frame.origin.x = frame.size.width * CGFloat(page)
@@ -249,7 +251,7 @@ extension MultiPageViewController: UIScrollViewDelegate {
             // do nothing - the scroll was initiated from the page control, not the user dragging
             return
         }
-        
+
         // Switch the indicator when more than 50% of the previous/next page is visible
         let pageWidth = scrollView.frame.size.width
         let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
@@ -271,7 +273,7 @@ extension MultiPageViewController: UIScrollViewDelegate {
     // At the begin of scroll dragging, reset the boolean used when scrolls originate from the UIPageControl
     public func scrollViewWillBeginDragging(_ scrollView:UIScrollView) {
         pageControlUsed = false
-        
+
         //Since this get's called scrolling starts, save any possible input.
         //We need the current view to resign first responder
         let pageWidth = scrollView.frame.size.width

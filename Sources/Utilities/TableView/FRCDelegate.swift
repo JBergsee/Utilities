@@ -73,19 +73,22 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         guard !_changeIsUserDriven else { return }
 //        guard viewIsInHierarchy() else { return }
 
+        //Will crash if the section is closed so check before deleting/inserting:
+        
         switch(type) {
             
         case .insert:
-            guard let newIndexPath = newIndexPath else {
-                return
-            }
+            guard let newIndexPath = newIndexPath,
+                  !isCollapsed(newIndexPath.section) else { return }
             
             tableView.insertRows(at: [newIndexPath],
                                  with:.automatic)
             break;
             
         case .delete:
-            guard let indexPath = indexPath else { return }
+            
+            guard let indexPath = indexPath,
+                  !isCollapsed(indexPath.section) else { return }
             
             tableView.deleteRows(at: [indexPath], with: .automatic)
             
@@ -100,11 +103,16 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
             //Should be enough to redraw the cell...
             //But is not enough when the change is taking place and the view is not attached to a window.
             //Therefore, a reload should be added to the viewWillAppear: of this viewController.
+            
+            //HOWEVER, note that a reloadData in viewWillAppear may cause crashes when the iPad is rotated,
+            //so test this carefully!
             break
             
         case .move:
             guard let indexPath = indexPath,
-                  let newIndexPath = newIndexPath else { return }
+                  let newIndexPath = newIndexPath,
+                  !isCollapsed(indexPath.section),
+                  !isCollapsed(newIndexPath.section) else { return }
             
             tableView.deleteRows(at: [indexPath],
                                  with:.automatic)

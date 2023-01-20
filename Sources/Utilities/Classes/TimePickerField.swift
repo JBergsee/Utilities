@@ -37,7 +37,7 @@ import UIKit
     
     public override func awakeFromNib() {
         super.awakeFromNib()
-    
+        
         //Set self as UITextfield delegate to be able to present popup instead of keyboard
         delegate = self
         pickerView.delegate = self
@@ -46,7 +46,7 @@ import UIKit
     
     //MARK: - Return values from the string
     
-    /* returns nil if not set */
+    /// Returns nil if not set
     private var minutes: Int? {
         let times = text?.components(separatedBy: ":") ?? []
         
@@ -69,7 +69,7 @@ import UIKit
         return nil
     }
     
-    /* returns nil if not set */
+    /// Returns nil if not set
     private var hours: Int? {
         let times = text?.components(separatedBy: ":") ?? []
         
@@ -88,22 +88,34 @@ import UIKit
         return nil
     }
     
-    /* returns nil if not set */
+    /// Returns nil if not set
     public var timeInMinutes: Int? {
         get {
-        guard let mins = minutes, let hrs = hours, let str = self.text else { return nil }
-        
-        //Take into account a deleted figure!! return nil
-        //Assume that the value is removed, or half removed when less than h:mm
-        guard (str.count >= 4) else { return nil }
-        
-        return hrs * 60 + mins
+            guard let mins = minutes,
+                  let hrs = hours,
+                  let str = self.text else { return nil }
+            
+            //Take into account a deleted figure!! return nil
+            //Assume that the value is removed, or half removed when less than h:mm
+            guard (str.count >= 4) else { return nil }
+            
+            return hrs * 60 + mins
         }
         set {
             text = newValue?.toTimeString()
         }
     }
     
+    /// Makes it possible to use a date to set the time.
+    /// Only the hh:mm part will be used.
+    public func setDate(_ date: Date?) {
+        //Format the timestring
+        //(using a cached date formatter in Utilities extension
+        let time = date?.toString(using: .HHmm) ?? ""
+        
+        //set in textfield
+        text = time
+    }
 }
 
 //MARK: - Text Field Delegate
@@ -121,8 +133,8 @@ extension TimePickerField: UITextFieldDelegate {
         
         //Set value in the pickerView, 3 cases:
         if let minutes = timeInMinutes {
-        //1: Value exists
-        pickerView.date = Date(timeIntervalSince1970: Double(minutes*60))
+            //1: Value exists
+            pickerView.date = Date(timeIntervalSince1970: Double(minutes*60))
         } else if intervalMode {
             //2: Value does not exist and we are in interval mode
             //Set zero

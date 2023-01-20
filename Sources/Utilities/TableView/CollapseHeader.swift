@@ -40,19 +40,17 @@ open class CollapseHeader: UITableViewHeaderFooterView, CollapseControlling, Mod
         titleLabel?.text = text + " (\(nbr) items)"
     }
     
-    //
-    // Trigger toggle section when tapping on the header
-    //
+    /// Trigger toggle section when tapping on the header
     @objc func tapCollapse(_ gestureRecognizer: UITapGestureRecognizer) {
         delegate?.toggleSection(section, for: self)
     }
     
-    //Or on the button
+    /// Trigger toggle section when tapping the button
     @IBAction open func collapseButtonTapped(_ sender: UIButton) {
         delegate?.toggleSection(section, for: self)
     }
     
-    //Called by the delegate with correct status
+    /// Called by the delegate with correct status
     open func setCollapsed(_ collapsed: Bool, animated: Bool) {
         //
         // Animate the arrow rotation (see UIView Extension)
