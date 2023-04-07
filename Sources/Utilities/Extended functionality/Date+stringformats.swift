@@ -30,6 +30,13 @@ public extension DateFormatter {
        return formatter
     }()
     
+    static let HHmmss: DateFormatter = {
+       let formatter = DateFormatter()
+       formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current
+       formatter.dateFormat = "HH:mm:ss"
+       return formatter
+    }()
+    
     static let ddHHmm: DateFormatter = {
        let formatter = DateFormatter()
        formatter.timeZone = TimeZone(abbreviation: "UTC") //TimeZone.current

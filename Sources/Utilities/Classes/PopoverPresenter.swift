@@ -58,44 +58,49 @@ public class PopoverPicker : NSObject {
     }
     
     public func pickString(presentationStyle: UIModalPresentationStyle = .popover) async -> String? {
+        switch presentationStyle {
+        case .fullScreen, .pageSheet, .formSheet, .currentContext, .overFullScreen, .overCurrentContext, .blurOverFullScreen, .custom:
+            showModal(presentationStyle)
+            break
+        case .popover, .none, .automatic:
+            showPopover()
+            break
+        @unknown default:
+            Log.fault(message: "New presentation style in PopoverPresenter: \(presentationStyle)", in: .functionality)
+            showPopover()
+        }
         return await withCheckedContinuation({ (continuation: popoverCheckedContinuation) in
             self.continuation = continuation
-            switch presentationStyle {
-            case .fullScreen, .pageSheet, .formSheet, .currentContext, .overFullScreen, .overCurrentContext, .blurOverFullScreen, .custom:
-                showModal(presentationStyle)
-                break
-            case .popover, .none, .automatic:
-                showPopover()
-                break
-            @unknown default:
-                Log.fault(message: "New presentation style in PopoverPresenter: \(presentationStyle)", in: .functionality)
-                showPopover()
-            }
+            
         })
     }
     
     private func showModal(_ style: UIModalPresentationStyle) {
-        // Present the table view controller using the provided style.
-        contentController.modalPresentationStyle = style
-        viewController.present(contentController, animated: true, completion: nil)
+       
+        DispatchQueue.main.async { [self] in
+            // Present the table view controller using the provided style.
+            contentController.modalPresentationStyle = style
+            viewController.present(contentController, animated: true, completion: nil)
+        }
     }
     
     private func showPopover() {
-        
-        // Present the table view controller using the popover style.
-        contentController.modalPresentationStyle = .popover
-        viewController.present(contentController, animated: true, completion: nil)
-        
-        // Get the popover presentation controller and configure it.
-        let presentationController = contentController.popoverPresentationController
-        presentationController?.delegate = self
-        presentationController?.permittedArrowDirections = [.left, .down]
-        presentationController?.sourceView = viewController.view
-        
-        //Convert the rect coords to point at the textfield
-        let rect = textField.convert(textField.bounds, to: viewController.view)
-        presentationController?.sourceRect = rect;
-        
+
+        DispatchQueue.main.async { [self] in
+            // Present the table view controller using the popover style.
+            contentController.modalPresentationStyle = .popover
+            viewController.present(contentController, animated: true, completion: nil)
+            
+            // Get the popover presentation controller and configure it.
+            let presentationController = contentController.popoverPresentationController
+            presentationController?.delegate = self
+            presentationController?.permittedArrowDirections = [.left, .down]
+            presentationController?.sourceView = viewController.view
+            
+            //Convert the rect coords to point at the textfield
+            let rect = textField.convert(textField.bounds, to: viewController.view)
+            presentationController?.sourceRect = rect;
+        }
     }
     
     

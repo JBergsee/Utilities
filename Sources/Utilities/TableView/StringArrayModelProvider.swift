@@ -41,7 +41,7 @@ open class StringArrayModelProvider: ArrayModelProviding {
     }
     
     open func modelForHeader(section: Int) -> Any {
-        return ["Section \(section)", rowsIn(section: section)]
+        return ["Section \(section)", rowsIn(section: section)] as [Any]
     }
     
     open func headerTitle(_ section: Int) -> String? {

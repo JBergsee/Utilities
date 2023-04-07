@@ -15,7 +15,7 @@ import UIKit
 //Might have to be an extension of the modelprovider directly! 
 extension GenericTableViewController: CollapseControllingDelegate {
     
-    open func toggleSection(_ section: Int, for header: CollapseControlling?) {
+    public func toggleSection(_ section: Int, for header: CollapseControlling?) {
         
         tableView.beginUpdates()
         
