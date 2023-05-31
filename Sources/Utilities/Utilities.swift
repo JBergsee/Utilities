@@ -35,9 +35,9 @@ public extension BinaryInteger {
 }
 
 public extension BinaryFloatingPoint {
-    /// Rounds a positive or zero value to the given number of `decimals` places and returns as String.
+    /// Rounds a positive or zero value to the given number of `decimals` places (0 by default) and returns as String.
     /// Negative values will return empty string.
-    func toValueString(decimals: Int) -> String {
+    func toValueString(decimals: Int = 0) -> String {
         return Utilities.stringValueIfSet(self, withDecimals: decimals)
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 @objc public protocol TimePickerFieldDelegate where Self: UIViewController {
     
-    ///Time in minutes or -1 if not set or unparseable
+    /// Time in minutes or -1 if not set or unparseable
     func timePickerField(_ timePickerField: TimePickerField, didReturnMinutes minutes: Int)
 }
 

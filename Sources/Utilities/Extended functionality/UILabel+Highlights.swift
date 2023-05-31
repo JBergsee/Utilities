@@ -9,8 +9,6 @@
 import Foundation
 import UIKit
 
-
-
 @objc
 public extension UILabel {
     
@@ -20,21 +18,26 @@ public extension UILabel {
         text = nil
         text = plainText
     }
-    
-    func makeBold(text:String?) {
-        self.highlightText(text, font: nil, color: nil, bold: true)
+
+    /// Writes the supplied string in bold if present in the label
+    func makeBold(text: String?) {
+        highlightText(text, font: nil, color: nil, bold: true)
     }
-    
+
+    /// Writes the supplied text in red bold if present in the label
+    @available(*, deprecated, renamed: "boldRed")
     func highlight(text:String?) {
         self.highlightText(text, font: nil, color: .red, bold: true)
     }
-    func boldRed(text:String?) {
-        highlight(text: text)
-        makeBold(text: text)
+
+    /// Writes the supplied text in red bold if present in the label
+    func boldRed(text: String?) {
+        highlightText(text, font: nil, color: .red, bold: true)
     }
-    
-    func stabiloBoss(text:String?) {
-        guard let labelText = self.attributedText?.mutableCopy() as? NSMutableAttributedString, let target = text, !target.isEmpty else {
+
+    ///Gives the supplied text a yellow background if present in the label.
+    func stabiloBoss(text: String?) {
+        guard let labelText = attributedText?.mutableCopy() as? NSMutableAttributedString, let target = text, !target.isEmpty else {
             return
         }
 
@@ -42,18 +45,20 @@ public extension UILabel {
 
         labelText.addAttribute(.backgroundColor, value: UIColor.systemYellow, range: range)
 
-        self.attributedText = labelText
+        attributedText = labelText
     }
-    
-    func highlightTextInArray(_ textArray: [String], font: UIFont? = nil, color: UIColor? = nil, bold:Bool = true) {
+
+    /// Writes the supplied text fragments of the array in bold, or using the given font and color if supplied
+    func highlightTextInArray(_ textArray: [String], font: UIFont? = nil, color: UIColor? = nil, bold: Bool = true) {
         textArray.forEach { text in
-            self.highlightText(text, font: font, color: color, bold: bold)
+            highlightText(text, font: font, color: color, bold: bold)
         }
     }
+
+    /// Writes the supplied text in bold, or using the given font and color if supplied
+    func highlightText(_ text: String?, font: UIFont? = nil, color: UIColor? = nil, bold: Bool = true) {
         
-    func highlightText(_ text: String?, font: UIFont? = nil, color: UIColor? = nil, bold:Bool = true) {
-        
-        guard let labelText = self.attributedText?.mutableCopy() as? NSMutableAttributedString,
+        guard let labelText = attributedText?.mutableCopy() as? NSMutableAttributedString,
               let target = text,
               !target.isEmpty else {
             return
@@ -79,7 +84,7 @@ public extension UILabel {
             }
         }
         labelText.addAttributes(attributes, range: range)
-        self.attributedText = labelText
+        attributedText = labelText
     }
 
 }

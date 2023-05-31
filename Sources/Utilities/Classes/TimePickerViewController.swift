@@ -14,23 +14,23 @@ public protocol TimePickerViewControllerDelegate: AnyObject {
 
 class TimePickerViewController: UIViewController {
     
-    @IBOutlet var picker: UIDatePicker!
+    @IBOutlet var picker: UIDatePicker?
     
     weak var delegate: TimePickerViewControllerDelegate?
     
     var date: Date {
         get {
-            picker.date
+            picker?.date ?? Date()
         }
         set {
-            picker.date = newValue
+            picker?.date = newValue
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        picker.timeZone = TimeZone(identifier: "UTC")
-        picker.date = Date(timeIntervalSince1970: 0)
+        picker?.timeZone = TimeZone(identifier: "UTC")
+        picker?.date = Date(timeIntervalSince1970: 0)
     }
     
     
