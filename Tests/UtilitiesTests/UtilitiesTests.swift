@@ -54,8 +54,23 @@ final class UtilitiesTests: XCTestCase {
         XCTAssert(test2 == "06 13 20 27 0600-0930", "Got something I shouldn't")
         
     }
-    
-    func testEncodeDecodeDictionary() {
-        
+    func testRangeFinding() {
+        let testString = "(abeam) A long name with bea"
+        let searchA = "a"
+        var ranges = testString.ranges(ofText: searchA)
+        XCTAssert(ranges.count == 5)
+        XCTAssert(ranges[0] == NSRange(location: 1, length: 1))
+        XCTAssert(ranges[1] == NSRange(location: 4, length: 1))
+        XCTAssert(ranges[2] == NSRange(location: 8, length: 1))
+        XCTAssert(ranges[3] == NSRange(location: 16, length: 1))
+        XCTAssert(ranges[4] == NSRange(location: 27, length: 1))
+
+        let excludeBea = "Bea"
+        ranges = testString.ranges(ofText: searchA, excludeText: excludeBea)
+        XCTAssert(ranges.count == 3)
+        XCTAssert(ranges[0] == NSRange(location: 1, length: 1))
+        XCTAssert(ranges[1] == NSRange(location: 8, length: 1))
+        XCTAssert(ranges[2] == NSRange(location: 16, length: 1))
+
     }
 }

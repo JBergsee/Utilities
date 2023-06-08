@@ -58,7 +58,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     public var rangeType: RangeFieldType = .floatingPoint
     public var minValue: NSNumber = NSNumber(value: -Double.greatestFiniteMagnitude)
     public var maxValue: NSNumber = NSNumber(value: Double.greatestFiniteMagnitude)
-    public var maxLength: Int?
+    public var maxLength: Int = Int.max
     public var allowedCharacters: CharacterSet?
     
     private class var floatCharacterSet:CharacterSet {
@@ -78,14 +78,14 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     
     // default init makes a floating point textfield with all floating point values (min to max)
     init(rangeType: RangeFieldType? = .floatingPoint,
-         minValue: NSNumber? = NSNumber(value: -Double.greatestFiniteMagnitude),
-         maxValue: NSNumber? = NSNumber(value: Double.greatestFiniteMagnitude),
-         maxLength: Int? = Int.max,
+         minValue: NSNumber = NSNumber(value: -Double.greatestFiniteMagnitude),
+         maxValue: NSNumber = NSNumber(value: Double.greatestFiniteMagnitude),
+         maxLength: Int = Int.max,
          allowedCharacters: CharacterSet? = floatCharacterSet) {
         
         self.rangeType = rangeType!
-        self.minValue = minValue!
-        self.maxValue = maxValue!
+        self.minValue = minValue
+        self.maxValue = maxValue
         self.maxLength = maxLength
         self.allowedCharacters = allowedCharacters
         super.init(frame: CGRect())
@@ -355,13 +355,12 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        //Check length if set.
-        if let maxLength = maxLength, maxLength > 0 {
+        //Check length
             //Allow deletion (string length 0)
             if ((text?.count ?? 0) + string.count > maxLength) {
                 return false
             }
-        }
+
         return check(string: string)
     }
     

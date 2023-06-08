@@ -59,7 +59,7 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     //For searching
     //The searchcontroller
     private var searchController: UISearchController?
-    
+
     //MARK: - View cycle
     
     open override func viewDidLoad() {
@@ -245,7 +245,13 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
         // Install the search bar in the navigationitem
         navigationItem.searchController = searchController;
         definesPresentationContext = true //So the searchbar does not remain on screen if we go to another screen
-        
+
+        //It jumped up in the header starting ios 16. Don't.
+        if #available(iOS 16.0, *) {
+            self.navigationItem.preferredSearchBarPlacement = .stacked
+        } else {
+            // Fallback on earlier versions
+        }
         
         /** According Apple Dev Support
          Showing the search bar all the time is required in order to fix graphics bug in iOS 13... and 14...
@@ -277,6 +283,10 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     {
         searchController?.searchBar.becomeFirstResponder()
     }
+
+    @IBAction open func resignSearch() {
+        searchController?.searchBar.resignFirstResponder()
+    }
 }
 
 
@@ -298,6 +308,12 @@ extension GenericTableViewController: UISearchResultsUpdating {
         
         //update view
         tableView.reloadData() //Not required for FRC...?
+    }
+
+    public var currentSearchText: String? {
+        get {
+            searchController?.searchBar.text
+        }
     }
 }
 
