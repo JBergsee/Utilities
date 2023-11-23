@@ -34,7 +34,7 @@ extension UITableViewController: TableViewUpdating {
     }
     
     @objc open func performUpdate() {
-        fatalError("startUpdate must be overridden by \(Self.self)")
+        fatalError("performUpdate must be overridden by \(Self.self)")
     }
     
     open func endUpdate() {

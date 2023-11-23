@@ -28,17 +28,34 @@ open class MultiPageViewController : UIViewController {
     
     // To be used when scrolls originate from the UIPageControl
     private var pageControlUsed:Bool = false
-    
+
+    /// Used if superview is set up in a storyboard
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        
-        //Required for multiline text in segmented control
-        UILabel.appearance(whenContainedInInstancesOf: [UISegmentedControl.self]).numberOfLines = 0
     }
-    
-    ///pageprovider must be set before calling super from subclasses
+
+    ///Used to set this viewController up programmatically
+    public init() {
+
+        super.init(nibName: nil, bundle: nil)
+        let frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        scrollView = UIScrollView(frame: frame)
+        segmentedControl = UISegmentedControl()
+        view.backgroundColor = .systemBackground
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        navigationItem.titleView = segmentedControl
+    }
+
+    ///Pageprovider must be set before calling super from subclasses
     open override func viewDidLoad() {
         super.viewDidLoad()
+        //Required for multiline text in segmented control
+        UILabel.appearance(whenContainedInInstancesOf: [UISegmentedControl.self]).numberOfLines = 0
         setupViewsAndControls()
     }
     

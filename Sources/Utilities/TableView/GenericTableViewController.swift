@@ -168,12 +168,16 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
         if editingStyle == .delete {
             // Delete the row from the data sorce
             modelProvider!.delete(row: indexPath.row, section: indexPath.section)
-            //update view
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            //update view (unless the FRC delegate takes core of it...)
+            if !(modelProvider is FRCModelProviding) {
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
             modelProvider!.insertAt(row: indexPath.row, section: indexPath.section)
-            tableView.insertRows(at: [indexPath], with: .automatic)
+            if !(modelProvider is FRCModelProviding) {
+                tableView.insertRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     
@@ -269,7 +273,8 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
         //Add a button for access!
         addSearchButton()
     }
-    
+
+    /// Override with empty implementation if you do not want a searchbutton.
     open func addSearchButton() {
         let searchButton = UIBarButtonItem(barButtonSystemItem: .search,
                                            target: self,
@@ -279,13 +284,17 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
         //(Could eventually use the array to add the search button with other items.)
     }
     
-    @IBAction open func showSearchBar()
-    {
+    @IBAction open func showSearchBar() {
         searchController?.searchBar.becomeFirstResponder()
     }
 
     @IBAction open func resignSearch() {
         searchController?.searchBar.resignFirstResponder()
+    }
+
+    /// True if the searchController is active.
+    public var isSearching: Bool {
+        return searchController?.isActive ?? false
     }
 }
 

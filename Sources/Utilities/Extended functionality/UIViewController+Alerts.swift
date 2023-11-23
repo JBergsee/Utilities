@@ -12,19 +12,19 @@ import Logging
 public extension UIViewController {
     
     @objc(showAlertWithTitle:message:buttonTitle:)
-    func showAlert(title:String, message:String? = "", buttonTitle:String) {
+    func showAlert(title: String?, message: String? = "", buttonTitle: String) {
         showAlert(title: title, message: message, buttonTitle: buttonTitle, completion: nil)
     }
     
     @objc(showAlertWithTitle:message:actionButtons:)
-    func showAlert(title:String, message:String? = "", actions:Array<UIAlertAction>) {
+    func showAlert(title: String?, message: String? = "", actions: Array<UIAlertAction>) {
         
         showAlert(title:title, message:message, actions:actions, completion:nil)
     }
     
     
     @objc(showAlertWithTitle:message:buttonTitle:completion:)
-    func showAlert(title:String, message:String? = "", buttonTitle:String, completion:(() -> Void)? = nil) {
+    func showAlert(title: String?, message: String? = "", buttonTitle: String, completion:(() -> Void)? = nil) {
         
         let defaultAction = UIAlertAction(title: buttonTitle,
                                           style: .default,
@@ -33,7 +33,7 @@ public extension UIViewController {
     }
     
     @objc(showAlertWithTitle:message:actionButtons:completion:)
-    func showAlert(title:String, message:String? = "", actions:Array<UIAlertAction>, completion:(() -> Void)? = nil) {
+    func showAlert(title: String?, message: String? = "", actions: Array<UIAlertAction>, completion: (() -> Void)? = nil) {
         
         let alert = UIAlertController(title: title,
                                       message: message,
