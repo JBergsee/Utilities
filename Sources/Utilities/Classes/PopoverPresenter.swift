@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import Logging
+import JBLogging
 
 
 public class PopoverPicker : NSObject {

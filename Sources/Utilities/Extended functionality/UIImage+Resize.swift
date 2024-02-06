@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Logging
+import JBLogging
 
 public extension UIImage {
     

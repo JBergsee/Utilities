@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import JBLogging
 
 @objc public protocol TableViewUpdating {
     
@@ -34,7 +35,9 @@ extension UITableViewController: TableViewUpdating {
     }
     
     @objc open func performUpdate() {
-        fatalError("performUpdate must be overridden by \(Self.self)")
+        Log.fault(message: "performUpdate must be overridden by \(Self.self)", in: .functionality)
+        // Do nothing by default, but call end update
+        endUpdate()
     }
     
     open func endUpdate() {

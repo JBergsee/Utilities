@@ -7,7 +7,7 @@
 
 import UIKit
 import CoreData
-import Logging
+import JBLogging
 
 
 //MARK: - Fetched Results controller delegate standard implementation

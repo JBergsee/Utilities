@@ -2,12 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "Logging",
+        "package": "JBLogging",
         "repositoryURL": "https://github.com/JBergsee/Logging.git",
         "state": {
           "branch": null,
-          "revision": "18a78a562913794d9bdb8bb57625ef3c44781285",
-          "version": "0.1.3"
+          "revision": "9d124d008add7dac7ede4c06a82eac7bd1f6cdd2",
+          "version": "1.0.0"
         }
       }
     ]

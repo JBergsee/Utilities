@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreData
-import Logging
+import JBLogging
 
 
 ///Provides the model when coming from a Fetched Results Controller and underlying core data.
@@ -46,7 +46,12 @@ public extension FRCModelProviding {
     }
     
     func rowsIn(section: Int) -> Int {
-        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        // For safety in case of empty array
+        guard let sections = fetchedResultsController.sections,
+              sections.count > section else {
+            return 0
+        }
+        return sections[section].numberOfObjects
     }
     
     func standardModelFor(row: Int, section: Int) -> Any {
@@ -54,7 +59,12 @@ public extension FRCModelProviding {
     }
     
     func headerTitle(_ section: Int) -> String? {
-        let sectionName = fetchedResultsController.sections?[section].name
+        // For safety in case of empty array
+        guard let sections = fetchedResultsController.sections,
+              sections.count > section else {
+            return nil
+        }
+        let sectionName = sections[section].name
         return headerTitleFor(sectionName: sectionName)
     }
     
