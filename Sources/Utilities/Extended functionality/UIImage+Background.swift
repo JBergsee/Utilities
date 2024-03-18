@@ -12,6 +12,10 @@ import UIKit
 
 public extension UIImage {
     func withBackground(color: UIColor, opaque: Bool = true) -> UIImage {
+        guard size.width > 0,
+              size.height > 0 else {
+            return UIImage()
+        }
         UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
         
         guard let ctx = UIGraphicsGetCurrentContext(), let image = cgImage else { return self }

@@ -124,6 +124,20 @@ extension TimePickerField: UITextFieldDelegate {
     
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         
+        //There seems to be two race conditions that can cause crashes. These two guards will take care of them.
+
+        //Stop here to avoid crashes if the pickerview already has a presenting viewcontroller.
+        guard pickerView.presentingViewController == nil else {
+            print("Already presented")
+            return false
+        }
+
+        //Stop here to avoid crashes if the delegate is already presenting something
+        guard timeDelegate?.presentedViewController == nil else {
+            print("Already presenting")
+            return false
+        }
+
         //Show a popup with the pickerView
         pickerView.modalPresentationStyle = .popover
         pickerView.preferredContentSize = CGSize(width: 232, height: 201)
