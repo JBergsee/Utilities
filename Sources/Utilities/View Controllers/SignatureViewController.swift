@@ -25,6 +25,11 @@ public class SignatureViewController: DrawViewController {
     // MARK: - Button Handling
     
     @IBAction func saveAndClose() {
+        //Only save if we have a signature
+        guard !isEmpty else {
+             showAlert(title: "Unable to save empty signature", buttonTitle: "OK")
+            return
+        }
         // Start by saving
         saveDrawing()
         
