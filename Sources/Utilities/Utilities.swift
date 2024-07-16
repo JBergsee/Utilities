@@ -41,3 +41,14 @@ public extension BinaryFloatingPoint {
         return Utilities.stringValueIfSet(self, withDecimals: decimals)
     }
 }
+
+public extension BinaryInteger {
+    /// Returns a String with the figure if positive, or empty string if negative.
+    func positiveString() -> String {
+        if self < 0 {
+            return ""
+        } else {
+            return "\(self)"
+        }
+    }
+}
