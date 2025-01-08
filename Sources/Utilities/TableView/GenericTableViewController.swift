@@ -70,20 +70,48 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     
     //MARK: - Collapsing
     
-    /// True for collapsed
+    /// True for collapsed sections state
     private var sectionsState = [String : Bool]()
-    
-    /// Default open is true, change to false in view did load if all sections should be closed by default
-    public var defaultOpen = true
-    
+    /// Default open is true, change this variable to true in view did load if all sections should be closed by default
+    public var defaultClosed = false
+
     public func isCollapsed(_ section: Int) -> Bool {
         let sectionId = modelProvider!.uuid(for: section)
         if sectionsState.index(forKey: sectionId) == nil {
-            sectionsState[sectionId] = !defaultOpen //set default value if not set before
+            sectionsState[sectionId] = defaultClosed //set default value if not set before
         }
         return sectionsState[sectionId]!
     }
-    
+
+    public func addSection(newIndex: Int) {
+        let key = modelProvider?.uuid(for: newIndex) ?? "no id"
+        sectionsState[key] = defaultClosed
+
+        updateSectionHeaders(from: newIndex, to: numberOfSections(in: tableView), removal: false)
+    }
+
+    public func removeSection(_ index: Int) {
+        // The uuid is already removed, so this will return wrong id for the the given index.
+        // However, when adding back the same uuid, the last value will be overwritten. -> No problem!
+        //let key =  modelProvider?.uuid(for: index) ?? "no id"
+        //sectionsState[key] = nil
+
+        updateSectionHeaders(from: index, to: numberOfSections(in: tableView)-1, removal: true)
+    }
+
+    private func updateSectionHeaders(from: Int, to: Int, removal: Bool) {
+
+        tableView.reloadData() //Overkill, but it works!
+        //TODO: Redraw all section headers in view to update their section numbers, states and labels
+//        for i in from...to {
+//
+//            if let header = tableView.headerView(forSection: i) {
+//                configure(headerView: header, inSection: i)
+//            }
+//        }
+    }
+
+
     
     // MARK: - Table view data source
     
@@ -121,19 +149,24 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
         guard let header = cell?.contentView.subviews.first else {
             return nil
         }
+        configure(headerView: header, inSection: section)
+
+        return header
+    }
+    private func configure(headerView: UIView, inSection section: Int) {
         //Collapsible?
-        if let collapseHeader = header as? CollapseControlling {
+        if let collapseHeader = headerView as? CollapseControlling {
             collapseHeader.delegate = self //Or modelprovider if changed later on?
             collapseHeader.section = section
             collapseHeader.setCollapsed(isCollapsed(section), animated: false) //Do not animate at creation
         }
         //Configurable?
-        if let configurableHeader = header as? ModelConfigurable {
+        if let configurableHeader = headerView as? ModelConfigurable {
             configurableHeader.configureWith(model: modelProvider!.modelForHeader(section: section))
         }
-        return header
+        headerView.sizeToFit()
     }
-    
+
     open override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCell(withIdentifier: delegate?.footerIdentifier ?? "footer")
         guard let footer = cell?.contentView.subviews.first else {

@@ -67,12 +67,12 @@ public extension UIColor {
         let g3 = ((1 - alpha) * g2) + (g1 * alpha)
         let b3 = ((1 - alpha) * b2) + (b1 * alpha)
         
-        print("Simulated RGB: \(Int(r3 * 255)), \(Int(g3 * 255)), \(Int(b3 * 255))")
-        
+        //print("Simulated RGB: \(Int(r3 * 255)), \(Int(g3 * 255)), \(Int(b3 * 255))")
+
         let newComponents: [CGFloat] = [r3, g3, b3, 1.0]
         let space = CGColorSpace(name:CGColorSpace.sRGB)!
         guard let cgColor3 = CGColor(colorSpace: space, components: newComponents) else {
-            print("Failed to create new CGColor in default color space")
+            //print("Failed to create new CGColor in default color space")
             return color1
         }
         

@@ -133,7 +133,6 @@ open class MultiPageViewController : UIViewController {
         for subview in scrollView.subviews {
             subview.removeFromSuperview()
         }
-        print("Reset pages")
         
         // load the visible page
         let currentPage = segmentedControl?.selectedSegmentIndex ?? 0
@@ -178,8 +177,7 @@ open class MultiPageViewController : UIViewController {
             
             //And add as child controller
             addChild(controller)
-            print("Add child \(controller)")
-            
+
             var frame = self.scrollView.frame //controller.view.frame;
             frame.origin.x = frame.size.width * CGFloat(page)
             frame.origin.y = 0;

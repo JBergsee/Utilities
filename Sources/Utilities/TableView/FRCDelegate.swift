@@ -47,12 +47,18 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         
         switch(type) {
         case .insert:
+            // add in the open/closed dictionary
+            addSection(newIndex: sectionIndex)
+
             //Add the new section in the table
             tableView.insertSections(IndexSet([sectionIndex]),
                                      with:.automatic)
             break
             
         case .delete:
+            // remove from the open/closed dictionary
+            removeSection(sectionIndex)
+
             //Remove the section from the table
             tableView.deleteSections(IndexSet([sectionIndex]),
                                      with:.automatic)

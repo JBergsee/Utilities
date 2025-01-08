@@ -111,7 +111,7 @@ public extension FRCModelProviding {
     
     func initializeFetchedResultsController() {
         
-        let request = fetchRequestWith(predicate:  fetchPredicate())
+        let request = fetchRequestWith(predicate: fetchPredicate())
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
                                                               managedObjectContext: moc!,

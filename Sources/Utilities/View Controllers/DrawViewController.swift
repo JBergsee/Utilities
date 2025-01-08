@@ -23,13 +23,7 @@ open class DrawViewController: UIViewController {
 
     private var toolPicker: PKToolPicker = PKToolPicker()
 
-    private var drawingExist: Bool = false {
-        didSet {
-            let trueFalse = drawingExist ? "true" : "false"
-            let phrase = "Drawing exist: "+trueFalse
-            print(phrase)
-        }
-    }
+    private var drawingExist: Bool = false
 
     public var isEmpty: Bool {
         get {

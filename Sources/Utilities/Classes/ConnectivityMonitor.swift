@@ -51,7 +51,7 @@ extension ConnectivityStatus: CustomStringConvertible {
 }
 
 
-extension NWPath.Status: CustomStringConvertible {
+extension NWPath.Status: @retroactive CustomStringConvertible {
     public var description: String {
         if (self == .satisfied) { return "'satisfied'" }
         if (self == .unsatisfied) { return "'unsatisfied'" }
