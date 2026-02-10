@@ -9,11 +9,14 @@
 /* Begin PBXBuildFile section */
 		04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */; };
 		04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */; };
+		04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */; };
+		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
 		04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20932C6E9CF70061EEE0 /* ViewController.swift */; };
 		04CA20972C6E9CF70061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA20962C6E9CF70061EEE0 /* Base */; };
 		04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20982C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld */; };
 		04CA209C2C6E9CF80061EEE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */; };
 		04CA209F2C6E9CF80061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA209E2C6E9CF80061EEE0 /* Base */; };
+		04CA20B12C6EA1000061EEE0 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 04CA20B22C6EA1000061EEE0 /* Utilities */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,8 @@
 		04CA209E2C6E9CF80061EEE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		04CA20A02C6E9CF80061EEE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04CA20A62C6E9D140061EEE0 /* Utilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utilities; path = ..; sourceTree = "<group>"; };
+		04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUDDemoViewController.swift; sourceTree = "<group>"; };
+		04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldDemoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04CA20B12C6EA1000061EEE0 /* Utilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +69,8 @@
 				04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */,
 				04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */,
 				04CA20932C6E9CF70061EEE0 /* ViewController.swift */,
+				04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */,
+				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
 				04CA20952C6E9CF70061EEE0 /* Main.storyboard */,
 				04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */,
 				04CA209D2C6E9CF80061EEE0 /* LaunchScreen.storyboard */,
@@ -88,6 +96,9 @@
 			dependencies = (
 			);
 			name = "Utilities-Example";
+			packageProductDependencies = (
+				04CA20B22C6EA1000061EEE0 /* Utilities */,
+			);
 			productName = "Utilities-Example";
 			productReference = 04CA208C2C6E9CF70061EEE0 /* Utilities-Example.app */;
 			productType = "com.apple.product-type.application";
@@ -144,6 +155,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */,
+				04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */,
+				04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
 				04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */,
 				04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */,
@@ -382,6 +395,13 @@
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		04CA20B22C6EA1000061EEE0 /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04CA20842C6E9CF70061EEE0 /* Project object */;
 }

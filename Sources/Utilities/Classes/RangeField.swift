@@ -37,7 +37,7 @@ public extension RangeFieldDelegate where Self: UIViewController {
 
 
 public enum RangeFieldType {
-    case floatingPoint, integer, character, time
+    case floatingPoint, integer, character
 }
 
 public class RangeField: ChainedField, UITextFieldDelegate {
@@ -340,7 +340,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
             return Float(text ?? "a") ?? .nan
         case .integer:
             return Int(text ?? "a") ?? Double.nan
-        case .character, .time:
+        case .character:
             return text ?? ""
         }
     }
@@ -401,7 +401,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
             if let intValue = self.value as? Int {
                 number = NSNumber(value: intValue)
             }
-        case .character, .time:
+        case .character:
             //Can't return as NSNumber
             break;
         }
