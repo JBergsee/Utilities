@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "JBLogging",
-        "repositoryURL": "https://github.com/JBergsee/Logging.git",
-        "state": {
-          "branch": null,
-          "revision": "9d124d008add7dac7ede4c06a82eac7bd1f6cdd2",
-          "version": "1.0.0"
-        }
+  "pins" : [
+    {
+      "identity" : "logging",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JBergsee/Logging.git",
+      "state" : {
+        "revision" : "076a91ef87050632ea4f9e3bce2837ef45ab5f28",
+        "version" : "1.1.0"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

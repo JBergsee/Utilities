@@ -18,6 +18,7 @@ class ViewController: UIViewController {
         ]
         if #available(iOS 18.0, *) {
             list.append(("ValidatedField Demo", { ValidatedFieldDemoViewController() }))
+            list.append(("TimeField Demo", { TimeFieldDemoViewController() }))
         }
         return list
     }()

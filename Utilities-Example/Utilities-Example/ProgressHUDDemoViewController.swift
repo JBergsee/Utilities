@@ -13,7 +13,7 @@ class ProgressHUDDemoViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
 
-    private var progressTimer: Timer?
+    private var progressTask: Task<Void, Never>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,8 +152,8 @@ class ProgressHUDDemoViewController: UIViewController {
         hud.state.buttonTitle = "Cancel"
         hud.state.buttonAction = { [weak self] in
             guard let self else { return }
-            self.progressTimer?.invalidate()
-            self.progressTimer = nil
+            self.progressTask?.cancel()
+            self.progressTask = nil
             ProgressHUD.hide(for: self.view)
         }
         animateProgress(on: hud, duration: 10)
@@ -168,7 +168,9 @@ class ProgressHUDDemoViewController: UIViewController {
         // Phase 1: Connecting
         hud.state.label = "Connecting..."
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(1.5))
+            guard let self else { return }
             // Phase 2: Downloading with progress
             hud.state.mode = .horizontalBar
             hud.state.label = "Downloading..."
@@ -194,17 +196,16 @@ class ProgressHUDDemoViewController: UIViewController {
             (.indeterminate, "Back to Indeterminate"),
         ]
 
-        for (index, (mode, label)) in modes.enumerated() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index + 1) * 1.5) {
+        Task { [weak self] in
+            for (mode, label) in modes {
+                try? await Task.sleep(for: .seconds(1.5))
                 hud.state.mode = mode
                 hud.state.label = label
                 if mode == .annularDeterminate || mode == .horizontalBar {
                     hud.state.progress = 0.6
                 }
             }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(modes.count + 1) * 1.5) { [weak self] in
+            try? await Task.sleep(for: .seconds(1.5))
             guard let self else { return }
             ProgressHUD.hide(for: self.view)
         }
@@ -213,28 +214,32 @@ class ProgressHUDDemoViewController: UIViewController {
     // MARK: - Helpers
 
     private func hideAfterDelay(_ delay: TimeInterval) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
             guard let self else { return }
             ProgressHUD.hide(for: self.view)
         }
     }
 
     private func animateProgress(on hud: ProgressHUD, duration: TimeInterval, completion: (() -> Void)? = nil) {
-        progressTimer?.invalidate()
+        progressTask?.cancel()
         hud.state.progress = 0
 
         let interval: TimeInterval = 0.05
         let increment = Float(interval / duration)
 
-        progressTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] timer in
-            hud.state.progress += increment
-            if hud.state.progress >= 1.0 {
-                timer.invalidate()
-                self?.progressTimer = nil
-                if let completion {
-                    completion()
-                } else {
-                    self?.hideAfterDelay(0.5)
+        progressTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(50))
+                hud.state.progress += increment
+                if hud.state.progress >= 1.0 {
+                    self?.progressTask = nil
+                    if let completion {
+                        completion()
+                    } else {
+                        self?.hideAfterDelay(0.5)
+                    }
+                    return
                 }
             }
         }

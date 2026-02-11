@@ -11,6 +11,7 @@
 		04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */; };
 		04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */; };
 		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
+		E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */; };
 		04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20932C6E9CF70061EEE0 /* ViewController.swift */; };
 		04CA20972C6E9CF70061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA20962C6E9CF70061EEE0 /* Base */; };
 		04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20982C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld */; };
@@ -32,6 +33,7 @@
 		04CA20A62C6E9D140061EEE0 /* Utilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utilities; path = ..; sourceTree = "<group>"; };
 		04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUDDemoViewController.swift; sourceTree = "<group>"; };
 		04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldDemoViewController.swift; sourceTree = "<group>"; };
+		0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFieldDemoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 				04CA20932C6E9CF70061EEE0 /* ViewController.swift */,
 				04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */,
 				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
+				0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */,
 				04CA20952C6E9CF70061EEE0 /* Main.storyboard */,
 				04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */,
 				04CA209D2C6E9CF80061EEE0 /* LaunchScreen.storyboard */,
@@ -157,6 +160,7 @@
 				04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */,
 				04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */,
 				04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */,
+				E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
 				04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */,
 				04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */,
