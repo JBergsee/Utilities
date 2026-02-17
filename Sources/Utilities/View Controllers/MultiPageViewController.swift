@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-public protocol PageProviding: AnyObject {
+@MainActor public protocol PageProviding: AnyObject {
     func viewControllerForPage(_ pageNumber: Int) -> UIViewController
     func numberOfPages() -> Int
     func titleForPage(_ nbr: Int) -> String

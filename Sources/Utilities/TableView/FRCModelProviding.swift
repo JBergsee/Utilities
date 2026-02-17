@@ -39,7 +39,7 @@ public protocol FRCModelProviding: ModelProviding {
 }
 
 //Model providing
-public extension FRCModelProviding {
+@MainActor public extension FRCModelProviding {
     
     func numberOfSections() -> Int {
         fetchedResultsController.sections?.count ?? 0

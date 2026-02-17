@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation //For authorization request
 
 
-public protocol ImagePickerDelegate: AnyObject {
+@MainActor public protocol ImagePickerDelegate: AnyObject {
     func didSelect(image: UIImage?)
     func didFail(error:PermissionError)
 }
@@ -21,6 +21,7 @@ public protocol ImagePickerDelegate: AnyObject {
 /// - `NSPhotoLibraryUsageDescription` — required for photo library access.
 ///
 /// Missing either key will cause a runtime crash when the picker is presented.
+@MainActor
 open class ImagePicker: NSObject {
 
     private let pickerController: UIImagePickerController

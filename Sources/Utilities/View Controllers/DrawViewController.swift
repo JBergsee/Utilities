@@ -9,8 +9,8 @@ import UIKit
 import PencilKit
 
 
-@objc
-public protocol DrawViewControllerDelegate {
+@MainActor @objc
+public protocol DrawViewControllerDelegate: AnyObject {
     @objc func drawingWasSaved(_ drawing: PKDrawing?)
 }
 

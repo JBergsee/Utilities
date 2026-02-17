@@ -8,7 +8,7 @@
 import UIKit
 import JBLogging
 
-@objc public protocol TableViewUpdating {
+@MainActor @objc public protocol TableViewUpdating {
     
     ///To be called during initialization of the UITableviewController, i.e during viewDidLoad
     func installUpdater()

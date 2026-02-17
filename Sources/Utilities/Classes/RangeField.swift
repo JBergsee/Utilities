@@ -10,7 +10,7 @@
 
 import UIKit
 
-@objc public protocol RangeFieldDelegate {
+@MainActor @objc public protocol RangeFieldDelegate: AnyObject {
     /* When using the RangeField as a self-contained unit (being its own UITextFieldDelegate),
      * this method is called when the textfield ends editing (either by pressing return or loosing focus).
      */

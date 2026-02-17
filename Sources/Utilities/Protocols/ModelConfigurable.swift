@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol ModelConfigurable {
+@MainActor public protocol ModelConfigurable {
     //Configure the view of the table view cell, collection view cell, header/footer, or other.
     func configureWith(model: Any)
 }

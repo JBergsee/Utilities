@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol TimePickerViewControllerDelegate: AnyObject {
+@MainActor public protocol TimePickerViewControllerDelegate: AnyObject {
     func timePickerViewControllerReturnedTime(_ date: Date)
     func timePickerViewControllerRemovedTime()
 }

@@ -10,7 +10,7 @@ import UIKit
 
 
 //To be implemented by e.g. TableViewController
-public protocol NextPrevDetailViewDelegate: AnyObject {
+@MainActor public protocol NextPrevDetailViewDelegate: AnyObject {
     associatedtype DetailModelType
     
     func getNextAfter(actual:DetailModelType) -> DetailModelType?
@@ -39,7 +39,7 @@ public protocol NextPrevModelChanging: UIViewController, ModelConfigurable {
     func updateNextPrevButtons()
 }
 
-public extension NextPrevModelChanging {
+@MainActor public extension NextPrevModelChanging {
     
     func showNext() {
         //Update any possible textfield

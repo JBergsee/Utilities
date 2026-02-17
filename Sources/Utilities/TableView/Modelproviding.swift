@@ -10,7 +10,7 @@ import Foundation
 
 
 //Provides the model for the UITableView
-public protocol ModelProviding: AnyObject {
+@MainActor public protocol ModelProviding: AnyObject {
     
     func uuid(for section:Int) -> String
     
@@ -47,7 +47,7 @@ public protocol ArrayModelProviding: ModelProviding {
     func newObject() -> CellModel?
 }
 
-public extension ArrayModelProviding {
+@MainActor public extension ArrayModelProviding {
     
     func numberOfSections() -> Int {
         return filteredArray.count

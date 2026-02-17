@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-public protocol GenericTableViewControlling: AnyObject {
+@MainActor public protocol GenericTableViewControlling: AnyObject {
     ///Should be declared weak in implementation
     var modelProvider: ModelProviding? { get set }
     ///Should be declared weak in implementation
@@ -17,7 +17,7 @@ public protocol GenericTableViewControlling: AnyObject {
 }
     
     
-public protocol GenericTableViewDelegate: AnyObject {
+@MainActor public protocol GenericTableViewDelegate: AnyObject {
     
     var cellIdentifier:String { get }
     ///Headers (and footers) can be defined in the same tableview as the cells.

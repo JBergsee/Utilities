@@ -8,13 +8,13 @@
 import UIKit
 
 ///The tableView or the ModelProvider
-public protocol CollapseControllingDelegate: AnyObject {
+@MainActor public protocol CollapseControllingDelegate: AnyObject {
     func toggleSection(_ section: Int, for header: CollapseControlling?)
     func isCollapsed(_ section: Int) -> Bool
 }
 
 ///Normally a UITableViewHeaderFooterView
-public protocol CollapseControlling: AnyObject {
+@MainActor public protocol CollapseControlling: AnyObject {
     var collapseButton: UIView? { get }
     var section: Int { get set }
     var isCollapsed: Bool { get }

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public protocol StoryboardInstantiable where Self: UIViewController {
+@MainActor public protocol StoryboardInstantiable where Self: UIViewController {
     
     static func initFromStoryboard() -> Self
     static func initFromStoryboard(identifier: String) -> Self
