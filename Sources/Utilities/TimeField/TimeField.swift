@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - TimeFieldMode
 
 /// Controls whether a ``TimeField`` represents a wall-clock time or a duration.
-public enum TimeFieldMode {
+public enum TimeFieldMode: Sendable {
     /// Wall-clock time — picker defaults to the current time when the value is nil.
     case time
     /// Duration / interval — picker defaults to 00:00 when the value is nil.

@@ -115,11 +115,11 @@ extension ImagePicker: UINavigationControllerDelegate {}
 
 //MARK: - Authorization
 
-public enum PermissionError: Error {
+public enum PermissionError: Error, Sendable {
     case denied, restricted
 }
 
-private enum Permission {
+private enum Permission: Sendable {
     case granted, denied, restricted
 }
 

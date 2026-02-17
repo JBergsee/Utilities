@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import CoreData
+@preconcurrency import CoreData
 import JBLogging
 
 

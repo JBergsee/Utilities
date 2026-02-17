@@ -114,7 +114,7 @@ public extension UIImage {
 }
 
 
-public struct ImageCompressor {
+public struct ImageCompressor: Sendable {
     public static func compress(image: UIImage, maxkByte: Int,
                                 completion: @escaping (UIImage?) -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {

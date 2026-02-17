@@ -36,7 +36,7 @@ import UIKit
 protocol Alignment {}
 
 /// Defines a horizontal alignment for UI elements.
-public enum HorizontalAlignment: Alignment {
+public enum HorizontalAlignment: Alignment, Sendable {
     case left
     case right
     case leading
@@ -45,7 +45,7 @@ public enum HorizontalAlignment: Alignment {
 }
 
 /// Defines a vertical alignment for UI elements.
-public enum VerticalAlignment: Alignment {
+public enum VerticalAlignment: Alignment, Sendable {
     case top
     case center
     case bottom
@@ -53,7 +53,7 @@ public enum VerticalAlignment: Alignment {
 
 /// A horizontal alignment used internally by `AlignedCollectionViewFlowLayout`
 /// to layout the items, after resolving layout direction specifics.
-private enum EffectiveHorizontalAlignment: Alignment {
+private enum EffectiveHorizontalAlignment: Alignment, Sendable {
     case left
     case right
     case justified

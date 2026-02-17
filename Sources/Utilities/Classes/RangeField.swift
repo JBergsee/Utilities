@@ -36,7 +36,7 @@ public extension RangeFieldDelegate where Self: UIViewController {
 }
 
 
-public enum RangeFieldType {
+public enum RangeFieldType: Sendable {
     case floatingPoint, integer, character
 }
 

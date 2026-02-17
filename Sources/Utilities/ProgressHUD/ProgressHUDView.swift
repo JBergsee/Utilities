@@ -23,7 +23,7 @@ public class ProgressHUDState {
     public init() {}
 }
 
-public enum ProgressHUDMode: Equatable {
+public enum ProgressHUDMode: Equatable, Sendable {
     case indeterminate
     case annularDeterminate
     case horizontalBar

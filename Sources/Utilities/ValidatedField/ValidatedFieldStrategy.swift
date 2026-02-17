@@ -10,7 +10,7 @@ import UIKit
 // MARK: - Validation Result
 
 /// The outcome of validating a parsed value against a strategy's constraints.
-public enum ValidationResult: Equatable {
+public enum ValidationResult: Equatable, Sendable {
     /// The value is within the acceptable range / passes all checks.
     case valid
     /// The value is below the minimum (numeric strategies).

@@ -19,7 +19,7 @@ import UIKit
 /// ValidatedField("Weight", value: $weight,
 ///                strategy: FloatingPointRangeStrategy(min: 0, max: 500, decimals: 1))
 /// ```
-public struct FloatingPointRangeStrategy: ValidatedFieldStrategy {
+public struct FloatingPointRangeStrategy: ValidatedFieldStrategy, Sendable {
     public let min: Double
     public let max: Double
     public let decimals: Int

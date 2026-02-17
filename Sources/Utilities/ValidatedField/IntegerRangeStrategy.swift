@@ -16,7 +16,7 @@ import UIKit
 /// ValidatedField("Age", value: $age,
 ///                strategy: IntegerRangeStrategy(min: 0, max: 150))
 /// ```
-public struct IntegerRangeStrategy: ValidatedFieldStrategy {
+public struct IntegerRangeStrategy: ValidatedFieldStrategy, Sendable {
     public let min: Int
     public let max: Int
 

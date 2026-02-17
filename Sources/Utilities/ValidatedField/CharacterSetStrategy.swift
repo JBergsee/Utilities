@@ -17,7 +17,7 @@ import UIKit
 /// ValidatedField("Name", value: $name,
 ///                strategy: CharacterSetStrategy(allowed: .letters, maxLength: 50))
 /// ```
-public struct CharacterSetStrategy: ValidatedFieldStrategy {
+public struct CharacterSetStrategy: ValidatedFieldStrategy, Sendable {
     public let allowed: CharacterSet
     public let maxLength: Int
 

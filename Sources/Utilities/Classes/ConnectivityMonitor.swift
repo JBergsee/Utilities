@@ -35,7 +35,7 @@ public extension Notification.Name {
     }
 }
 
-@objc public enum ConnectivityStatus: Int64 {
+@objc public enum ConnectivityStatus: Int64, Sendable {
     case unknown = 0
     case notConnected = 1
     case connected = 2
