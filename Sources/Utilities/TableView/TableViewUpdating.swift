@@ -26,7 +26,7 @@ extension UITableViewController: TableViewUpdating {
         "Override with suitable text"
     }
     
-    open func installUpdater() {
+    @objc open func installUpdater() {
         let refreshControl = UIRefreshControl()
         let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]
         refreshControl.attributedTitle = NSAttributedString(string: updateText, attributes: attributes)
@@ -40,10 +40,8 @@ extension UITableViewController: TableViewUpdating {
         endUpdate()
     }
     
-    open func endUpdate() {
+    @objc open func endUpdate() {
         //Stop the refresh control
-        DispatchQueue.main.async {
-            self.refreshControl?.endRefreshing()
-        }
+        refreshControl?.endRefreshing()
     }
 }

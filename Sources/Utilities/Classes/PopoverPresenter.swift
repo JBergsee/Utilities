@@ -10,6 +10,7 @@ import UIKit
 import JBLogging
 
 
+@MainActor
 public class PopoverPicker : NSObject {
     
     private var contentController = UITableViewController(style: .plain)
@@ -76,31 +77,25 @@ public class PopoverPicker : NSObject {
     }
     
     private func showModal(_ style: UIModalPresentationStyle) {
-       
-        DispatchQueue.main.async { [self] in
-            // Present the table view controller using the provided style.
-            contentController.modalPresentationStyle = style
-            viewController.present(contentController, animated: true, completion: nil)
-        }
+        // Present the table view controller using the provided style.
+        contentController.modalPresentationStyle = style
+        viewController.present(contentController, animated: true, completion: nil)
     }
     
     private func showPopover() {
+        // Present the table view controller using the popover style.
+        contentController.modalPresentationStyle = .popover
+        viewController.present(contentController, animated: true, completion: nil)
 
-        DispatchQueue.main.async { [self] in
-            // Present the table view controller using the popover style.
-            contentController.modalPresentationStyle = .popover
-            viewController.present(contentController, animated: true, completion: nil)
-            
-            // Get the popover presentation controller and configure it.
-            let presentationController = contentController.popoverPresentationController
-            presentationController?.delegate = self
-            presentationController?.permittedArrowDirections = [.left, .down]
-            presentationController?.sourceView = viewController.view
-            
-            //Convert the rect coords to point at the textfield
-            let rect = textField.convert(textField.bounds, to: viewController.view)
-            presentationController?.sourceRect = rect;
-        }
+        // Get the popover presentation controller and configure it.
+        let presentationController = contentController.popoverPresentationController
+        presentationController?.delegate = self
+        presentationController?.permittedArrowDirections = [.left, .down]
+        presentationController?.sourceView = viewController.view
+
+        //Convert the rect coords to point at the textfield
+        let rect = textField.convert(textField.bounds, to: viewController.view)
+        presentationController?.sourceRect = rect;
     }
     
     

@@ -145,15 +145,10 @@ open class ImagePicker: NSObject {
         }
 
         checkPermissions { [weak self] granted in
-            //We are now coming back on a background thread!
             if granted {
-                DispatchQueue.main.async {
-                    self?.presentationController?.present(alertController, animated: true)
-                }
+                self?.presentationController?.present(alertController, animated: true)
             } else {
-                DispatchQueue.main.async {
-                    self?.delegate?.didFail(error: PermissionError.denied)
-                }
+                self?.delegate?.didFail(error: PermissionError.denied)
             }
         }
     }
@@ -200,7 +195,7 @@ private enum Permission: Sendable {
 
 extension ImagePicker {
 
-    private func checkPermissions(then:@escaping (_ granted:Bool) ->()) {
+    private func checkPermissions(then: @escaping (_ granted: Bool) -> ()) {
 
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: // The user has previously granted access to the camera.
@@ -209,13 +204,15 @@ extension ImagePicker {
             break
 
         case .notDetermined: // The user has not yet been asked for camera access.
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                if granted {
-                    self.permission = .granted
-                    then(true)
-                } else {
-                    self.permission = .denied
-                    then(false)
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                Task { @MainActor in
+                    if granted {
+                        self?.permission = .granted
+                        then(true)
+                    } else {
+                        self?.permission = .denied
+                        then(false)
+                    }
                 }
             }
             break

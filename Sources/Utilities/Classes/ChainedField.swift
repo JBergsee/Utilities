@@ -38,9 +38,7 @@ open class ChainedField: UITextField {
     }
 
     public func jumpToNext() {
-        DispatchQueue.main.async {
-            self.nextField?.becomeFirstResponder()
-        }
+        nextField?.becomeFirstResponder()
     }
 
     /* To implement in the textFields delegate: */
