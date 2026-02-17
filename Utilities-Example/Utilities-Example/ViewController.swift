@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     private lazy var demos: [(title: String, builder: () -> UIViewController)] = {
         var list: [(title: String, builder: () -> UIViewController)] = [
             ("ProgressHUD Demo", { ProgressHUDDemoViewController() }),
+            ("ImagePicker Demo", { ImagePickerDemoViewController() }),
         ]
         if #available(iOS 18.0, *) {
             list.append(("ValidatedField Demo", { ValidatedFieldDemoViewController() }))

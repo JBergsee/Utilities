@@ -12,6 +12,7 @@
 		04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */; };
 		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
 		E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */; };
+		A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */; };
 		04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20932C6E9CF70061EEE0 /* ViewController.swift */; };
 		04CA20972C6E9CF70061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA20962C6E9CF70061EEE0 /* Base */; };
 		04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20982C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld */; };
@@ -34,6 +35,7 @@
 		04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUDDemoViewController.swift; sourceTree = "<group>"; };
 		04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldDemoViewController.swift; sourceTree = "<group>"; };
 		0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFieldDemoViewController.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerDemoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */,
 				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
 				0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */,
+				A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */,
 				04CA20952C6E9CF70061EEE0 /* Main.storyboard */,
 				04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */,
 				04CA209D2C6E9CF80061EEE0 /* LaunchScreen.storyboard */,
@@ -161,6 +164,7 @@
 				04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */,
 				04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */,
 				E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */,
+				A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
 				04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */,
 				04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */,

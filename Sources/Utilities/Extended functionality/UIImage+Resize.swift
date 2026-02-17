@@ -115,8 +115,46 @@ public extension UIImage {
 
 
 public struct ImageCompressor: Sendable {
+
+    /// Compresses an image to be below `maxkByte` kilobytes by iteratively scaling it down.
+    @concurrent
+    public static func compress(image: UIImage, maxkByte: Int) async -> UIImage? {
+        guard let currentImageSize = image.jpegData(compressionQuality: 1.0)?.count else {
+            return nil
+        }
+        let maxByte = maxkByte * 1024
+        var iterationImage: UIImage? = image
+        var iterationImageSize = currentImageSize
+        var iterationCompression: CGFloat = 1.0
+
+        while iterationImageSize > maxByte && iterationCompression > 0.01 {
+            let percantageDecrease = getPercentageToDecreaseTo(forDataCount: iterationImageSize)
+
+            let canvasSize = CGSize(width: image.size.width * iterationCompression,
+                                    height: image.size.height * iterationCompression)
+            let format = image.imageRendererFormat
+            format.opaque = false
+            let renderer = UIGraphicsImageRenderer(size: canvasSize, format: format)
+            iterationImage = renderer.image { _ in
+                image.draw(in: CGRect(origin: .zero, size: canvasSize))
+            }
+
+            guard let newImageSize = iterationImage?.jpegData(compressionQuality: 1.0)?.count else {
+                return nil
+            }
+
+            Log.debug(message: "New image size: \(iterationImage?.prettyPrintedSize() ?? "0")", in: .functionality)
+            Log.debug(message: "New data size: \(newImageSize/1024) kB", in: .functionality)
+
+            iterationImageSize = newImageSize
+            iterationCompression -= percantageDecrease
+        }
+        return iterationImage
+    }
+
+    @available(*, deprecated, message: "Use async compress(image:maxkByte:) instead")
     public static func compress(image: UIImage, maxkByte: Int,
-                                completion: @escaping (UIImage?) -> ()) {
+                                completion: @escaping @Sendable (UIImage?) -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {
             guard let currentImageSize = image.jpegData(compressionQuality: 1.0)?.count else {
                 return completion(nil)
@@ -131,10 +169,12 @@ public struct ImageCompressor: Sendable {
 
                 let canvasSize = CGSize(width: image.size.width * iterationCompression,
                                         height: image.size.height * iterationCompression)
-                UIGraphicsBeginImageContextWithOptions(canvasSize, false, image.scale)
-                defer { UIGraphicsEndImageContext() }
-                image.draw(in: CGRect(origin: .zero, size: canvasSize))
-                iterationImage = UIGraphicsGetImageFromCurrentImageContext()
+                let format = image.imageRendererFormat
+                format.opaque = false
+                let renderer = UIGraphicsImageRenderer(size: canvasSize, format: format)
+                iterationImage = renderer.image { _ in
+                    image.draw(in: CGRect(origin: .zero, size: canvasSize))
+                }
 
                 guard let newImageSize = iterationImage?.jpegData(compressionQuality: 1.0)?.count else {
                     return completion(nil)
