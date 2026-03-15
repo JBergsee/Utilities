@@ -17,8 +17,13 @@ import UIKit
     
     func presentAlertFor(_ rangeField:RangeField, message:String, changeAction:UIAlertAction, cancelAction:UIAlertAction)
     
-    @objc optional func rangeFieldDidBeginEditing(_ rangeField:RangeField)
-    @objc optional func rangeField(_ rangeField:RangeField, didReturn value:NSNumber?)
+    func rangeFieldDidBeginEditing(_ rangeField: RangeField)
+    func rangeField(_ rangeField: RangeField, didReturn value: NSNumber?)
+}
+
+public extension RangeFieldDelegate {
+    func rangeFieldDidBeginEditing(_ rangeField: RangeField) {}
+    func rangeField(_ rangeField: RangeField, didReturn value: NSNumber?) {}
 }
 
 public extension RangeFieldDelegate where Self: UIViewController {
@@ -350,7 +355,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         //Just call the delegate
-        rangeDelegate?.rangeFieldDidBeginEditing?(self)
+        rangeDelegate?.rangeFieldDidBeginEditing(self)
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -410,7 +415,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
         if (text?.count == 0) { number = nil }//(as 0 might be returned from self.value)
         //nil will also be returned from Character or Time Type rangeFields
         
-        rangeDelegate?.rangeField?(self, didReturn: number)
+        rangeDelegate?.rangeField(self, didReturn: number)
         
     }
 }
