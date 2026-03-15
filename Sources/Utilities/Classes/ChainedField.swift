@@ -11,7 +11,6 @@
 
 import UIKit
 
-@objc
 open class ChainedField: UITextField {
 
     @IBOutlet public weak var nextField: UIResponder?

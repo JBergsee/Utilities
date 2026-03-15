@@ -7,7 +7,6 @@
 
 import Foundation
 
-@objcMembers
 public class Utilities {
 
     public static func timeStringWith<T : BinaryInteger>(minutes:T) -> String {

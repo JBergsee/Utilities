@@ -7,14 +7,14 @@
 
 import UIKit
 
-@MainActor @objc public protocol TimePickerFieldDelegate: AnyObject where Self: UIViewController {
+@MainActor public protocol TimePickerFieldDelegate: AnyObject where Self: UIViewController {
     
     /// Time in minutes or -1 if not set or unparseable
     func timePickerField(_ timePickerField: TimePickerField, didReturnMinutes minutes: Int)
 }
 
 
-@objc public class TimePickerField: ChainedField {
+public class TimePickerField: ChainedField {
     
     public weak var timeDelegate: TimePickerFieldDelegate?
     

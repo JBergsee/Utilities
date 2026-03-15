@@ -7,7 +7,7 @@
 
 import UIKit
 
-@objc public class TextViewController: UIViewController {
+public class TextViewController: UIViewController {
 
     @IBOutlet var textView:UITextView?
 

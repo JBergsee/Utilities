@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-@objc
 public extension UILabel {
     
     func resetAttributes() {

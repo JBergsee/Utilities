@@ -9,12 +9,11 @@ import UIKit
 import PencilKit
 
 
-@MainActor @objc
+@MainActor
 public protocol DrawViewControllerDelegate: AnyObject {
-    @objc func drawingWasSaved(_ drawing: PKDrawing?)
+    func drawingWasSaved(_ drawing: PKDrawing?)
 }
 
-@objcMembers
 open class DrawViewController: UIViewController {
 
     public weak var delegate: DrawViewControllerDelegate?

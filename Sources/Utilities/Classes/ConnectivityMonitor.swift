@@ -28,14 +28,7 @@ public extension Notification.Name {
     static let ConnectivityDidChange = Notification.Name("Connectivity changed")
 }
 
-//For Obj C compatibility
-@objc public extension NSNotification {
-    static var ConnectivityDidChange: NSString {
-        return Notification.Name.ConnectivityDidChange.rawValue as NSString
-    }
-}
-
-@objc public enum ConnectivityStatus: Int64, Sendable {
+public enum ConnectivityStatus: Int64, Sendable {
     case unknown = 0
     case notConnected = 1
     case connected = 2
@@ -61,14 +54,13 @@ extension NWPath.Status: @retroactive CustomStringConvertible {
 }
 
 
-@objcMembers
 public class ConnectivityMonitor: NSObject {
-    
+
     //Singleton
-    @objc(sharedMonitor) public static let shared = ConnectivityMonitor()
+    public static let shared = ConnectivityMonitor()
 
     //Public property
-    @objc public var currentStatus: ConnectivityStatus = .unknown
+    public var currentStatus: ConnectivityStatus = .unknown
     
     //Private properties
     let monitor = NWPathMonitor()
@@ -113,7 +105,7 @@ public class ConnectivityMonitor: NSObject {
         }
     }
     
-    @objc public func isOnline() -> Bool {
+    public func isOnline() -> Bool {
         Log.debug(message: "Current path status is \(self.monitor.currentPath.status)...", in: .network)
         Log.debug(message: "...while connectivity status is \(self.currentStatus)", in: .network)
 
