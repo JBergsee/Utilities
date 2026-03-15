@@ -13,26 +13,21 @@ import JBLogging
 //MARK: - Fetched Results controller delegate standard implementation
 extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
-    private func viewIsInHierarchy() -> Bool {
-        return view.window != nil &&
-        view.superview != nil &&
-        isViewLoaded
-    }
-    
     //Start updates
     @objc open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
+
         //Do nothing if the user is rearranging the table
         guard !_changeIsUserDriven else { return }
-        
-        //Do nothing if the view is not in the hierarchy.
-        //(Avoids LayoutOutsideViewHierarchy warnings
-        // and crashes on flight deletions)
-//        guard viewIsInHierarchy() else {
-//            Log.debug(message: "Not updating FRC while view is not in hierarchy!", in: .functionality)
-//            return
-//        }
-        
+
+        // Snapshot all current section UUIDs before the FRC mutates its sections.
+        // isCollapsed(_:) uses this cache during the callback batch to avoid querying
+        // the FRC mid-update (which can crash if a section becomes empty).
+        isProcessingFRCChanges = true
+        let count = modelProvider?.numberOfSections() ?? 0
+        for i in 0..<count {
+            sectionUuidSnapshot[i] = modelProvider?.uuid(for: i)
+        }
+
         tableView.beginUpdates()
     }
     
@@ -41,9 +36,8 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
                                didChange sectionInfo: NSFetchedResultsSectionInfo,
                                atSectionIndex sectionIndex: Int,
                                for type: NSFetchedResultsChangeType) {
-        
+
         guard !_changeIsUserDriven else { return }
-//        guard viewIsInHierarchy() else { return }
         
         switch(type) {
         case .insert:
@@ -77,7 +71,6 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
                                newIndexPath: IndexPath?) {
         
         guard !_changeIsUserDriven else { return }
-//        guard viewIsInHierarchy() else { return }
 
         //Will crash if the section is closed so check before deleting/inserting:
         
@@ -132,11 +125,14 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     }
     
     @objc open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
+
         guard !_changeIsUserDriven else { return }
-//        guard viewIsInHierarchy() else { return }
-        
+
         tableView.endUpdates()
+
+        // Clear the snapshot now that the batch is complete
+        isProcessingFRCChanges = false
+        sectionUuidSnapshot.removeAll()
     }
 }
 

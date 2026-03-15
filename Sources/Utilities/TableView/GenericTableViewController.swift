@@ -55,6 +55,8 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
             
     //For FRC Delegate
     var _changeIsUserDriven: Bool = false
+    var isProcessingFRCChanges: Bool = false
+    var sectionUuidSnapshot: [Int: String] = [:]
     
     //For searching
     //The searchcontroller
@@ -76,7 +78,13 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     public var defaultClosed = false
 
     public func isCollapsed(_ section: Int) -> Bool {
-        let sectionId = modelProvider!.uuid(for: section)
+        // During FRC delegate callbacks the FRC's sections may be in flux — use the pre-change snapshot.
+        let sectionId: String
+        if isProcessingFRCChanges, let cached = sectionUuidSnapshot[section] {
+            sectionId = cached
+        } else {
+            sectionId = modelProvider!.uuid(for: section)
+        }
         if sectionsState.index(forKey: sectionId) == nil {
             sectionsState[sectionId] = defaultClosed //set default value if not set before
         }
