@@ -13,7 +13,7 @@ import UIKit
 
 public class TimePicker: UIDatePicker {
     
-    @IBOutlet public weak var timeDelegate: TimePickerDelegate?
+    public weak var timeDelegate: TimePickerDelegate?
     
     public var minutes: Int {
         get {

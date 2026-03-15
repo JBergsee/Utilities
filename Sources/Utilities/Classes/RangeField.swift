@@ -52,7 +52,7 @@ public class RangeField: ChainedField, UITextFieldDelegate {
     private static let stringMaxLength = "Max length is %d characters"
     
     //Delegate to set in Interface Builder
-    @IBOutlet public weak var rangeDelegate: RangeFieldDelegate?
+    public weak var rangeDelegate: RangeFieldDelegate?
     
     // Before initializing we make a floating point textfield with all floating point values (min to max)
     public var rangeType: RangeFieldType = .floatingPoint

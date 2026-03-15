@@ -16,7 +16,7 @@ import UIKit
 
 @objc public class TimePickerField: ChainedField {
     
-    @IBOutlet public weak var timeDelegate: TimePickerFieldDelegate?
+    public weak var timeDelegate: TimePickerFieldDelegate?
     
     private var pickerView = TimePickerViewController(nibName: "TimePickerView", bundle: .module)
     
