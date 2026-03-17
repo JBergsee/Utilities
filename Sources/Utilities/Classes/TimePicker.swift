@@ -7,7 +7,7 @@
 
 import UIKit
 
-@MainActor @objc public protocol TimePickerDelegate: AnyObject {
+@MainActor public protocol TimePickerDelegate: AnyObject {
     func timePicker(_ picker: TimePicker, didReturnMinutes minutes: Int)
 }
 

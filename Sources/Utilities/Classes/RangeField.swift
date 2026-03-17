@@ -10,7 +10,7 @@
 
 import UIKit
 
-@MainActor @objc public protocol RangeFieldDelegate: AnyObject {
+@MainActor public protocol RangeFieldDelegate: AnyObject {
     /* When using the RangeField as a self-contained unit (being its own UITextFieldDelegate),
      * this method is called when the textfield ends editing (either by pressing return or loosing focus).
      */
@@ -22,7 +22,9 @@ import UIKit
 }
 
 public extension RangeFieldDelegate {
+    /// Default implementation — override to respond to editing start.
     func rangeFieldDidBeginEditing(_ rangeField: RangeField) {}
+    /// Default implementation — override to receive the validated value on return.
     func rangeField(_ rangeField: RangeField, didReturn value: NSNumber?) {}
 }
 
