@@ -55,7 +55,7 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
             
     //For FRC Delegate
     var _changeIsUserDriven: Bool = false
-    var isProcessingFRCChanges: Bool = false
+    public var isProcessingFRCChanges: Bool = false
     var sectionUuidSnapshot: [Int: String] = [:]
     
     //For searching
@@ -108,11 +108,9 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     }
 
     private func updateSectionHeaders(from: Int, to: Int, removal: Bool) {
-
-        tableView.reloadData() //Overkill, but it works!
-        //TODO: Redraw all section headers in view to update their section numbers, states and labels
+        // TODO: Redraw section headers from `from` to `to` to update numbers, states and labels.
+        //       (reloadData is illegal inside beginUpdates/endUpdates — use headerView(forSection:))
 //        for i in from...to {
-//
 //            if let header = tableView.headerView(forSection: i) {
 //                configure(headerView: header, inSection: i)
 //            }

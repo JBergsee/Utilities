@@ -13,11 +13,23 @@ import JBLogging
 //MARK: - Fetched Results controller delegate standard implementation
 extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     
+    private func viewIsInHierarchy() -> Bool {
+        return view.window != nil &&
+        view.superview != nil &&
+        isViewLoaded
+    }
+
     //Start updates
     @objc open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 
         //Do nothing if the user is rearranging the table
         guard !_changeIsUserDriven else { return }
+
+        // Do nothing if the view is not in the hierarchy.
+        // (Avoids LayoutOutsideViewHierarchy warnings and crashes on flight deletions.)
+        // isProcessingFRCChanges tracks whether beginUpdates was called so that
+        // controllerDidChangeContent only calls endUpdates when there is a matching open batch.
+        guard viewIsInHierarchy() else { return }
 
         // Snapshot all current section UUIDs before the FRC mutates its sections.
         // isCollapsed(_:) uses this cache during the callback batch to avoid querying
@@ -38,6 +50,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
                                for type: NSFetchedResultsChangeType) {
 
         guard !_changeIsUserDriven else { return }
+        guard isProcessingFRCChanges else { return }
         
         switch(type) {
         case .insert:
@@ -71,6 +84,7 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
                                newIndexPath: IndexPath?) {
         
         guard !_changeIsUserDriven else { return }
+        guard isProcessingFRCChanges else { return }
 
         //Will crash if the section is closed so check before deleting/inserting:
         
@@ -127,6 +141,10 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
     @objc open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 
         guard !_changeIsUserDriven else { return }
+
+        // Only call endUpdates if beginUpdates was actually called (i.e. view was in hierarchy).
+        // This prevents an unmatched endUpdates when the view left the hierarchy mid-batch.
+        guard isProcessingFRCChanges else { return }
 
         tableView.endUpdates()
 
