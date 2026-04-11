@@ -25,16 +25,30 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         //Do nothing if the user is rearranging the table
         guard !_changeIsUserDriven else { return }
 
-        // Do nothing if the view is not in the hierarchy.
-        // (Avoids LayoutOutsideViewHierarchy warnings and crashes on flight deletions.)
-        // isProcessingFRCChanges tracks whether beginUpdates was called so that
-        // controllerDidChangeContent only calls endUpdates when there is a matching open batch.
-        guard viewIsInHierarchy() else { return }
+        // Do nothing if the view is not in the hierarchy (avoids LayoutOutsideViewHierarchy
+        // warnings). Mark tableViewNeedsFullReload so that when the view becomes visible
+        // again — either via viewWillAppear or the next in-hierarchy batch — we resync
+        // the table view with the FRC before opening a new beginUpdates block.
+        // Without this resync, a silently-skipped section deletion leaves the table view
+        // with a stale section count, causing NSInternalInconsistencyException at the
+        // next endUpdates().
+        guard viewIsInHierarchy() else {
+            tableViewNeedsFullReload = true
+            return
+        }
+
+        // If a previous batch was skipped while off-screen, resync the table view now,
+        // before opening the new beginUpdates block.
+        if tableViewNeedsFullReload {
+            tableView.reloadData()
+            tableViewNeedsFullReload = false
+        }
 
         // Snapshot all current section UUIDs before the FRC mutates its sections.
         // isCollapsed(_:) uses this cache during the callback batch to avoid querying
         // the FRC mid-update (which can crash if a section becomes empty).
         isProcessingFRCChanges = true
+        pendingUpdateIndexPaths.removeAll()
         let count = modelProvider?.numberOfSections() ?? 0
         for i in 0..<count {
             sectionUuidSnapshot[i] = modelProvider?.uuid(for: i)
@@ -109,16 +123,13 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
             
             
         case .update:
-            guard let indexPath = indexPath else { return }
-            
-            tableView.reloadRows(at: [indexPath], with: .automatic)
-            
-            //Should be enough to redraw the cell...
-            //But is not enough when the change is taking place and the view is not attached to a window.
-            //Therefore, a reload should be added to the viewWillAppear: of this viewController.
-            
-            //HOWEVER, note that a reloadData in viewWillAppear may cause crashes when the iPad is rotated,
-            //so test this carefully!
+            // Collect updates to apply after endUpdates(). The FRC provides the post-change
+            // index path, which is invalid inside a beginUpdates/endUpdates batch when sections
+            // have shifted — applying reloadRows here with a shifted index path causes
+            // NSInternalInconsistencyException. Deferring to after endUpdates() is always safe.
+            guard let indexPath = indexPath,
+                  !isCollapsed(indexPath.section) else { return }
+            pendingUpdateIndexPaths.append(indexPath)
             break
             
         case .move:
@@ -147,6 +158,14 @@ extension GenericTableViewController: NSFetchedResultsControllerDelegate {
         guard isProcessingFRCChanges else { return }
 
         tableView.endUpdates()
+
+        // Flush row updates collected during the batch. These use post-change index paths
+        // from the FRC, which are valid now (after endUpdates) but would have caused
+        // NSInternalInconsistencyException if applied inside the batch.
+        if !pendingUpdateIndexPaths.isEmpty {
+            tableView.reloadRows(at: pendingUpdateIndexPaths, with: .none)
+            pendingUpdateIndexPaths.removeAll()
+        }
 
         // Clear the snapshot now that the batch is complete
         isProcessingFRCChanges = false

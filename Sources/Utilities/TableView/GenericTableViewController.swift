@@ -57,17 +57,32 @@ open class GenericTableViewController: UITableViewController, GenericTableViewCo
     var _changeIsUserDriven: Bool = false
     public var isProcessingFRCChanges: Bool = false
     var sectionUuidSnapshot: [Int: String] = [:]
-    
+    var pendingUpdateIndexPaths: [IndexPath] = []
+    // Set when an FRC batch is skipped because the view was off-screen.
+    // Triggers reloadData() before the next beginUpdates() to resync the table view.
+    var tableViewNeedsFullReload = false
+
     //For searching
     //The searchcontroller
     private var searchController: UISearchController?
 
     //MARK: - View cycle
-    
+
     open override func viewDidLoad() {
         super.viewDidLoad()
         setupSearch()
         tableView.sectionHeaderTopPadding = 0
+        tableView.isPrefetchingEnabled = false
+    }
+
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Reload if FRC batches were silently skipped while the view was off-screen,
+        // so the table view is consistent with the FRC before any new updates arrive.
+        if tableViewNeedsFullReload {
+            tableView.reloadData()
+            tableViewNeedsFullReload = false
+        }
     }
     
     //MARK: - Collapsing

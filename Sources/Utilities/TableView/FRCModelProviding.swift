@@ -55,6 +55,14 @@ public protocol FRCModelProviding: ModelProviding {
     }
     
     func standardModelFor(row: Int, section: Int) -> Any {
+        // Guard only on section count — do NOT access sections[section].numberOfObjects here,
+        // as the NSFetchedResultsSectionInfo object itself can be stale after an FRC re-fetch,
+        // causing the same NSInvalidArgumentException we are trying to prevent.
+        guard let sections = fetchedResultsController.sections,
+              sections.count > section else {
+            Log.fault(message: "standardModelFor: section \(section) out of bounds — FRC likely changed between layout and execution.", in: .functionality)
+            return NSNull()
+        }
         return fetchedResultsController.object(at: IndexPath(row: row, section: section))
     }
     
