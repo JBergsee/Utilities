@@ -324,3 +324,92 @@ public extension View {
         environment(\.inlineValidationEnabled, enabled)
     }
 }
+
+
+// MARK: - Example Form & Preview
+
+/// ValidationExampleForm demonstrates ValidatedField with focus chaining and per-keystroke sanitization.
+@available(iOS 18.0, *)
+struct ValidationExampleForm: View {
+    
+    // Define focus chain enum
+    enum FormField: Hashable {
+        case floatField
+        case intField
+        case charField
+    }
+    
+    // State variables now use proper types (Double?, Int?, String?)
+    @State private var floatValue: Double?
+    @State private var intValue: Int?
+    @State private var charValue: String?
+    
+    // Single focus state for the entire chain
+    @FocusState private var focusedField: FormField?
+
+    var body: some View {
+        Form {
+            // First field: floating point range between 0–100
+            ValidatedField(
+                "Float 0…100",
+                value: $floatValue,
+                strategy: FloatingPointRangeStrategy(min: 0, max: 100, decimals: 2),
+                focus: $focusedField,
+                equals: .floatField,
+                next: .intField,
+                onCommit: { value in
+                    if let val = value {
+                        print("Float value submitted: \(val)")
+                    }
+                }
+            )
+            .maxInputLength(6)  // e.g., "100.00"
+            .inlineValidation(true)
+            .onAppear {
+                focusedField = .floatField
+            }
+
+            // Second field: integer range -1 to 10
+            ValidatedField(
+                "-1 < Integer ≤ 10",
+                value: $intValue,
+                strategy: IntegerRangeStrategy(min: -1, max: 10),
+                focus: $focusedField,
+                equals: .intField,
+                next: .charField
+            )
+            .maxInputLength(4)  // e.g., "-999" (allowing for overage detection)
+            .inlineValidation(true)
+
+            // Third field: character input up to 8 characters (letters and whitespace)
+            ValidatedField(
+                "Any (character set example)",
+                value: $charValue,
+                strategy: CharacterSetStrategy(
+                    allowed: CharacterSet.letters.union(.whitespaces),
+                    maxLength: 8
+                ),
+                focus: $focusedField,
+                equals: .charField,
+                next: nil,  // Last field - shows "Done"
+                onCommit: { value in
+                    if let val = value {
+                        print("Character value submitted: \(val)")
+                    }
+                }
+            )
+            .inlineValidation(true)
+        }
+    }
+}
+
+// MARK: - SwiftUI Preview
+
+#Preview("ValidatedField Preview") {
+    if #available(iOS 18.0, *) {
+        ValidationExampleForm()
+            .frame(width: 360, height: 240)
+    } else {
+        Text("iOS 18.0+ required")
+    }
+}

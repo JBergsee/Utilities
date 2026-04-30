@@ -9,6 +9,20 @@ import Foundation
 import UIKit
 import JBLogging
 
+
+public enum WindowUtility {
+    public static var keyWindow: UIWindow? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    }
+
+    public static var rootViewController: UIViewController? {
+        keyWindow?.rootViewController
+    }
+}
+
 public extension UIViewController {
     
     func showAlert(title: String?, message: String? = "", buttonTitle: String) {
@@ -47,7 +61,7 @@ public extension UIViewController {
         
         // Find best view controller
         
-        guard let rootVC = UIApplication.shared.delegate?.window??.rootViewController else {
+        guard let rootVC = WindowUtility.rootViewController else {
             Log.fault(message: "Could not get root ViewController.", in: .functionality)
             return UIViewController()
         }
