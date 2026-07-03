@@ -48,5 +48,5 @@ public struct IntegerRangeStrategy: ValidatedFieldStrategy, Sendable {
         "\(value)"
     }
 
-    public var keyboardType: UIKeyboardType { .numberPad }
+    public var keyboardType: UIKeyboardType { .numbersAndPunctuation }
 }

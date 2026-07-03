@@ -62,5 +62,5 @@ public struct FloatingPointRangeStrategy: ValidatedFieldStrategy, Sendable {
         return result
     }
 
-    public var keyboardType: UIKeyboardType { .decimalPad }
+    public var keyboardType: UIKeyboardType { .numbersAndPunctuation }
 }
