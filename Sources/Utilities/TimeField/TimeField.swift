@@ -85,6 +85,10 @@ public struct TimeField<FocusValue: Hashable>: View {
     @State private var showPicker = false
     @State private var pickerDate = Date(timeIntervalSince1970: 0)
     @State private var text: String = ""
+    /// Set by Set/Remove so the focus chain advances once the popover has
+    /// actually left the hierarchy; focus assigned any earlier is dropped
+    /// while the presentation is still dismissing.
+    @State private var advanceOnDismiss = false
     @FocusState private var isFocused: Bool
 
     // MARK: Initialisers
@@ -140,17 +144,17 @@ public struct TimeField<FocusValue: Hashable>: View {
             .popover(isPresented: $showPicker) {
                 TimePickerPopover(date: $pickerDate, onSet: setTime, onRemove: removeTime)
                     .presentationCompactAdaptation(.popover)
-            }
-            .onChange(of: showPicker) { _, isShowing in
-                if !isShowing && isFocused {
-                    isFocused = false
-                    focusBinding?.wrappedValue = nil
-                }
+                    .onDisappear {
+                        if advanceOnDismiss {
+                            advanceOnDismiss = false
+                            advanceFocus()
+                        }
+                    }
             }
             .onChange(of: value) { _, newValue in
                 if newValue != nil {
                     if text != displayText { text = displayText }
-                } else if !isFocused {
+                } else {
                     text = ""
                 }
             }
@@ -161,20 +165,24 @@ public struct TimeField<FocusValue: Hashable>: View {
 
     @ViewBuilder
     private var textField: some View {
+        // The picker is the only input for this field, so the text field must
+        // never become first responder (that would present the keyboard).
+        // A transparent overlay swallows taps and opens the picker instead.
         let field = TextField(title, text: $text)
-            .submitLabel(nextFocusTag != nil ? .next : .done)
-            .autocorrectionDisabled()
-            .onSubmit {
-                dismissAndAdvance()
-            }
-            .onChange(of: text) { _, newValue in
-                if newValue != displayText {
-                    text = displayText
-                }
+            .overlay {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        handleTap()
+                    }
             }
             .onChange(of: isFocused) { _, nowFocused in
-                if nowFocused && !showPicker {
-                    openPicker()
+                // Focus can only arrive programmatically (via the focus chain).
+                // Resign it immediately so the keyboard never presents, and
+                // show the picker as the input UI instead.
+                if nowFocused {
+                    isFocused = false
+                    if !showPicker { openPicker() }
                 }
             }
 
@@ -195,6 +203,14 @@ public struct TimeField<FocusValue: Hashable>: View {
     }
 
     // MARK: Picker
+
+    private func handleTap() {
+        guard !showPicker else { return }
+        // Release focus held by another field in the chain so it commits
+        // and its keyboard dismisses before the picker appears.
+        focusBinding?.wrappedValue = nil
+        openPicker()
+    }
 
     private func openPicker() {
         if let minutes = value {
@@ -218,12 +234,9 @@ public struct TimeField<FocusValue: Hashable>: View {
     }
 
     private func dismissAndAdvance() {
+        advanceOnDismiss = true
         showPicker = false
-        isFocused = false
         text = displayText
-        Task { @MainActor in
-            advanceFocus()
-        }
     }
 
     // MARK: Focus chain
