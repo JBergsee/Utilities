@@ -7,21 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		043104B0300E0EAA005B39E3 /* HideBarDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */; };
 		04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */; };
 		04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */; };
-		04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */; };
-		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
-		E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */; };
-		A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */; };
 		04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20932C6E9CF70061EEE0 /* ViewController.swift */; };
 		04CA20972C6E9CF70061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA20962C6E9CF70061EEE0 /* Base */; };
 		04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20982C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld */; };
 		04CA209C2C6E9CF80061EEE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */; };
 		04CA209F2C6E9CF80061EEE0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04CA209E2C6E9CF80061EEE0 /* Base */; };
+		04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */; };
 		04CA20B12C6EA1000061EEE0 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 04CA20B22C6EA1000061EEE0 /* Utilities */; };
+		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
+		A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */; };
+		E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideBarDemoViewController.swift; sourceTree = "<group>"; };
 		04CA208C2C6E9CF70061EEE0 /* Utilities-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Utilities-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
 				0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */,
 				A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */,
+				043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */,
 				04CA20952C6E9CF70061EEE0 /* Main.storyboard */,
 				04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */,
 				04CA209D2C6E9CF80061EEE0 /* LaunchScreen.storyboard */,
@@ -166,6 +169,7 @@
 				E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */,
 				A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
+				043104B0300E0EAA005B39E3 /* HideBarDemoViewController.swift in Sources */,
 				04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */,
 				04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */,
 			);
@@ -391,6 +395,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCSwiftPackageProductDependency section */
+		04CA20B22C6EA1000061EEE0 /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin XCVersionGroup section */
 		04CA20982C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld */ = {
 			isa = XCVersionGroup;
@@ -403,13 +414,6 @@
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		04CA20B22C6EA1000061EEE0 /* Utilities */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Utilities;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04CA20842C6E9CF70061EEE0 /* Project object */;
 }

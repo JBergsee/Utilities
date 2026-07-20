@@ -21,6 +21,7 @@ class ViewController: UIViewController {
             list.append(("ValidatedField Demo", { ValidatedFieldDemoViewController() }))
             list.append(("TimeField Demo", { TimeFieldDemoViewController() }))
         }
+        list.append(("Hide Keyboard Bar Demo", { HideBarDemoViewController() }))
         return list
     }()
 
