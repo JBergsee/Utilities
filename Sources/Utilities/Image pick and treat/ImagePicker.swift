@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation //For authorization request
+import PhotosUI //For PHPickerViewController
 
 
 @MainActor public protocol ImagePickerDelegate: AnyObject {
@@ -55,35 +56,47 @@ open class ImagePicker: NSObject {
     }
 
     /// Presents the image picker and returns the selected image asynchronously.
-    /// Returns `nil` if the user cancels, or throws `PermissionError` if denied.
+    /// Returns `nil` if the user cancels, or throws `PermissionError` if camera access is denied.
+    /// The photo library (PHPicker) needs no permission and is never blocked.
     @MainActor
     public func selectImage(from sourceView: UIView) async throws -> UIImage? {
-        guard await requestCameraAccess() else {
-            throw PermissionError.denied
-        }
 
         return try await withCheckedThrowingContinuation { continuation in
             let coordinator = PickerCoordinator(continuation: continuation)
-
-            let picker = UIImagePickerController()
-            picker.allowsEditing = false
-            picker.mediaTypes = ["public.image"]
-            picker.delegate = coordinator
 
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 alert.addAction(UIAlertAction(title: "Take photo", style: .default) { [weak self] _ in
-                    picker.sourceType = .camera
-                    self?.presentationController?.present(picker, animated: true)
+                    Task { @MainActor in
+                        guard let self else {
+                            coordinator.cancel()
+                            return
+                        }
+                        // Camera permission is only needed (and requested) for this path.
+                        guard await self.requestCameraAccess() else {
+                            coordinator.fail(with: PermissionError.denied)
+                            return
+                        }
+                        let picker = UIImagePickerController()
+                        picker.sourceType = .camera
+                        picker.allowsEditing = false
+                        picker.mediaTypes = ["public.image"]
+                        picker.delegate = coordinator
+                        self.presentationController?.present(picker, animated: true)
+                    }
                 })
             }
-            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                alert.addAction(UIAlertAction(title: "Photo library", style: .default) { [weak self] _ in
-                    picker.sourceType = .photoLibrary
-                    self?.presentationController?.present(picker, animated: true)
-                })
-            }
+            alert.addAction(UIAlertAction(title: "Photo library", style: .default) { [weak self] _ in
+                // PHPicker runs out of process with deferred loading:
+                // presents fast and requires no photo library permission.
+                var configuration = PHPickerConfiguration()
+                configuration.filter = .images
+                configuration.selectionLimit = 1
+                let picker = PHPickerViewController(configuration: configuration)
+                picker.delegate = coordinator
+                self?.presentationController?.present(picker, animated: true)
+            })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                 coordinator.cancel()
             })
@@ -254,6 +267,12 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
         finish(with: nil)
     }
 
+    func fail(with error: any Error) {
+        continuation?.resume(throwing: error)
+        continuation = nil
+        retainCycle = nil
+    }
+
     private func finish(with image: UIImage?) {
         continuation?.resume(returning: image)
         continuation = nil
@@ -270,5 +289,30 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
         picker.dismiss(animated: true)
         let image = (info[.editedImage] as? UIImage) ?? (info[.originalImage] as? UIImage)
         finish(with: image)
+    }
+}
+
+extension PickerCoordinator: PHPickerViewControllerDelegate {
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+
+        guard let provider = results.first?.itemProvider,
+              provider.canLoadObject(ofClass: UIImage.self) else {
+            // Empty results means the user cancelled.
+            finish(with: nil)
+            return
+        }
+
+        provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
+            // Completion is called on an arbitrary queue.
+            Task { @MainActor in
+                if let error {
+                    self?.fail(with: error)
+                } else {
+                    self?.finish(with: object as? UIImage)
+                }
+            }
+        }
     }
 }
