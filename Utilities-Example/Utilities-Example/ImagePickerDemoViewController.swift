@@ -67,7 +67,7 @@ class ImagePickerDemoViewController: UIViewController {
         return label
     }()
 
-    private lazy var imagePicker = ImagePicker(presentationController: self, delegate: nil)
+    private lazy var imagePicker = ImagePicker(presentationController: self)
 
     // MARK: - Lifecycle
 
