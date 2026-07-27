@@ -22,44 +22,18 @@ import Network
 import JBLogging
 
 
+//NOTE: ConnectivityStatus and Notification.Name.ConnectivityDidChange
+//are shared with the replacement and now live in NetworkMonitor.swift.
 
-//For Swift
-public extension Notification.Name {
-    static let ConnectivityDidChange = Notification.Name("Connectivity changed")
-}
-
-public enum ConnectivityStatus: Int64, Sendable {
-    case unknown = 0
-    case notConnected = 1
-    case connected = 2
-}
-
-extension ConnectivityStatus: CustomStringConvertible {
-    public var description: String {
-        if (self == .unknown) { return "'unknown'" }
-        if (self == .notConnected) { return "'not connected'" }
-        if (self == .connected) { return "'connected'" }
-        return "'out of scope'"
-    }
-}
-
-
-extension NWPath.Status: @retroactive CustomStringConvertible {
-    public var description: String {
-        if (self == .satisfied) { return "'satisfied'" }
-        if (self == .unsatisfied) { return "'unsatisfied'" }
-        if (self == .requiresConnection) { return "'requires connection'" }
-        return "unknown"
-    }
-}
-
-
+@available(*, deprecated, renamed: "NetworkMonitor",
+           message: "Use NetworkMonitor.shared instead. Observe statusUpdates (AsyncStream) or .ConnectivityDidChange (now posted with object: nil), and use the isOnline property.")
 public class ConnectivityMonitor: NSObject {
 
     //Singleton
     public static let shared = ConnectivityMonitor()
 
     //Public property
+    @available(*, deprecated, message: "Use NetworkMonitor.shared.currentStatus.")
     public var currentStatus: ConnectivityStatus = .unknown
     
     //Private properties
@@ -105,6 +79,7 @@ public class ConnectivityMonitor: NSObject {
         }
     }
     
+    @available(*, deprecated, renamed: "NetworkMonitor.shared.isOnline")
     public func isOnline() -> Bool {
         Log.debug(message: "Current path status is \(self.monitor.currentPath.status)...", in: .network)
         Log.debug(message: "...while connectivity status is \(self.currentStatus)", in: .network)
