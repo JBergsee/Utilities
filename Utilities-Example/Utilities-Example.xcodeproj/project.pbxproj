@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		043104B0300E0EAA005B39E3 /* HideBarDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */; };
+		04562AE4301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04562AE3301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift */; };
+		04562AED301FAD0300D44B2B /* ImageCropperDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04562AEC301FAD0300D44B2B /* ImageCropperDemoViewController.swift */; };
 		04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */; };
 		04CA20922C6E9CF70061EEE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */; };
 		04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20932C6E9CF70061EEE0 /* ViewController.swift */; };
@@ -24,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideBarDemoViewController.swift; sourceTree = "<group>"; };
+		04562AE3301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorDemoViewController.swift; sourceTree = "<group>"; };
+		04562AEC301FAD0300D44B2B /* ImageCropperDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropperDemoViewController.swift; sourceTree = "<group>"; };
 		04CA208C2C6E9CF70061EEE0 /* Utilities-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Utilities-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CA208F2C6E9CF70061EEE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +80,8 @@
 				04CA20912C6E9CF70061EEE0 /* SceneDelegate.swift */,
 				04CA20932C6E9CF70061EEE0 /* ViewController.swift */,
 				04CA20AF2C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift */,
+				04562AEC301FAD0300D44B2B /* ImageCropperDemoViewController.swift */,
+				04562AE3301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift */,
 				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
 				0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */,
 				A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */,
@@ -120,7 +126,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					04CA208B2C6E9CF70061EEE0 = {
 						CreatedOnToolsVersion = 15.4;
@@ -164,10 +170,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				04CA20942C6E9CF70061EEE0 /* ViewController.swift in Sources */,
+				04562AED301FAD0300D44B2B /* ImageCropperDemoViewController.swift in Sources */,
 				04CA20B02C6EA0000061EEE0 /* ProgressHUDDemoViewController.swift in Sources */,
 				04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */,
 				E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */,
 				A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */,
+				04562AE4301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
 				043104B0300E0EAA005B39E3 /* HideBarDemoViewController.swift in Sources */,
 				04CA20902C6E9CF70061EEE0 /* AppDelegate.swift in Sources */,
@@ -232,6 +240,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = N536P3ABTC;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -295,6 +304,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = N536P3ABTC;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -323,7 +333,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N536P3ABTC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Utilities-Example/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -351,7 +360,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N536P3ABTC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Utilities-Example/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

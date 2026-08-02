@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import SwiftUI //For hosting ImageCropperView
 import AVFoundation //For authorization request
 import PhotosUI //For PHPickerViewController
 
 
 /// Presents a camera / photo-library picker and returns the selected image.
+///
+/// When `allowsEditing` is `true`, the picked image (from either the camera or the
+/// photo library) is passed to `ImageCropperView` for cropping before it is returned.
 ///
 /// The consuming app's Info.plist **must** include:
 /// - `NSCameraUsageDescription` — required for camera access.
@@ -22,8 +26,13 @@ open class ImagePicker {
 
     private weak var presentationController: UIViewController?
 
-    public init(presentationController: UIViewController) {
+    /// Whether the picked image is presented in `ImageCropperView` for cropping
+    /// before being returned. Applies to both the camera and photo-library sources.
+    private let allowsEditing: Bool
+
+    public init(presentationController: UIViewController, allowsEditing: Bool = true) {
         self.presentationController = presentationController
+        self.allowsEditing = allowsEditing
     }
 
     /// Presents the image picker and returns the selected image asynchronously.
@@ -42,7 +51,9 @@ open class ImagePicker {
         let photoPicker = PHPickerViewController(configuration: configuration)
 
         return try await withCheckedThrowingContinuation { continuation in
-            let coordinator = PickerCoordinator(continuation: continuation)
+            let coordinator = PickerCoordinator(continuation: continuation,
+                                                presentationController: self.presentationController,
+                                                allowsEditing: self.allowsEditing)
             photoPicker.delegate = coordinator
 
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -114,12 +125,19 @@ public enum PermissionError: Error, Sendable {
 
 /// Per-call delegate that bridges UIImagePickerController callbacks to a CheckedContinuation.
 /// Retains itself until the continuation is resumed, then releases.
+@MainActor
 private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var continuation: CheckedContinuation<UIImage?, any Error>?
     private var retainCycle: PickerCoordinator?
+    private weak var presentationController: UIViewController?
+    private let allowsEditing: Bool
 
-    init(continuation: CheckedContinuation<UIImage?, any Error>) {
+    init(continuation: CheckedContinuation<UIImage?, any Error>,
+         presentationController: UIViewController?,
+         allowsEditing: Bool) {
         self.continuation = continuation
+        self.presentationController = presentationController
+        self.allowsEditing = allowsEditing
         super.init()
         self.retainCycle = self
     }
@@ -140,6 +158,34 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
         retainCycle = nil
     }
 
+    /// Presents the crop step when editing is enabled and an image was picked,
+    /// otherwise resumes the continuation directly with the picked image.
+    private func deliver(_ image: UIImage?) {
+        guard allowsEditing, let image else {
+            finish(with: image)
+            return
+        }
+        presentCropper(for: image)
+    }
+
+    /// Hosts `ImageCropperView` full-screen. Confirming returns the cropped image;
+    /// cancelling returns `nil` (cancels the whole flow).
+    private func presentCropper(for image: UIImage) {
+        let cropper = ImageCropperView(
+            image: image,
+            onCrop: { [weak self] cropped in
+                self?.presentationController?.dismiss(animated: true)
+                self?.finish(with: cropped)
+            },
+            onCancel: { [weak self] in
+                self?.presentationController?.dismiss(animated: true)
+                self?.finish(with: nil)
+            })
+        let host = UIHostingController(rootView: cropper)
+        host.modalPresentationStyle = .fullScreen
+        presentationController?.present(host, animated: true)
+    }
+
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
         finish(with: nil)
@@ -147,9 +193,12 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
 
     func imagePickerController(_ picker: UIImagePickerController,
                                 didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        picker.dismiss(animated: true)
-        let image = (info[.editedImage] as? UIImage) ?? (info[.originalImage] as? UIImage)
-        finish(with: image)
+        // Editing is off on the picker, so only the original image is available.
+        let image = info[.originalImage] as? UIImage
+        // Dismiss first, then deliver, so the cropper isn't presented mid-dismiss.
+        picker.dismiss(animated: true) { [weak self] in
+            self?.deliver(image)
+        }
     }
 }
 
@@ -166,12 +215,13 @@ extension PickerCoordinator: PHPickerViewControllerDelegate {
         }
 
         provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-            // Completion is called on an arbitrary queue.
+            // Completion is called on an arbitrary queue. The picker is already
+            // dismissed (above), so the cropper can be presented from `deliver`.
             Task { @MainActor in
                 if let error {
                     self?.fail(with: error)
                 } else {
-                    self?.finish(with: object as? UIImage)
+                    self?.deliver(object as? UIImage)
                 }
             }
         }

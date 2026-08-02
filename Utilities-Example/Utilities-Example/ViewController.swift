@@ -16,6 +16,8 @@ class ViewController: UIViewController {
         var list: [(title: String, builder: () -> UIViewController)] = [
             ("ProgressHUD Demo", { ProgressHUDDemoViewController() }),
             ("ImagePicker Demo", { ImagePickerDemoViewController() }),
+            ("ImageCropper Demo", { ImageCropperDemoViewController() }),
+            ("NetworkMonitor Demo", { NetworkMonitorDemoViewController() }),
         ]
         if #available(iOS 18.0, *) {
             list.append(("ValidatedField Demo", { ValidatedFieldDemoViewController() }))
