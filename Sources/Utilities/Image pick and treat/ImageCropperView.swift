@@ -247,7 +247,7 @@ public struct ImageCropperView: View {
 
             Spacer()
 
-            Button("Use") {
+            Button("Use Photo") {
                 guard let size = lastLayoutSize else { return }
                 onCrop(ImageCropCalculator.crop(image: image,
                                                 cropRect: cropRect,

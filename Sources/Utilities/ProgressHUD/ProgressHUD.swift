@@ -50,12 +50,31 @@ public class ProgressHUD {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hud.hostingController = hostingController
 
-        view.addSubview(hostingController.view)
+        // A HUD must overlay *and* block interaction. Adding it directly inside a
+        // scroll view (e.g. a UITableView) fails on both counts: its edge anchors
+        // resolve against the scrollable content (so the HUD lands at the content
+        // origin), and the scroll view's own pan/selection gestures still fire
+        // because a gesture recognizer receives touches on its view and subviews.
+        // So for a scroll view, host the HUD in its nearest non-scrolling ancestor
+        // and pin it to the scroll view's frame — a sibling on top of the scroll
+        // view. Touches then hit the overlay instead of the scroll view.
+        let hostView = hostingController.view!
+        let container: UIView
+        let anchorView: UIView
+        if let scrollView = view as? UIScrollView, let ancestor = scrollView.superview {
+            container = ancestor
+            anchorView = scrollView
+        } else {
+            container = view
+            anchorView = view
+        }
+
+        container.addSubview(hostView)
         NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            hostView.leadingAnchor.constraint(equalTo: anchorView.leadingAnchor),
+            hostView.trailingAnchor.constraint(equalTo: anchorView.trailingAnchor),
+            hostView.topAnchor.constraint(equalTo: anchorView.topAnchor),
+            hostView.bottomAnchor.constraint(equalTo: anchorView.bottomAnchor)
         ])
 
         activeHUDs.setObject(hud, forKey: view)
