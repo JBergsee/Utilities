@@ -28,6 +28,11 @@ public class ProgressHUD {
     private var hostingController: UIHostingController<ProgressHUDView>?
     private weak var parentView: UIView?
 
+    // When the HUD is shown in a scroll view we disable scrolling so touches
+    // and pans don't slip past the overlay, restoring the previous value on hide.
+    private weak var scrolledView: UIScrollView?
+    private var previousScrollEnabled = true
+
     private static var activeHUDs: NSMapTable<UIView, ProgressHUD> = .weakToStrongObjects()
 
     private init(state: ProgressHUDState) {
@@ -50,31 +55,36 @@ public class ProgressHUD {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hud.hostingController = hostingController
 
-        // A HUD must overlay *and* block interaction. Adding it directly inside a
-        // scroll view (e.g. a UITableView) fails on both counts: its edge anchors
-        // resolve against the scrollable content (so the HUD lands at the content
-        // origin), and the scroll view's own pan/selection gestures still fire
-        // because a gesture recognizer receives touches on its view and subviews.
-        // So for a scroll view, host the HUD in its nearest non-scrolling ancestor
-        // and pin it to the scroll view's frame — a sibling on top of the scroll
-        // view. Touches then hit the overlay instead of the scroll view.
+        // The HUD is always added as a direct subview of the target view, so callers
+        // never have to reason about the surrounding view hierarchy. For a scroll
+        // view (e.g. a UITableView) we pin to its `frameLayoutGuide` rather than its
+        // edges: that keeps the HUD fixed over the visible frame, doesn't scroll with
+        // the content, and doesn't affect `contentSize`. We also disable scrolling
+        // while the HUD is shown so pans don't slip past the overlay.
         let hostView = hostingController.view!
-        let container: UIView
-        let anchorView: UIView
-        if let scrollView = view as? UIScrollView, let ancestor = scrollView.superview {
-            container = ancestor
-            anchorView = scrollView
+        view.addSubview(hostView)
+
+        // Pin to the scroll view's frame guide (fixed over the visible frame) or,
+        // for a regular view, to the view's own edges (full-bleed dim background).
+        let leading: NSLayoutXAxisAnchor
+        let trailing: NSLayoutXAxisAnchor
+        let top: NSLayoutYAxisAnchor
+        let bottom: NSLayoutYAxisAnchor
+        if let scrollView = view as? UIScrollView {
+            let guide = scrollView.frameLayoutGuide
+            (leading, trailing, top, bottom) = (guide.leadingAnchor, guide.trailingAnchor, guide.topAnchor, guide.bottomAnchor)
+            hud.scrolledView = scrollView
+            hud.previousScrollEnabled = scrollView.isScrollEnabled
+            scrollView.isScrollEnabled = false
         } else {
-            container = view
-            anchorView = view
+            (leading, trailing, top, bottom) = (view.leadingAnchor, view.trailingAnchor, view.topAnchor, view.bottomAnchor)
         }
 
-        container.addSubview(hostView)
         NSLayoutConstraint.activate([
-            hostView.leadingAnchor.constraint(equalTo: anchorView.leadingAnchor),
-            hostView.trailingAnchor.constraint(equalTo: anchorView.trailingAnchor),
-            hostView.topAnchor.constraint(equalTo: anchorView.topAnchor),
-            hostView.bottomAnchor.constraint(equalTo: anchorView.bottomAnchor)
+            hostView.leadingAnchor.constraint(equalTo: leading),
+            hostView.trailingAnchor.constraint(equalTo: trailing),
+            hostView.topAnchor.constraint(equalTo: top),
+            hostView.bottomAnchor.constraint(equalTo: bottom)
         ])
 
         activeHUDs.setObject(hud, forKey: view)
@@ -102,6 +112,10 @@ public class ProgressHUD {
         if let parentView {
             ProgressHUD.activeHUDs.removeObject(forKey: parentView)
         }
+
+        // Restore scrolling if we disabled it when showing in a scroll view.
+        scrolledView?.isScrollEnabled = previousScrollEnabled
+        scrolledView = nil
 
         if animated {
             UIView.animate(withDuration: 0.2, animations: {

@@ -180,4 +180,45 @@ struct ProgressHUDTests {
         ProgressHUD.hide(for: parentView, animated: false)
         #expect(parentView.subviews.count == initialSubviewCount)
     }
+
+    @Test func showInScrollViewAddsDirectSubviewAndDisablesScrolling() {
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        let initialSubviewCount = scrollView.subviews.count
+        #expect(scrollView.isScrollEnabled)
+
+        let hud = ProgressHUD.show(in: scrollView, animated: false)
+
+        // HUD is a direct subview of the passed scroll view (no hierarchy climbing).
+        #expect(scrollView.subviews.count == initialSubviewCount + 1)
+        // Scrolling is disabled so touches don't slip past the overlay.
+        #expect(scrollView.isScrollEnabled == false)
+
+        hud.hide(animated: false)
+
+        // Scrolling restored and the overlay removed.
+        #expect(scrollView.isScrollEnabled)
+        #expect(scrollView.subviews.count == initialSubviewCount)
+    }
+
+    @Test func showInScrollViewNestedInScrollViewAttachesToTarget() {
+        // Mirrors the Journey Log setup: a table view (scroll view) hosted inside a
+        // paging scroll view. The HUD must attach to the target, not an ancestor.
+        let pagingScrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        let innerScrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        pagingScrollView.addSubview(innerScrollView)
+
+        let innerInitialCount = innerScrollView.subviews.count
+        let pagingInitialCount = pagingScrollView.subviews.count
+
+        let hud = ProgressHUD.show(in: innerScrollView, animated: false)
+
+        // Attached to the inner (target) scroll view, not the paging ancestor.
+        #expect(innerScrollView.subviews.count == innerInitialCount + 1)
+        #expect(pagingScrollView.subviews.count == pagingInitialCount)
+        #expect(innerScrollView.isScrollEnabled == false)
+
+        hud.hide(animated: false)
+        #expect(innerScrollView.isScrollEnabled)
+        #expect(innerScrollView.subviews.count == innerInitialCount)
+    }
 }

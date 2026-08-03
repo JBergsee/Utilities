@@ -104,13 +104,11 @@ public struct ImageCropperView: View {
                 .gesture(panGesture)
                 .simultaneousGesture(magnifyGesture)
 
-            // Dim everything outside the crop rectangle.
-            Path { path in
-                path.addRect(CGRect(origin: .zero, size: size))
-                path.addRect(cropRect)
-            }
-            .fill(Color.black.opacity(0.5), style: FillStyle(eoFill: true))
-            .allowsHitTesting(false)
+            // Dim everything outside the crop rectangle. Driven by an animatable
+            // shape so the overlay interpolates in step with the handles on reset.
+            CropOverlayShape(rect: cropRect, role: .dimming)
+                .fill(Color.black.opacity(0.5), style: FillStyle(eoFill: true))
+                .allowsHitTesting(false)
 
             // Crop border + rule-of-thirds grid.
             cropOutline
@@ -129,24 +127,11 @@ public struct ImageCropperView: View {
 
     private var cropOutline: some View {
         ZStack {
-            Rectangle()
-                .path(in: cropRect)
+            CropOverlayShape(rect: cropRect, role: .border)
                 .stroke(Color.white, lineWidth: 1)
 
-            // Rule-of-thirds guide lines.
-            Path { path in
-                let thirdW = cropRect.width / 3
-                let thirdH = cropRect.height / 3
-                for i in 1...2 {
-                    let x = cropRect.minX + thirdW * CGFloat(i)
-                    path.move(to: CGPoint(x: x, y: cropRect.minY))
-                    path.addLine(to: CGPoint(x: x, y: cropRect.maxY))
-                    let y = cropRect.minY + thirdH * CGFloat(i)
-                    path.move(to: CGPoint(x: cropRect.minX, y: y))
-                    path.addLine(to: CGPoint(x: cropRect.maxX, y: y))
-                }
-            }
-            .stroke(Color.white.opacity(0.4), lineWidth: 0.5)
+            CropOverlayShape(rect: cropRect, role: .thirds)
+                .stroke(Color.white.opacity(0.4), lineWidth: 0.5)
         }
     }
 
@@ -273,6 +258,64 @@ public struct ImageCropperView: View {
         lastOffset = .zero
         cropRect = AVMakeRect(aspectRatio: image.size,
                               insideRect: CGRect(origin: .zero, size: size))
+    }
+}
+
+// MARK: - Animatable overlay
+
+/// Draws the crop overlay (dimming, border or rule-of-thirds grid) from a `CGRect`.
+///
+/// The rectangle is exposed through `animatableData`, so SwiftUI interpolates the
+/// path frame-by-frame during an animated transaction. This lets the overlay glide
+/// in step with the corner handles (`.position`) and the image (`.scaleEffect`/
+/// `.offset`) when the crop is reset, instead of snapping.
+private struct CropOverlayShape: Shape {
+
+    enum Role {
+        case dimming // Everything outside the crop rectangle (even-odd fill).
+        case border  // The crop rectangle's outline.
+        case thirds  // Rule-of-thirds guide lines inside the crop rectangle.
+    }
+
+    var rect: CGRect
+    let role: Role
+
+    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>,
+                                       AnimatablePair<CGFloat, CGFloat>> {
+        get {
+            AnimatablePair(AnimatablePair(rect.minX, rect.minY),
+                           AnimatablePair(rect.width, rect.height))
+        }
+        set {
+            rect = CGRect(x: newValue.first.first,
+                          y: newValue.first.second,
+                          width: newValue.second.first,
+                          height: newValue.second.second)
+        }
+    }
+
+    func path(in bounds: CGRect) -> Path {
+        var path = Path()
+        switch role {
+        case .dimming:
+            // Filled even-odd: the full area minus the crop rectangle.
+            path.addRect(bounds)
+            path.addRect(rect)
+        case .border:
+            path.addRect(rect)
+        case .thirds:
+            let thirdW = rect.width / 3
+            let thirdH = rect.height / 3
+            for i in 1...2 {
+                let x = rect.minX + thirdW * CGFloat(i)
+                path.move(to: CGPoint(x: x, y: rect.minY))
+                path.addLine(to: CGPoint(x: x, y: rect.maxY))
+                let y = rect.minY + thirdH * CGFloat(i)
+                path.move(to: CGPoint(x: rect.minX, y: y))
+                path.addLine(to: CGPoint(x: rect.maxX, y: y))
+            }
+        }
+        return path
     }
 }
 
