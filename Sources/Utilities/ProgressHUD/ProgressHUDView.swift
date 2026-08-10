@@ -86,6 +86,7 @@ public struct ProgressHUDView: View {
                     Button(title) {
                         state.buttonAction?()
                     }
+                    .buttonStyle(HUDButtonStyle())
                 }
             }
             .padding(24)
@@ -93,6 +94,28 @@ public struct ProgressHUDView: View {
                    minHeight: state.isSquare ? 120 : nil)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
         }
+    }
+}
+
+// MARK: - Button Style
+
+/// Thin bordered capsule that mirrors MBProgressHUD's action button:
+/// a 1pt border and title in a subdued grey over a transparent background,
+/// with a faint tinted fill while pressed. `.secondary` adapts to light/dark
+/// and reads well on the bezel's `.ultraThinMaterial`.
+private struct HUDButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.footnote.weight(.semibold))
+            .padding(.vertical, 6)
+            .padding(.horizontal, 16)
+            .foregroundStyle(.secondary)
+            .background {
+                Capsule().fill(Color.secondary.opacity(configuration.isPressed ? 0.15 : 0))
+            }
+            .overlay { Capsule().strokeBorder(Color.secondary, lineWidth: 1) }
+            .contentShape(Capsule())
+            .animation(.smooth(duration: 0.15), value: configuration.isPressed)
     }
 }
 
