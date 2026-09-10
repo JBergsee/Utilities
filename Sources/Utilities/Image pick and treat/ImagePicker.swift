@@ -205,23 +205,26 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
 extension PickerCoordinator: PHPickerViewControllerDelegate {
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-
         guard let provider = results.first?.itemProvider,
               provider.canLoadObject(ofClass: UIImage.self) else {
             // Empty results means the user cancelled.
+            picker.dismiss(animated: true)
             finish(with: nil)
             return
         }
 
         provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-            // Completion is called on an arbitrary queue. The picker is already
-            // dismissed (above), so the cropper can be presented from `deliver`.
+            // Completion is called on an arbitrary queue. Dismiss only after the
+            // load has finished, so the picker is never torn down mid-load —
+            // dismissing during an in-flight load races PhotosUI's internal
+            // progress-tracking KVO teardown and can crash (Crashlytics 5faff302).
             Task { @MainActor in
-                if let error {
-                    self?.fail(with: error)
-                } else {
-                    self?.deliver(object as? UIImage)
+                picker.dismiss(animated: true) {
+                    if let error {
+                        self?.fail(with: error)
+                    } else {
+                        self?.deliver(object as? UIImage)
+                    }
                 }
             }
         }
