@@ -64,6 +64,7 @@ public struct ValidatedField<Strategy: ValidatedFieldStrategy, FocusValue: Hasha
     @Binding private var value: Strategy.Value?
     private let strategy: Strategy
     private let onCommit: ((Strategy.Value?) -> Void)?
+    private let onCommitAttempt: ((Bool) -> Void)?
 
     // Focus chain (optional)
     private var focusBinding: FocusState<FocusValue?>.Binding?
@@ -91,12 +92,14 @@ public struct ValidatedField<Strategy: ValidatedFieldStrategy, FocusValue: Hasha
         _ title: String,
         value: Binding<Strategy.Value?>,
         strategy: Strategy,
-        onCommit: ((Strategy.Value?) -> Void)? = nil
+        onCommit: ((Strategy.Value?) -> Void)? = nil,
+        onCommitAttempt: ((Bool) -> Void)? = nil
     ) where FocusValue == Never {
         self.title = title
         self._value = value
         self.strategy = strategy
         self.onCommit = onCommit
+        self.onCommitAttempt = onCommitAttempt
         self.focusBinding = nil
         self.focusTag = nil
         self.nextFocusTag = nil
@@ -119,12 +122,14 @@ public struct ValidatedField<Strategy: ValidatedFieldStrategy, FocusValue: Hasha
         focus: FocusState<FocusValue?>.Binding,
         equals: FocusValue,
         next: FocusValue?,
-        onCommit: ((Strategy.Value?) -> Void)? = nil
+        onCommit: ((Strategy.Value?) -> Void)? = nil,
+        onCommitAttempt: ((Bool) -> Void)? = nil
     ) {
         self.title = title
         self._value = value
         self.strategy = strategy
         self.onCommit = onCommit
+        self.onCommitAttempt = onCommitAttempt
         self.focusBinding = focus
         self.focusTag = equals
         self.nextFocusTag = next
@@ -228,13 +233,20 @@ public struct ValidatedField<Strategy: ValidatedFieldStrategy, FocusValue: Hasha
         return result
     }
 
-    /// Parses, validates, and commits the current text.
+    /// Parses, validates, and commits the current text. Reports the
+    /// outcome via `onCommitAttempt` so callers that need to know
+    /// whether the attempt succeeded (e.g. to gate navigating away)
+    /// don't have to duplicate this parse/validate logic themselves.
     private func commitValue() {
+        var succeeded = false
+        defer { onCommitAttempt?(succeeded) }
+
         // Empty field → nil binding
         guard !text.isEmpty else {
             value = nil
             validationError = nil
             onCommit?(nil)
+            succeeded = true
             return
         }
 
@@ -252,6 +264,7 @@ public struct ValidatedField<Strategy: ValidatedFieldStrategy, FocusValue: Hasha
             value = parsed
             validationError = nil
             onCommit?(parsed)
+            succeeded = true
         } else {
             let msg = messageOverride ?? result.message ?? "Invalid value"
             validationError = msg
