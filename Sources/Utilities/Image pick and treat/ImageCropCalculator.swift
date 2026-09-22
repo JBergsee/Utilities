@@ -16,26 +16,26 @@ enum ImageCropCalculator {
     /// Crops `image` to `cropRect`.
     ///
     /// - Parameters:
-    ///   - image: The source image, displayed aspect-fit and centred in a container
-    ///     of `containerSize`, then transformed by `scale` (about the centre) and `offset`.
+    ///   - image: The source image, displayed aspect-fit and centred in `containerRect`,
+    ///     then transformed by `scale` (about the centre) and `offset`.
     ///   - cropRect: The crop rectangle in the container's view coordinates.
-    ///   - containerSize: The size of the container the crop rectangle is measured in.
+    ///   - containerRect: The rect the image is aspect-fit and centred in, which the
+    ///     crop rectangle is measured against. Both are in the same coordinate space.
     ///   - scale: The zoom applied to the displayed image.
     ///   - offset: The pan applied to the displayed image.
     /// - Returns: The cropped image, or the original if the crop can't be produced
     ///   (e.g. the rectangle lands entirely outside the image).
     static func crop(image: UIImage,
                      cropRect: CGRect,
-                     containerSize: CGSize,
+                     containerRect: CGRect,
                      scale: CGFloat,
                      offset: CGSize) -> UIImage {
         // Reconstruct the displayed image frame from the committed zoom/pan. The image
         // is aspect-fit and centred, so scaling about the container centre scales the
         // fitted rect about its own centre.
-        let fitted = AVMakeRect(aspectRatio: image.size,
-                                insideRect: CGRect(origin: .zero, size: containerSize))
-        let center = CGPoint(x: containerSize.width / 2 + offset.width,
-                             y: containerSize.height / 2 + offset.height)
+        let fitted = AVMakeRect(aspectRatio: image.size, insideRect: containerRect)
+        let center = CGPoint(x: containerRect.midX + offset.width,
+                             y: containerRect.midY + offset.height)
         let displayedSize = CGSize(width: fitted.width * scale, height: fitted.height * scale)
         let displayed = CGRect(x: center.x - displayedSize.width / 2,
                                y: center.y - displayedSize.height / 2,

@@ -11,7 +11,7 @@ import JBLogging
 
 
 //MARK: - Fetched Results controller delegate standard implementation
-extension GenericTableViewController: NSFetchedResultsControllerDelegate {
+extension GenericTableViewController: @MainActor NSFetchedResultsControllerDelegate {
     
     private func viewIsInHierarchy() -> Bool {
         return view.window != nil &&

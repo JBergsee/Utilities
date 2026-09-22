@@ -128,6 +128,37 @@ struct NetworkMonitorTests {
         #expect(await updates.next() == nil)
     }
 
+    @Test func allConsumerStreamsFinishWhenSourceFinishes() async {
+        let harness = Harness()
+        var first = harness.monitor.statusUpdates.makeAsyncIterator()
+        var second = harness.monitor.statusUpdates.makeAsyncIterator()
+        #expect(await first.next() == .unknown)
+        #expect(await second.next() == .unknown)
+
+        harness.source.finish()
+
+        #expect(await first.next() == nil)
+        #expect(await second.next() == nil)
+    }
+
+    @Test func subscribingAfterSourceFinishedYieldsFinishedStream() async {
+        let harness = Harness()
+        var updates = harness.monitor.statusUpdates.makeAsyncIterator()
+        #expect(await updates.next() == .unknown)
+
+        harness.source.yield(.satisfied)
+        #expect(await updates.next() == .connected)
+
+        harness.source.finish()
+        #expect(await updates.next() == nil)
+
+        //A late subscriber replays the last known status, then finishes
+        //rather than waiting forever for updates that can never arrive.
+        var late = harness.monitor.statusUpdates.makeAsyncIterator()
+        #expect(await late.next() == .connected)
+        #expect(await late.next() == nil)
+    }
+
     // MARK: Notifications
 
     @Test func notificationPostedOnChange() async {

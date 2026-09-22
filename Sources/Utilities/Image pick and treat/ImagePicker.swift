@@ -214,6 +214,10 @@ extension PickerCoordinator: PHPickerViewControllerDelegate {
         }
 
         provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
+            // Cast on this (arbitrary) queue, before crossing into the @MainActor
+            // Task below — `object` is a non-Sendable `NSItemProviderReading`
+            // existential, so only the concrete `UIImage?` result crosses actors.
+            let image = object as? UIImage
             // Completion is called on an arbitrary queue. Dismiss only after the
             // load has finished, so the picker is never torn down mid-load —
             // dismissing during an in-flight load races PhotosUI's internal
@@ -223,7 +227,7 @@ extension PickerCoordinator: PHPickerViewControllerDelegate {
                     if let error {
                         self?.fail(with: error)
                     } else {
-                        self?.deliver(object as? UIImage)
+                        self?.deliver(image)
                     }
                 }
             }

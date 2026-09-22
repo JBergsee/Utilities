@@ -17,6 +17,7 @@ class ViewController: UIViewController {
             ("ProgressHUD Demo", { ProgressHUDDemoViewController() }),
             ("ImagePicker Demo", { ImagePickerDemoViewController() }),
             ("ImageCropper Demo", { ImageCropperDemoViewController() }),
+            ("DocumentPhotoEditor Demo", { DocumentPhotoEditorDemoViewController() }),
             ("NetworkMonitor Demo", { NetworkMonitorDemoViewController() }),
         ]
         if #available(iOS 18.0, *) {

@@ -75,6 +75,9 @@ public final class NetworkMonitor: Sendable {
     private struct State {
         var currentStatus: ConnectivityStatus = .unknown
         var continuations: [UUID: AsyncStream<ConnectivityStatus>.Continuation] = [:]
+        /// Set once monitoring has ended; subscribers arriving afterwards get a
+        /// stream that replays the last status and then finishes immediately.
+        var isFinished = false
     }
 
     private let state: OSAllocatedUnfairLock<State>
@@ -99,12 +102,19 @@ public final class NetworkMonitor: Sendable {
     public var statusUpdates: AsyncStream<ConnectivityStatus> {
         AsyncStream { continuation in
             let id = UUID()
-            state.withLock { state in
-                state.continuations[id] = continuation
-                //Replay the current status inside the lock, so no update
-                //can slip in between subscribing and the first element.
+            //Replay the current status inside the lock, so no update can slip in
+            //between subscribing and the first element. `yield` only buffers and
+            //never runs a termination handler, so it is safe while the lock is held.
+            let alreadyFinished = state.withLock { state -> Bool in
                 continuation.yield(state.currentStatus)
+                guard !state.isFinished else { return true }
+                state.continuations[id] = continuation
+                return false
             }
+            //`finish()` runs `onTermination` synchronously, so never call it
+            //while holding the lock. See `finishAll(state:)`.
+            if alreadyFinished { continuation.finish() }
+
             continuation.onTermination = { [state] _ in
                 state.withLock { $0.continuations[id] = nil }
             }
@@ -123,16 +133,35 @@ public final class NetworkMonitor: Sendable {
             for await pathStatus in pathStatuses {
                 Self.handle(pathStatus, state: state, notificationCenter: notificationCenter)
             }
-            //Source ended: finish all subscriber streams.
-            state.withLock { state in
-                state.continuations.values.forEach { $0.finish() }
-                state.continuations.removeAll()
-            }
+            //Source ended, or the task was cancelled: finish all subscriber streams.
+            Self.finishAll(state: state)
         }
     }
 
     deinit {
         monitoringTask.cancel()
+        //Cancellation alone would leave subscribers hanging until the monitoring
+        //task is next scheduled, so finish them here too. `finishAll` captures only
+        //the lock, never `self`, so calling it while deallocating is safe.
+        Self.finishAll(state: state)
+    }
+
+    /// Finishes every subscriber stream.
+    ///
+    /// The continuations are moved out of the state and finished *after* the lock is
+    /// released: `finish()` runs `onTermination` synchronously on this thread, and that
+    /// handler takes the same lock. `os_unfair_lock` is not recursive, so finishing while
+    /// holding the lock deadlocks. Copying them out before `removeAll()` matters for the
+    /// same reason — otherwise the removal could drop a stream's last reference and
+    /// trigger its termination handler from inside the critical section.
+    private static func finishAll(state: OSAllocatedUnfairLock<State>) {
+        let continuations = state.withLock { state -> [AsyncStream<ConnectivityStatus>.Continuation] in
+            state.isFinished = true
+            let continuations = Array(state.continuations.values)
+            state.continuations.removeAll()
+            return continuations
+        }
+        continuations.forEach { $0.finish() }
     }
 
     /// The live path status source: `NWPathMonitor` iterated as an `AsyncSequence`.
@@ -168,6 +197,7 @@ public final class NetworkMonitor: Sendable {
         //replaying the current status. Yield only buffers and never blocks,
         //so it is safe while the lock is held.
         let changed = state.withLock { state -> Bool in
+            guard !state.isFinished else { return false }
             guard newStatus != state.currentStatus else { return false }
             state.currentStatus = newStatus
             state.continuations.values.forEach { $0.yield(newStatus) }

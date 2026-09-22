@@ -22,6 +22,7 @@
 		04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */; };
 		A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */; };
 		E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */; };
+		FAD5B0CA690A47298F3DEAC2 /* DocumentPhotoEditorDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DA4CFDD15447B8104BB7E /* DocumentPhotoEditorDemoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldDemoViewController.swift; sourceTree = "<group>"; };
 		0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFieldDemoViewController.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerDemoViewController.swift; sourceTree = "<group>"; };
+		1E1DA4CFDD15447B8104BB7E /* DocumentPhotoEditorDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPhotoEditorDemoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				04CA20B32C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift */,
 				0A2A4B79CC52D983596BE9AE /* TimeFieldDemoViewController.swift */,
 				A1B2C3D4E5F60002AABBCCDD /* ImagePickerDemoViewController.swift */,
+				1E1DA4CFDD15447B8104BB7E /* DocumentPhotoEditorDemoViewController.swift */,
 				043104AF300E0EAA005B39E3 /* HideBarDemoViewController.swift */,
 				04CA20952C6E9CF70061EEE0 /* Main.storyboard */,
 				04CA209B2C6E9CF80061EEE0 /* Assets.xcassets */,
@@ -175,6 +178,7 @@
 				04CA20B42C6EA2000061EEE0 /* ValidatedFieldDemoViewController.swift in Sources */,
 				E2DFB99F048F2EC79B10673D /* TimeFieldDemoViewController.swift in Sources */,
 				A1B2C3D4E5F60001AABBCCDD /* ImagePickerDemoViewController.swift in Sources */,
+				FAD5B0CA690A47298F3DEAC2 /* DocumentPhotoEditorDemoViewController.swift in Sources */,
 				04562AE4301F33CB00D44B2B /* NetworkMonitorDemoViewController.swift in Sources */,
 				04CA209A2C6E9CF70061EEE0 /* Utilities_Example.xcdatamodeld in Sources */,
 				043104B0300E0EAA005B39E3 /* HideBarDemoViewController.swift in Sources */,

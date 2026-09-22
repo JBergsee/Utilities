@@ -62,9 +62,12 @@ public struct ImageCropperView: View {
 
     private let minScale: CGFloat = 1
     private let maxScale: CGFloat = 6
-    private let minCropSize: CGFloat = 60
-    private let handleSize: CGFloat = 26
-    private let handleHitSize: CGFloat = 44
+
+    /// Layout constants and corner math live in `CropLayout` so the document photo
+    /// editor's crop mode uses exactly the same geometry.
+    private func contentRect(in size: CGSize) -> CGRect {
+        CropLayout.contentRect(in: size)
+    }
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -91,16 +94,21 @@ public struct ImageCropperView: View {
     // MARK: - Crop area
 
     private func cropArea(in size: CGSize) -> some View {
-        ZStack {
-            // The image, zoomed and panned. Fills the container; the drawn image is
-            // aspect-fit and centred inside it, so scaling about the container centre
-            // scales the fitted image about its own centre.
+        let content = contentRect(in: size)
+        return ZStack {
+            // The image, zoomed and panned. Fills the inset content area; the drawn
+            // image is aspect-fit and centred inside it, so scaling about the container
+            // centre scales the fitted image about its own centre.
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: size.width, height: size.height)
+                .frame(width: content.width, height: content.height)
                 .scaleEffect(scale)
                 .offset(offset)
+                // Keep the pan/zoom hit area covering the whole container, so gestures
+                // still work in the margin band outside the image.
+                .frame(width: size.width, height: size.height)
+                .contentShape(Rectangle())
                 .gesture(panGesture)
                 .simultaneousGesture(magnifyGesture)
 
@@ -139,9 +147,9 @@ public struct ImageCropperView: View {
         Circle()
             .fill(Color.white)
             .overlay(Circle().stroke(Color.black.opacity(0.4), lineWidth: 1))
-            .frame(width: handleSize, height: handleSize)
+            .frame(width: CropLayout.handleSize, height: CropLayout.handleSize)
             // A larger, transparent hit area makes the corners easy to grab.
-            .frame(width: handleHitSize, height: handleHitSize)
+            .frame(width: CropLayout.handleHitSize, height: CropLayout.handleHitSize)
             .contentShape(Rectangle())
     }
 
@@ -179,35 +187,16 @@ public struct ImageCropperView: View {
     }
 
     /// Moves `corner` by `translation`, keeping the opposite corner fixed so the
-    /// crop stays an axis-aligned rectangle. Clamps the moved corner to the
-    /// container bounds and enforces a minimum crop size.
+    /// crop stays an axis-aligned rectangle. Clamps the moved corner to the inset
+    /// content area and enforces a minimum crop size.
     private func updateCorner(_ corner: CropCorner, translation: CGSize, in size: CGSize) {
         let start = cornerDragStart ?? cropRect
         if cornerDragStart == nil { cornerDragStart = start }
 
-        let anchor = start.point(for: corner.opposite)
-        var moving = start.point(for: corner)
-        moving.x += translation.width
-        moving.y += translation.height
-
-        // Keep within the container.
-        moving.x = min(max(moving.x, 0), size.width)
-        moving.y = min(max(moving.y, 0), size.height)
-
-        // Preserve which side of the anchor the corner is on, and keep it at least
-        // `minCropSize` away so the rectangle can't collapse or flip.
-        if moving.x < anchor.x {
-            moving.x = min(moving.x, anchor.x - minCropSize)
-        } else {
-            moving.x = max(moving.x, anchor.x + minCropSize)
-        }
-        if moving.y < anchor.y {
-            moving.y = min(moving.y, anchor.y - minCropSize)
-        } else {
-            moving.y = max(moving.y, anchor.y + minCropSize)
-        }
-
-        cropRect = CGRect(corner: anchor, opposite: moving)
+        cropRect = CropLayout.rect(movingCorner: corner,
+                                   of: start,
+                                   by: translation,
+                                   within: contentRect(in: size))
     }
 
     // MARK: - Buttons
@@ -236,7 +225,7 @@ public struct ImageCropperView: View {
                 guard let size = lastLayoutSize else { return }
                 onCrop(ImageCropCalculator.crop(image: image,
                                                 cropRect: cropRect,
-                                                containerSize: size,
+                                                containerRect: contentRect(in: size),
                                                 scale: scale,
                                                 offset: offset))
             }
@@ -257,7 +246,7 @@ public struct ImageCropperView: View {
         offset = .zero
         lastOffset = .zero
         cropRect = AVMakeRect(aspectRatio: image.size,
-                              insideRect: CGRect(origin: .zero, size: size))
+                              insideRect: contentRect(in: size))
     }
 }
 
@@ -269,7 +258,10 @@ public struct ImageCropperView: View {
 /// path frame-by-frame during an animated transaction. This lets the overlay glide
 /// in step with the corner handles (`.position`) and the image (`.scaleEffect`/
 /// `.offset`) when the crop is reset, instead of snapping.
-private struct CropOverlayShape: Shape {
+///
+/// Internal rather than private so the document photo editor's crop mode draws
+/// the identical overlay.
+struct CropOverlayShape: Shape {
 
     enum Role {
         case dimming // Everything outside the crop rectangle (even-odd fill).

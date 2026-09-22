@@ -44,15 +44,10 @@ private struct ImageCropperDemoView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            VStack(spacing: 8) {
-                Text("Source")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Image(uiImage: sampleImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 180)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Source and result side by side, so the cropped region is easy to compare.
+            HStack(alignment: .top, spacing: 16) {
+                pane("Source", image: sampleImage)
+                pane("Cropped result", image: croppedImage)
             }
 
             Button {
@@ -61,19 +56,6 @@ private struct ImageCropperDemoView: View {
                 Label("Crop image", systemImage: "crop")
             }
             .buttonStyle(.borderedProminent)
-
-            if let croppedImage {
-                VStack(spacing: 8) {
-                    Text("Cropped result")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Image(uiImage: croppedImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 180)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-            }
 
             Spacer()
         }
@@ -90,6 +72,35 @@ private struct ImageCropperDemoView: View {
                 }
             )
         }
+    }
+
+    /// One labelled pane of the comparison. Both panes take equal width so the two
+    /// images stay aligned, and a placeholder holds the result's place until a crop
+    /// is made so the layout doesn't jump.
+    private func pane(_ title: String, image: UIImage?) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(.tertiary, style: StrokeStyle(lineWidth: 1, dash: [4]))
+                    .frame(height: 100)
+                    .overlay {
+                        Text("Not cropped yet")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+            }
+        }
+        .frame(maxWidth: .infinity)
     }
 
     /// Builds a colourful gridded sample image so the cropped region is easy to verify.
