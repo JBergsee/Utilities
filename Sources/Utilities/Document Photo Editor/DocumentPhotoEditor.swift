@@ -49,16 +49,24 @@ public enum DocumentPhotoEditor {
     /// Presents a full-screen document editor modally over `presenter`.
     /// Suspends until the user taps Done or Cancel (or dismisses via swipe,
     /// which is treated as Cancel).
+    /// - Parameters:
+    ///   - image: the image to edit.
+    ///   - presenter: the view controller to present the editor over.
+    ///   - autoEnhanceEnabled: whether Auto Enhance is on when the image loads.
+    ///     Only the initial state — the user can toggle it in the editor. `true`
+    ///     (the default) suits document scans; pass `false` for general photos,
+    ///     so the editor opens showing the image as it was taken.
     /// - Returns: the edited `UIImage` at the original image's resolution and
     ///   orientation if the user tapped Done; `nil` on cancel (this includes
     ///   the rare case where the final render fails).
     public static func present(
         image: UIImage,
-        over presenter: UIViewController
+        over presenter: UIViewController,
+        autoEnhanceEnabled: Bool = true
     ) async -> UIImage? {
         await withCheckedContinuation { continuation in
             let bridge = EditorPresentationBridge(continuation: continuation, presenter: presenter)
-            bridge.present(image: image)
+            bridge.present(image: image, autoEnhanceEnabled: autoEnhanceEnabled)
         }
     }
 }
@@ -83,9 +91,10 @@ private final class EditorPresentationBridge: NSObject {
         retainCycle = self
     }
 
-    func present(image: UIImage) {
+    func present(image: UIImage, autoEnhanceEnabled: Bool) {
         let view = DocumentPhotoEditorView(
             image: image,
+            autoEnhanceEnabled: autoEnhanceEnabled,
             onDone: { [weak self] edited in
                 self?.finish(with: edited, dismiss: true)
             },

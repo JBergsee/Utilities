@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftUI //For hosting ImageCropperView
 import AVFoundation //For authorization request
 import PhotosUI //For PHPickerViewController
 
@@ -14,7 +13,8 @@ import PhotosUI //For PHPickerViewController
 /// Presents a camera / photo-library picker and returns the selected image.
 ///
 /// When `allowsEditing` is `true`, the picked image (from either the camera or the
-/// photo library) is passed to `ImageCropperView` for cropping before it is returned.
+/// photo library) is passed to `DocumentPhotoEditor` for adjustment and optional
+/// cropping before it is returned.
 ///
 /// The consuming app's Info.plist **must** include:
 /// - `NSCameraUsageDescription` — required for camera access.
@@ -26,8 +26,9 @@ open class ImagePicker {
 
     private weak var presentationController: UIViewController?
 
-    /// Whether the picked image is presented in `ImageCropperView` for cropping
-    /// before being returned. Applies to both the camera and photo-library sources.
+    /// Whether the picked image is presented in `DocumentPhotoEditor` for adjustment
+    /// and optional cropping before being returned. Applies to both the camera and
+    /// photo-library sources.
     private let allowsEditing: Bool
 
     public init(presentationController: UIViewController, allowsEditing: Bool = true) {
@@ -158,32 +159,35 @@ private class PickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINa
         retainCycle = nil
     }
 
-    /// Presents the crop step when editing is enabled and an image was picked,
+    /// Presents the editing step when editing is enabled and an image was picked,
     /// otherwise resumes the continuation directly with the picked image.
     private func deliver(_ image: UIImage?) {
         guard allowsEditing, let image else {
             finish(with: image)
             return
         }
-        presentCropper(for: image)
+        presentEditor(for: image)
     }
 
-    /// Hosts `ImageCropperView` full-screen. Confirming returns the cropped image;
-    /// cancelling returns `nil` (cancels the whole flow).
-    private func presentCropper(for image: UIImage) {
-        let cropper = ImageCropperView(
-            image: image,
-            onCrop: { [weak self] cropped in
-                self?.presentationController?.dismiss(animated: true)
-                self?.finish(with: cropped)
-            },
-            onCancel: { [weak self] in
-                self?.presentationController?.dismiss(animated: true)
-                self?.finish(with: nil)
-            })
-        let host = UIHostingController(rootView: cropper)
-        host.modalPresentationStyle = .fullScreen
-        presentationController?.present(host, animated: true)
+    /// Hands the picked image to `DocumentPhotoEditor`, which presents itself
+    /// full-screen and dismisses itself when finished. Done returns the adjusted
+    /// (and optionally cropped) image; Cancel — including swipe-to-dismiss —
+    /// returns `nil` and cancels the whole flow.
+    ///
+    /// Auto Enhance starts off: a picked photo isn't necessarily a document, so
+    /// the editor opens showing it as it was taken.
+    private func presentEditor(for image: UIImage) {
+        guard let presentationController else {
+            // Nothing left to present over; cancel rather than returning an unedited image.
+            finish(with: nil)
+            return
+        }
+        Task { [weak self] in
+            let edited = await DocumentPhotoEditor.present(image: image,
+                                                           over: presentationController,
+                                                           autoEnhanceEnabled: false)
+            self?.finish(with: edited)
+        }
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

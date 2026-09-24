@@ -84,10 +84,12 @@ final class DocumentPhotoEditorModel {
     private var renderTask: Task<Void, Never>?
     private var pendingRender = false
 
-    init(image: UIImage) {
+    init(image: UIImage, autoEnhanceEnabled: Bool) {
         context = CIContext(
             mtlDevice: MTLCreateSystemDefaultDevice()!,
             options: [.workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!])
+        // Set before the first render below, so the initial preview reflects it.
+        adjustments.autoEnhanceEnabled = autoEnhanceEnabled
         let normalized = normalizedCIImage(from: image)
         fullResolutionSource = normalized
         previewSource = downsampled(normalized, longEdge: 1024)
@@ -378,8 +380,12 @@ public struct DocumentPhotoEditorView: View {
     let onDone: (UIImage) -> Void
     let onCancel: () -> Void
 
-    init(image: UIImage, onDone: @escaping (UIImage) -> Void, onCancel: @escaping () -> Void) {
-        _model = State(initialValue: DocumentPhotoEditorModel(image: image))
+    init(image: UIImage,
+         autoEnhanceEnabled: Bool,
+         onDone: @escaping (UIImage) -> Void,
+         onCancel: @escaping () -> Void) {
+        _model = State(initialValue: DocumentPhotoEditorModel(image: image,
+                                                              autoEnhanceEnabled: autoEnhanceEnabled))
         self.onDone = onDone
         self.onCancel = onCancel
     }
